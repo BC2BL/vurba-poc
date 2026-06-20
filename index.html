@@ -1,3 +1,4 @@
+<!-- VERSION v082 | 2026-06-20 19:39 | Pre-translate mic fixes -->
 <!-- VERSION v058 | 2026-06-20 17:08 | Pre-custom phrase addition — Stage 1 -->
 <!-- VERSION v054 | 2026-06-20 16:51 | Pre-responsive bottom nav mobile layout -->
 <!DOCTYPE html>
@@ -482,30 +483,21 @@ textarea:focus{border-color:var(--teal)}
 
   <!-- TRANSLATE -->
   <div class="sec" id="translate">
-
-    <!-- Input area: text field + mic button side by side -->
     <div class="box" style="padding-bottom:8px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
         <div class="lbl" id="translateSrcLbl" style="margin:0">Type or speak in English</div>
         <div id="micTranStatus" style="font-size:10px;color:#E24B4A;font-weight:600;display:none">● Recording...</div>
       </div>
-      <!-- Row: textarea + mic button -->
       <div style="display:flex;gap:8px;align-items:center">
         <textarea id="tin" placeholder="Type here or tap the mic to speak..." rows="3" style="flex:1;resize:none"></textarea>
-        <!-- Mic button — sits beside the textarea -->
         <button id="mictranbtn" onclick="translateFromSpeech()"
-          style="width:48px;height:48px;border-radius:50%;border:2px solid var(--tealLt);background:rgba(15,181,199,0.12);color:var(--tealLt);font-size:22px;cursor:pointer;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">
+          style="width:48px;height:48px;border-radius:50%;border:2px solid var(--tealLt);background:rgba(15,181,199,0.12);color:var(--tealLt);font-size:22px;cursor:pointer;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;flex-shrink:0">
           <span id="micTranBtnLbl">&#127908;</span>
         </button>
       </div>
-      <!-- Live transcription — shown while recording, replaces placeholder feel -->
       <div id="micInterim" style="display:none;margin-top:8px;padding:8px 10px;background:rgba(15,181,199,0.08);border:1px solid rgba(15,181,199,0.3);border-radius:8px;font-size:13px;color:var(--tealLt);font-style:italic;min-height:36px;line-height:1.5"></div>
     </div>
-
-    <!-- Translate button -->
     <button class="bf g" id="trbtn" onclick="doTranslate()">&#127760; <span id="trbtnLabel">Translate to Japanese</span></button>
-
-    <!-- Result -->
     <div class="box" id="tres">
       <div class="lbl">Japanese</div>
       <div class="ph">Translation appears here</div>
@@ -1813,8 +1805,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   buildPhrases();
   updateReview();
-  // Sync all language-dependent labels to current dropdown state
-  onLangChange();
+  onLangChange(); // sync all language labels on load
   // Start onboarding on first launch
   if (isFirstLaunch) {
     setTimeout(initOnboarding, 400); // slight delay so app renders first
@@ -1868,10 +1859,9 @@ function onLangChange() {
   // Translate tab
   var trbtnLbl=document.getElementById('trbtnLabel');
   if (trbtnLbl) trbtnLbl.textContent='Translate to '+tgtName;
-  var srcLbl=document.getElementById('translateSrcLbl');
-  if (srcLbl) srcLbl.textContent='Type or speak in '+srcName;
-  var micLbl=document.getElementById('micTranBtnLbl');
-  if (micLbl && micLbl.innerHTML === '&#127908;') micLbl.innerHTML = '&#127908;'; // mic stays as icon
+  // translateSrcLbl updated above
+  var srcLblEl=document.getElementById('translateSrcLbl');
+  if (srcLblEl) srcLblEl.textContent='Type or speak in '+srcName;
   // Listen tab
   var listenTgt=document.getElementById('listenTgtLbl');
   if (listenTgt) listenTgt.textContent='What was said ('+tgtName+')';
@@ -2127,10 +2117,9 @@ var micTranActive = false;
 
 function translateFromSpeech() {
   if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-    toast('Speech recognition not supported on this browser');
+    toast('Speech recognition not supported — use HTTPS');
     return;
   }
-  // Toggle off if already recording
   if (micTranRec) {
     try { micTranRec.abort(); } catch(e) {}
     micTranRec = null;
@@ -2138,13 +2127,11 @@ function translateFromSpeech() {
     resetMicTranBtn();
     return;
   }
-
   micTranConf = 0;
-  var btn     = document.getElementById('mictranbtn');
-  var interim = document.getElementById('micInterim');
-  var statusEl= document.getElementById('micTranStatus');
-
-  // Active state — same pattern as Converse
+  var micTranHeard = '';
+  var btn      = document.getElementById('mictranbtn');
+  var interim  = document.getElementById('micInterim');
+  var statusEl = document.getElementById('micTranStatus');
   btn.style.background  = 'rgba(226,75,74,0.2)';
   btn.style.borderColor = '#E24B4A';
   btn.style.color       = '#E24B4A';
@@ -2155,26 +2142,20 @@ function translateFromSpeech() {
   interim.textContent    = 'Waiting for speech...';
   interim.style.color    = 'var(--muted)';
   interim.style.fontStyle= 'italic';
-
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   micTranRec = new SR();
   micTranRec.lang = getSpeechCode(getSrc());
   micTranRec.interimResults = true;
   micTranRec.continuous = false;
-
-  // Silence timer — same as Converse
   startSilenceTimer('tran', 6, function() {
     try { if(micTranRec) micTranRec.abort(); } catch(e) {}
     micTranRec = null;
     resetMicTranBtn();
-    document.getElementById('convInterim'); // no-op flush
     var el = document.getElementById('micInterim');
     if (el) el.style.display = 'none';
-    toast('No speech detected — tap to try again');
+    if (!micTranHeard) toast('No speech detected — tap to try again');
   });
-
   micTranRec.onresult = function(e) {
-    // Reset silence timer on each result
     startSilenceTimer('tran', 6, function() {
       try { if(micTranRec) micTranRec.abort(); } catch(e) {}
       micTranRec = null;
@@ -2191,61 +2172,53 @@ function translateFromSpeech() {
       }
     }
     if (bestConf > 0) micTranConf = bestConf;
+    if (finalText) micTranHeard = finalText;
     var display = finalText || interimText;
     var el = document.getElementById('micInterim');
     if (el) {
-      el.textContent    = display || 'Waiting for speech...';
-      el.style.color    = finalText ? 'var(--tealLt)' : 'var(--muted)';
-      el.style.fontStyle= finalText ? 'normal' : 'italic';
+      el.textContent     = display || 'Waiting for speech...';
+      el.style.color     = finalText ? 'var(--tealLt)' : 'var(--muted)';
+      el.style.fontStyle = finalText ? 'normal' : 'italic';
     }
   };
-
   micTranRec.onend = function() {
     clearSilenceTimer('tran');
-    // Read from interim box — same pattern as Converse (avoids race with textarea)
-    var el = document.getElementById('micInterim');
-    var said = el ? el.textContent : '';
-    if (said === 'Waiting for speech...' || said === '') said = '';
     try { if(micTranRec) micTranRec.abort(); } catch(e) {}
     micTranRec = null;
     resetMicTranBtn();
-    if (said) {
-      // Put transcript in textarea for user to review and edit
-      document.getElementById('tin').value = said;
+    if (micTranHeard) {
+      document.getElementById('tin').value = micTranHeard;
+      var el = document.getElementById('micInterim');
       if (el) el.style.display = 'none';
       toast('Tap Translate when ready');
-    } else {
-      if (el) {
-        el.style.display  = 'block';
-        el.style.color    = 'var(--muted)';
-        el.style.fontStyle= 'italic';
-        el.textContent    = 'Nothing heard — tap the mic to try again';
-      }
     }
   };
-
   micTranRec.onerror = function(err) {
     clearSilenceTimer('tran');
     try { if(micTranRec) micTranRec.abort(); } catch(e) {}
     micTranRec = null;
     resetMicTranBtn();
     var el = document.getElementById('micInterim');
-    if (el) { el.style.display='block'; el.textContent='Mic error: '+err.error+' — try again'; }
+    if (el) {
+      el.style.display = 'block';
+      el.style.color = 'var(--muted)';
+      el.style.fontStyle = 'italic';
+      el.textContent = err.error === 'not-allowed' ? 'Microphone access denied — check browser permissions'
+                     : err.error === 'no-speech'   ? 'No speech detected — tap to try again'
+                     : 'Could not hear — tap to try again (' + err.error + ')';
+    }
   };
-
   micTranRec.start();
 }
 
 function resetMicTranBtn() {
   var btn = document.getElementById('mictranbtn');
   if (!btn) return;
-  // Restore to idle: teal circular mic button
-  btn.style.background = 'rgba(15,181,199,0.12)';
+  btn.style.background  = 'rgba(15,181,199,0.12)';
   btn.style.borderColor = 'var(--tealLt)';
-  btn.style.color = 'var(--tealLt)';
+  btn.style.color       = 'var(--tealLt)';
   btn.classList.remove('listening');
   document.getElementById('micTranBtnLbl').innerHTML = '&#127908;';
-  // Hide recording indicator
   var statusEl = document.getElementById('micTranStatus');
   if (statusEl) statusEl.style.display = 'none';
 }
