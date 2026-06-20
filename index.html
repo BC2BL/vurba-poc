@@ -3042,22 +3042,27 @@ function clearSession() {
 }
 
 function resetApp() {
-  if (!confirm('Reset Vurba to first launch? This clears onboarding, check-in history and venue visits — but keeps your phrase library.')) return;
-  // Clear onboarding + nudge flags
+  var clearPhrases = confirm('Reset Vurba to first launch?\n\nTap OK to clear EVERYTHING including saved phrases.\nTap Cancel then use the softer reset below to keep your phrases.');
+  // Clear onboarding + nudge flags always
   localStorage.removeItem(ONBOARDING_KEY);
   localStorage.removeItem('vurba_first_checkin');
   localStorage.removeItem(NUDGE_KEY);
   localStorage.removeItem('venue_visits');
+  localStorage.removeItem('vs');
+  // Clear phrases if confirmed
+  if (clearPhrases) {
+    vocabLibrary = [];
+    saveVocabLibrary();
+  }
   // Reset language to defaults
   document.getElementById('srcLang').value = 'en';
   document.getElementById('tgtLang').value = 'ja';
   onLangChange();
   switchScenario('restaurant');
   closeSettings();
-  // Restart onboarding after short delay
   isFirstLaunch = true;
   setTimeout(function() { initOnboarding(); }, 400);
-  toast('App reset — showing onboarding again');
+  toast('App reset!');
 }
 
 function clearAllHistory() {
@@ -3919,12 +3924,9 @@ function buildLibraryUI() {
       var metaStr = 'Viewed ' + item.views + 'x &middot; ' + getLangName(item.srcLang) + ' &rarr; ' + getLangName(item.tgtLang) + (item.isCustom && item.category ? ' &middot; ' + item.category : '');
       html += '<div style="font-size:10px;color:var(--muted);margin-top:4px">' + metaStr + '</div>';
       html += '</div>';
-      html += '<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;align-items:center">';
-      html += '<button onclick="openLesson(vocabLibrary.find(function(v){return v.id===\"' + item.id + '\"}))" style="background:#EE6B4D;border:none;border-radius:8px;color:#fff;cursor:pointer;padding:5px 10px;font-size:10px;font-weight:700;-webkit-appearance:none;white-space:nowrap">Learn</button>';
-      html += '<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;align-items:center">';
-    html += '<button onclick="(function(){var it=vocabLibrary.find(function(v){return v.id===\'' + item.id + '\'});if(it)openLesson(it);})()" style="background:#EE6B4D;border:none;border-radius:8px;color:#fff;cursor:pointer;padding:5px 10px;font-size:10px;font-weight:700;-webkit-appearance:none;white-space:nowrap">Learn</button>';
-    html += '<button onclick="removeFromLibrary(' + JSON.stringify(item.id) + ')" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:2px;font-size:13px;-webkit-appearance:none">&#10005;</button>';
-    html += '</div>';
+      html += '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;align-items:center">';
+      html += '<button onclick="(function(){var it=vocabLibrary.find(function(v){return v.id===\"' + item.id + '\"});if(it)openLesson(it);})()" style="background:#EE6B4D;border:none;border-radius:8px;color:#fff;cursor:pointer;padding:6px 10px;font-size:10px;font-weight:700;-webkit-appearance:none;white-space:nowrap">Learn</button>';
+      html += '<button onclick="removeFromLibrary(' + JSON.stringify(item.id) + ')" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:2px;font-size:13px;-webkit-appearance:none">&#10005;</button>';
       html += '</div>';
       html += '</div></div>';
     });
