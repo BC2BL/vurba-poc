@@ -1790,7 +1790,7 @@ window.addEventListener('DOMContentLoaded', function() {
   // mictranbtn uses onclick in HTML — no addEventListener needed
 
   // Listen mic button
-  document.getElementById('micbtn').addEventListener('click', toggleListen);
+  // micbtn uses onclick in HTML — no addEventListener needed
 
   // Show overlay close
   document.getElementById('showClose').addEventListener('click', function() {
@@ -2242,6 +2242,8 @@ function startListen() {
     return;
   }
   isListening = true;
+
+  // UI: recording state
   var btn = document.getElementById('micbtn');
   btn.className = 'mb rec';
   btn.innerHTML = '<span style="font-size:28px">&#9646;</span>';
@@ -2262,79 +2264,85 @@ function startListen() {
   recognition.interimResults = true;
   recognition.continuous = false;
 
-  // Auto-kill after 8s of silence
-  startSilenceTimer('listen', 8, function() {
-    isListening = false;
-    isListening = false;
-    try { if(recognition) recognition.abort(); } catch(e) {}
-    nukeAllStreams();
-    recognition = null; currentStream = null; mediaRecorder = null;
-    var btn = document.getElementById('micbtn');
-    if (btn) { btn.className = 'mb idle'; btn.innerHTML = '<span style="font-size:32px">&#127908;</span>'; }
-    document.getElementById('mst').textContent = 'No speech detected — hold to try again';
-  });
+  var listenConf = 0;
 
   recognition.onresult = function(e) {
     // Reset silence timer — speech detected
-    startSilenceTimer('listen', 8, function() {
-      isListening = false;
-      killMic(recognition, currentStream, mediaRecorder, 'listen');
-      recognition = null; currentStream = null; mediaRecorder = null;
-      var btn2 = document.getElementById('micbtn');
-      if (btn2) { btn2.className = 'mb idle'; btn2.innerHTML = '<span style="font-size:32px">&#127908;</span>'; }
-      document.getElementById('mst').textContent = 'Tap to start listening';
+    startSilenceTimer('listen', 6, function() {
+      try { if (recognition) recognition.stop(); } catch(ex) {}
     });
-    var res = e.results[e.results.length-1];
+    var res = e.results[e.results.length - 1];
     var txt = res[0].transcript;
-    var conf = Math.round((res[0].confidence||0)*100);
+    var conf = Math.round((res[0].confidence || 0) * 100);
+    if (conf > listenConf) listenConf = conf;
     document.getElementById('tja').textContent = txt;
-    // Confidence badge — shown inline next to the Japanese label
+    // Confidence badge
     var clbl = document.getElementById('clbl');
     if (conf > 0) {
       clbl.style.display = 'block';
-      clbl.textContent = conf+'%';
-      if (conf >= 70) { clbl.style.background='rgba(61,214,140,0.15)'; clbl.style.color='var(--green)'; }
-      else if (conf >= 40) { clbl.style.background='rgba(239,159,39,0.15)'; clbl.style.color='var(--amber)'; }
-      else { clbl.style.background='rgba(226,75,74,0.15)'; clbl.style.color='var(--red)'; }
+      clbl.textContent = conf + '%';
+      if (conf >= 70)      { clbl.style.background='rgba(61,214,140,0.15)';  clbl.style.color='var(--green)'; }
+      else if (conf >= 40) { clbl.style.background='rgba(239,159,39,0.15)';  clbl.style.color='var(--amber)'; }
+      else                 { clbl.style.background='rgba(226,75,74,0.15)';   clbl.style.color='var(--red)'; }
     }
-
     if (res.isFinal) {
       document.getElementById('mst').textContent = 'Translating...';
       btn.className = 'mb proc';
       btn.innerHTML = '<span class="spin" style="width:32px;height:32px;border-width:3px"></span>';
-      if (API_KEY) {
-        callClaude('Translate this '+getLangName(getTgt())+' text to '+getLangName(getSrc())+'. Reply with ONLY the translation, no other text.\n"'+txt+'"')
-          .then(function(en) {
-            document.getElementById('ten').textContent = en.trim();
-            document.getElementById('tnote').textContent = conf < 50 ? '⚠️ Low confidence — try a quieter spot' : '';
-            log({type:'listen', srcText:txt, tgtText:en.trim(), conf:conf, inputMethod:'speech'});
-            updateReview();
-          })
-          .catch(function(){ document.getElementById('ten').textContent = '(translation failed)'; })
-          .finally(function(){ stopListen(); });
-      } else {
-        document.getElementById('ten').textContent = '(add API key to HTML for translation)';
+      callClaude(
+        'Translate this ' + getLangName(getTgt()) + ' text to ' + getLangName(getSrc()) +
+        '. Reply with ONLY the translation, no other text.\n"' + txt + '"'
+      ).then(function(en) {
+        document.getElementById('ten').textContent = en.trim();
+        document.getElementById('tnote').textContent = listenConf < 50 ? '⚠️ Low confidence — try a quieter spot' : '';
+        log({type:'listen', srcText:txt, tgtText:en.trim(), conf:listenConf, inputMethod:'speech'});
+        updateReview();
+      }).catch(function() {
+        document.getElementById('ten').textContent = '(translation failed)';
+      }).finally(function() {
         stopListen();
-      }
+      });
     }
   };
 
-  recognition.onerror = function(e) {
-    document.getElementById('mst').textContent = 'Error: '+e.error+' — try a quieter spot';
-    stopListen();
+  recognition.onend = function() {
+    // Only auto-stop if not already processing a translation
+    if (isListening) stopListen();
   };
 
-  recognition.onend = function() { if(isListening) stopListen(); };
+  recognition.onerror = function(err) {
+    clearSilenceTimer('listen');
+    recognition.onresult = null;
+    recognition.onend    = null;
+    recognition.onerror  = null;
+    try { recognition.abort(); } catch(e) {}
+    recognition = null;
+    isListening = false;
+    var btn2 = document.getElementById('micbtn');
+    if (btn2) { btn2.className = 'mb idle'; btn2.innerHTML = '<span style="font-size:32px">&#127908;</span>'; }
+    var msg = err.error === 'not-allowed' ? 'Mic access denied — check permissions'
+            : err.error === 'no-speech'   ? 'No speech detected — tap to try again'
+            : 'Error: ' + err.error + ' — try again';
+    document.getElementById('mst').textContent = msg;
+  };
+
+  // Start THEN set silence timer — same order as Converse
   recognition.start();
+  startSilenceTimer('listen', 6, function() {
+    try { if (recognition) recognition.stop(); } catch(e) {}
+  });
 }
 
 function stopListen() {
+  if (!isListening) return; // guard against double-call
   isListening = false;
-  var btn = document.getElementById('micbtn');
-  btn.className = 'mb idle';
-  btn.innerHTML = '<span style="font-size:32px">&#127908;</span>';
-  document.getElementById('mst').textContent = 'Tap to start listening';
   clearSilenceTimer('listen');
+
+  var btn = document.getElementById('micbtn');
+  if (btn) { btn.className = 'mb idle'; btn.innerHTML = '<span style="font-size:32px">&#127908;</span>'; }
+  document.getElementById('mst').textContent = 'Tap to start listening';
+
+  // Null handlers BEFORE abort — prevents onend re-triggering stopListen
   if (recognition) {
     recognition.onresult = null;
     recognition.onend    = null;
@@ -2344,7 +2352,7 @@ function stopListen() {
   }
   nukeAllStreams();
 
-  // Save audio clip if we have data (do this after killing the stream)
+  // Save audio clip
   if (mediaRecorder) {
     mediaRecorder.onstop = function() {
       if (!audioChunks.length) return;
@@ -2352,9 +2360,9 @@ function stopListen() {
       var reader = new FileReader();
       reader.onloadend = function() {
         var clips = [];
-        try{ clips = JSON.parse(localStorage.getItem('va')||'[]'); }catch(e){}
-        clips.push({ts:new Date().toISOString(),size:blob.size,ja:document.getElementById('tja').textContent});
-        try{ localStorage.setItem('va', JSON.stringify(clips)); }catch(e){}
+        try { clips = JSON.parse(localStorage.getItem('va') || '[]'); } catch(e) {}
+        clips.push({ts:new Date().toISOString(), size:blob.size, ja:document.getElementById('tja').textContent});
+        try { localStorage.setItem('va', JSON.stringify(clips)); } catch(e) {}
         document.getElementById('sa').textContent = clips.length;
       };
       reader.readAsDataURL(blob);
