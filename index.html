@@ -1786,7 +1786,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // Translate button
   document.getElementById('trbtn').addEventListener('click', doTranslate);
-  document.getElementById('mictranbtn').addEventListener('click', translateFromSpeech);
+  // mictranbtn uses onclick in HTML — no addEventListener needed
 
   // Listen mic button
   document.getElementById('micbtn').addEventListener('click', toggleListen);
