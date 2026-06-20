@@ -502,7 +502,7 @@ textarea:focus{border-color:var(--teal)}
     </div>
     <button class="bf g" id="trbtn" onclick="doTranslate()">&#127760; <span id="trbtnLabel">Translate to Japanese</span></button>
     <div class="box" id="tres">
-      <div class="lbl">Japanese</div>
+      <div class="lbl" id="tresLbl">Japanese</div>
       <div class="ph">Translation appears here</div>
     </div>
     <button id="clearTranBtn" onclick="clearTranslation()" style="display:none;width:100%;padding:10px;background:transparent;border:1px solid rgba(226,75,74,0.3);border-radius:10px;color:var(--red);font-size:13px;font-weight:500;cursor:pointer;-webkit-appearance:none;margin-top:6px">✕ Clear translation</button>
@@ -1835,7 +1835,16 @@ window.addEventListener('DOMContentLoaded', function() {
 // ── LANGUAGE HELPERS ─────────────────────────────────────────────────────────
 function getSrc() { var el=document.getElementById('srcLang'); return el?el.value:'en'; }
 function getTgt() { var el=document.getElementById('tgtLang'); return el?el.value:'ja'; }
-function getLangName(code) { return (LANG_CONFIG[code]&&LANG_CONFIG[code].name)||code; }
+function getLangName(code) {
+  if (!code) return 'Unknown';
+  // Direct lookup
+  if (LANG_CONFIG[code] && LANG_CONFIG[code].name) return LANG_CONFIG[code].name;
+  // Maybe it was stored as a full name already — search by name
+  var found = Object.keys(LANG_CONFIG).find(function(k){ return LANG_CONFIG[k].name === code; });
+  if (found) return LANG_CONFIG[found].name;
+  // Fallback: capitalise the code
+  return code.charAt(0).toUpperCase() + code.slice(1);
+}
 function getSpeechCode(code) { return (LANG_CONFIG[code]&&LANG_CONFIG[code].speech)||'ja-JP'; }
 function getPhrase(p,lang) { return {text:p[lang]||p.en, ro:p[lang+'_ro']||''}; }
 
@@ -1875,6 +1884,10 @@ function onLangChange() {
   // Translate tab
   var trbtnLbl=document.getElementById('trbtnLabel');
   if (trbtnLbl) trbtnLbl.textContent='Translate to '+tgtName;
+  var tresLbl=document.getElementById('tresLbl');
+  if (tresLbl) tresLbl.textContent=tgtName;
+  var tresLbl=document.getElementById('tresLbl');
+  if (tresLbl) tresLbl.textContent=tgtName;
   var srcLblEl=document.getElementById('translateSrcLbl');
   if (srcLblEl) srcLblEl.textContent='Type or speak in '+srcName;
   // Listen tab
@@ -1891,6 +1904,9 @@ function onLangChange() {
   if (enSt) enSt.textContent='Tap to speak ('+srcName+')';
   var jaSt=document.getElementById('jaStatus');
   if (jaSt) jaSt.textContent='Tap to speak ('+tgtName+')';
+  // Update translate result label
+  var tresLbl=document.getElementById('tresLbl');
+  if (tresLbl) tresLbl.textContent=tgtName;
   // Rebuild phrases
   buildPhrases();
   // Update Listen tab language toggle labels
@@ -2052,7 +2068,7 @@ function speak(text) {
 // ── TRANSLATE ─────────────────────────────────────────────────────────────────
 function clearTranslation() {
   document.getElementById('tin').value = '';
-  document.getElementById('tres').innerHTML = '<div class="lbl" id="tresLbl">Translation</div><div class="ph">Translation appears here</div>';
+  document.getElementById('tres').innerHTML = '<div class="lbl" id="tresLbl">' + getLangName(getTgt()) + '</div><div class="ph">Translation appears here</div>';
   document.getElementById('clearTranBtn').style.display = 'none';
   var interim = document.getElementById('micInterim');
   if (interim) interim.style.display = 'none';
@@ -3155,8 +3171,9 @@ function getHistoryStats() {
   // Phrase repeat counts — key signal for character ("you always look this up")
   var phraseCounts = {};
   phraseEvents.forEach(function(e) {
-    var id = e.phraseId || e.srcText;
-    phraseCounts[id] = (phraseCounts[id]||0) + 1;
+    // Always use the human-readable source text, never the phraseId key
+    var key = e.srcText || e.phraseId || '';
+    if (key) phraseCounts[key] = (phraseCounts[key]||0) + 1;
   });
   var repeatedPhrases = Object.keys(phraseCounts)
     .filter(function(k){ return phraseCounts[k] >= 3; })
@@ -4109,7 +4126,9 @@ function buildLibraryUI() {
       html += '<div style="font-size:13px;color:var(--muted)">' + item.srcText + privBadge + '</div>';
       html += '<div style="font-size:17px;font-weight:700;color:#ffffff;margin:3px 0">' + item.tgtText + '</div>';
       if (item.ro) html += '<div style="font-size:11px;color:' + cfg.color + '">' + item.ro + '</div>';
-      var metaStr = 'Viewed ' + item.views + 'x &middot; ' + getLangName(item.srcLang) + ' &rarr; ' + getLangName(item.tgtLang) + (item.isCustom && item.category ? ' &middot; ' + item.category : '');
+      var srcFlag = (LANG_CONFIG[item.srcLang] && LANG_CONFIG[item.srcLang].flag) || '';
+      var tgtFlag = (LANG_CONFIG[item.tgtLang] && LANG_CONFIG[item.tgtLang].flag) || '';
+      var metaStr = 'Viewed ' + item.views + 'x &middot; ' + srcFlag + ' ' + getLangName(item.srcLang) + ' &rarr; ' + tgtFlag + ' ' + getLangName(item.tgtLang) + (item.isCustom && item.category ? ' &middot; ' + item.category : '');
       html += '<div style="font-size:10px;color:#7BA7B8;margin-top:4px">' + metaStr + '</div>';
       html += '</div>';
       html += '<div style="display:flex;flex-direction:column;gap:12px;flex-shrink:0;align-items:center;padding-left:8px">';
@@ -4170,7 +4189,7 @@ function buildCoachMessage(stats) {
   var msgs = [];
   if (stats.repeatedPhrases && stats.repeatedPhrases.length) {
     var top = stats.repeatedPhrases[0];
-    msgs.push('I noticed you look up <strong style="color:#fff">' + top.phrase + '</strong> a lot (' + top.count + ' times). Save it and try saying it in Converse mode!');
+    msgs.push('I noticed you look up <strong style="color:#fff">“' + top.phrase + '”</strong> a lot (' + top.count + ' times). Save it and try saying it in Converse mode!');
   }
   var suggested = getSuggestedFromTranslates();
   if (suggested.length) {
