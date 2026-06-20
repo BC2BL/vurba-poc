@@ -2130,99 +2130,109 @@ function translateFromSpeech() {
     toast('Speech recognition not supported on this browser');
     return;
   }
+  // Toggle off if already recording
   if (micTranRec) {
-    // Stop recording
     try { micTranRec.abort(); } catch(e) {}
-    micTranRec = null; micTranStream = null;
+    micTranRec = null;
     clearSilenceTimer('tran');
     resetMicTranBtn();
     return;
   }
+
   micTranConf = 0;
-  var btn = document.getElementById('mictranbtn');
-  // Active state — red pulsing mic
-  btn.style.background = 'rgba(226,75,74,0.2)';
+  var btn     = document.getElementById('mictranbtn');
+  var interim = document.getElementById('micInterim');
+  var statusEl= document.getElementById('micTranStatus');
+
+  // Active state — same pattern as Converse
+  btn.style.background  = 'rgba(226,75,74,0.2)';
   btn.style.borderColor = '#E24B4A';
-  btn.style.color = '#E24B4A';
+  btn.style.color       = '#E24B4A';
   btn.classList.add('listening');
   document.getElementById('micTranBtnLbl').innerHTML = '&#9646;&#9646;';
-  // Show recording indicator in header
-  var statusEl = document.getElementById('micTranStatus');
   if (statusEl) { statusEl.textContent = '● Recording...'; statusEl.style.display = 'block'; }
-  // Show interim box
-  var interim = document.getElementById('micInterim');
-  interim.style.display = 'block';
-  interim.textContent = 'Listening in ' + getLangName(getSrc()) + '...';
-  // Show interim transcript box
-  var interim = document.getElementById('micInterim');
-  interim.style.display = 'block';
-  interim.textContent = 'Waiting for speech...';
-  interim.style.color = 'var(--muted)';
-  interim.style.fontStyle = 'italic';
-  startSilenceTimer('tran', 6, function() {
-    try { if(micTranRec) micTranRec.abort(); } catch(e) {}
-    micTranRec = null; micTranStream = null;
-    resetMicTranBtn();
-    var el = document.getElementById('micInterim');
-    if (el) { el.style.display = 'block'; el.style.color = 'var(--muted)'; el.style.fontStyle = 'italic'; el.textContent = 'No speech detected — tap the mic to try again'; }
-  });
+  interim.style.display  = 'block';
+  interim.textContent    = 'Waiting for speech...';
+  interim.style.color    = 'var(--muted)';
+  interim.style.fontStyle= 'italic';
+
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   micTranRec = new SR();
   micTranRec.lang = getSpeechCode(getSrc());
   micTranRec.interimResults = true;
   micTranRec.continuous = false;
+
+  // Silence timer — same as Converse
+  startSilenceTimer('tran', 6, function() {
+    try { if(micTranRec) micTranRec.abort(); } catch(e) {}
+    micTranRec = null;
+    resetMicTranBtn();
+    document.getElementById('convInterim'); // no-op flush
+    var el = document.getElementById('micInterim');
+    if (el) el.style.display = 'none';
+    toast('No speech detected — tap to try again');
+  });
+
   micTranRec.onresult = function(e) {
+    // Reset silence timer on each result
     startSilenceTimer('tran', 6, function() {
       try { if(micTranRec) micTranRec.abort(); } catch(e) {}
-      micTranRec = null; micTranStream = null;
+      micTranRec = null;
       resetMicTranBtn();
     });
-    var interim_txt='', final_txt='', bestConf=0;
-    for (var i=0;i<e.results.length;i++) {
-      if (e.results[i].isFinal) { final_txt+=e.results[i][0].transcript; var c=Math.round((e.results[i][0].confidence||0)*100); if(c>bestConf)bestConf=c; }
-      else interim_txt+=e.results[i][0].transcript;
+    var finalText = '', interimText = '', bestConf = 0;
+    for (var i = 0; i < e.results.length; i++) {
+      if (e.results[i].isFinal) {
+        finalText += e.results[i][0].transcript;
+        var c = Math.round((e.results[i][0].confidence || 0) * 100);
+        if (c > bestConf) bestConf = c;
+      } else {
+        interimText += e.results[i][0].transcript;
+      }
     }
-    if (bestConf>0) micTranConf=bestConf;
-    var display = final_txt || interim_txt;
+    if (bestConf > 0) micTranConf = bestConf;
+    var display = finalText || interimText;
     var el = document.getElementById('micInterim');
     if (el) {
-      el.style.color = final_txt ? 'var(--tealLt)' : 'rgba(15,181,199,0.6)';
-      el.style.fontStyle = final_txt ? 'normal' : 'italic';
-      el.textContent = display || 'Listening...';
+      el.textContent    = display || 'Waiting for speech...';
+      el.style.color    = finalText ? 'var(--tealLt)' : 'var(--muted)';
+      el.style.fontStyle= finalText ? 'normal' : 'italic';
     }
-    if (final_txt) document.getElementById('tin').value = final_txt;
   };
+
   micTranRec.onend = function() {
     clearSilenceTimer('tran');
-    var final_txt = document.getElementById('tin').value.trim();
+    // Read from interim box — same pattern as Converse (avoids race with textarea)
+    var el = document.getElementById('micInterim');
+    var said = el ? el.textContent : '';
+    if (said === 'Waiting for speech...' || said === '') said = '';
     try { if(micTranRec) micTranRec.abort(); } catch(e) {}
-    micTranRec = null; micTranStream = null;
+    micTranRec = null;
     resetMicTranBtn();
-    var interim = document.getElementById('micInterim');
-    if (final_txt) {
-      // Text is already in textarea — hide interim, let user review and translate
-      if (interim) interim.style.display = 'none';
-      // Focus textarea so user can edit if needed
-      var tin = document.getElementById('tin');
-      if (tin) { tin.value = final_txt; tin.focus(); }
+    if (said) {
+      // Put transcript in textarea for user to review and edit
+      document.getElementById('tin').value = said;
+      if (el) el.style.display = 'none';
       toast('Tap Translate when ready');
     } else {
-      if (interim) {
-        interim.style.display = 'block';
-        interim.style.color = 'var(--muted)';
-        interim.style.fontStyle = 'italic';
-        interim.textContent = 'Nothing heard — tap the mic to try again';
+      if (el) {
+        el.style.display  = 'block';
+        el.style.color    = 'var(--muted)';
+        el.style.fontStyle= 'italic';
+        el.textContent    = 'Nothing heard — tap the mic to try again';
       }
     }
   };
-  micTranRec.onerror = function(e) {
+
+  micTranRec.onerror = function(err) {
     clearSilenceTimer('tran');
-    try { if(micTranRec) micTranRec.abort(); } catch(ex) {}
-    micTranRec=null; micTranStream=null;
+    try { if(micTranRec) micTranRec.abort(); } catch(e) {}
+    micTranRec = null;
     resetMicTranBtn();
-    var el=document.getElementById('micInterim');
-    if(el) el.textContent='Error: '+e.error+' — try again';
+    var el = document.getElementById('micInterim');
+    if (el) { el.style.display='block'; el.textContent='Mic error: '+err.error+' — try again'; }
   };
+
   micTranRec.start();
 }
 
