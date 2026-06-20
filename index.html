@@ -77,6 +77,7 @@ textarea:focus{border-color:var(--teal)}
 .rro{font-size:13px;color:var(--tealLt)}
 .ph{color:var(--muted);font-size:14px;font-style:italic}
 .bf{width:100%;padding:14px;border-radius:12px;border:none;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;-webkit-appearance:none}
+.bf.listening{animation:pulseBtn 1.2s ease-in-out infinite}
 .bf.g{background:var(--green);color:var(--navy)}
 .bf.t{background:rgba(15,181,199,.15);border:1px solid var(--tealLt);color:var(--tealLt)}
 .bf:disabled{opacity:.4}
@@ -487,10 +488,12 @@ textarea:focus{border-color:var(--teal)}
     </div>
     <button class="bf g" id="trbtn" onclick="doTranslate()">&#127760; <span id="trbtnLabel">Translate to Japanese</span></button>
     <div id="micTranArea">
-  <button class="bf t" id="mictranbtn" onclick="translateFromSpeech()">
-    &#127908; <span id="micTranBtnLbl">Speak in English</span>
-  </button>
-</div>
+      <button class="bf t" id="mictranbtn" onclick="translateFromSpeech()" style="margin-bottom:6px">
+        &#127908; <span id="micTranBtnLbl">Speak in English</span>
+      </button>
+      <div id="micTranStatus" style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:6px;min-height:16px"></div>
+      <div id="micInterim" style="display:none;background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:14px;color:var(--muted);font-style:italic;min-height:44px;line-height:1.5"></div>
+    </div>
     <div class="box" id="tres">
       <div class="lbl">Japanese</div>
       <div class="ph">Translation appears here</div>
@@ -1798,6 +1801,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
   buildPhrases();
   updateReview();
+  // Sync all language-dependent labels to current dropdown state
+  onLangChange();
   // Start onboarding on first launch
   if (isFirstLaunch) {
     setTimeout(initOnboarding, 400); // slight delay so app renders first
@@ -2122,21 +2127,20 @@ function translateFromSpeech() {
   }
   micTranConf = 0;
   var btn = document.getElementById('mictranbtn');
-  btn.style.background = 'rgba(226,75,74,0.15)';
+  btn.style.background = 'rgba(226,75,74,0.2)';
   btn.style.borderColor = '#E24B4A';
   btn.style.color = '#E24B4A';
-  btn.innerHTML = '&#9646;&#9646; <span id="micTranBtnLbl">Listening... (tap to stop)</span>';
+  btn.classList.add('listening');
+  btn.innerHTML = '&#9646;&#9646; <span id="micTranBtnLbl">Tap to stop</span>';
+  // Status label below button
+  var statusEl = document.getElementById('micTranStatus');
+  if (statusEl) statusEl.textContent = 'Listening in ' + getLangName(getSrc()) + '...';
+  // Show interim transcript box
   var interim = document.getElementById('micInterim');
-  if (!interim) {
-    interim = document.createElement('div');
-    interim.id = 'micInterim';
-    interim.style.cssText = 'background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:14px;color:var(--muted);min-height:44px;font-style:italic;line-height:1.5';
-    interim.textContent = 'Waiting for speech...';
-    document.getElementById('micTranArea').appendChild(interim);
-  } else {
-    interim.style.display = 'block';
-    interim.textContent = 'Waiting for speech...';
-  }
+  interim.style.display = 'block';
+  interim.textContent = 'Waiting for speech...';
+  interim.style.color = 'var(--muted)';
+  interim.style.fontStyle = 'italic';
   startSilenceTimer('tran', 6, function() {
     try { if(micTranRec) micTranRec.abort(); } catch(e) {}
     micTranRec = null; micTranStream = null;
@@ -2168,17 +2172,16 @@ function translateFromSpeech() {
   };
   micTranRec.onend = function() {
     clearSilenceTimer('tran');
-    var final_txt=document.getElementById('tin').value.trim();
+    var final_txt = document.getElementById('tin').value.trim();
     try { if(micTranRec) micTranRec.abort(); } catch(e) {}
-    micTranRec=null; micTranStream=null;
+    micTranRec = null; micTranStream = null;
     resetMicTranBtn();
-    if(final_txt){
-      var el=document.getElementById('micInterim');
-      if(el){el.style.color='var(--green)';el.style.fontStyle='normal';el.textContent='✓ Heard: "'+final_txt+'" — translating...';}
+    var interim = document.getElementById('micInterim');
+    if (final_txt) {
+      if (interim) { interim.style.display='block'; interim.style.color='var(--green)'; interim.style.fontStyle='normal'; interim.textContent='✓ Heard: "' + final_txt + '" — translating...'; }
       doTranslate();
     } else {
-      var el2=document.getElementById('micInterim');
-      if(el2) el2.textContent='Nothing heard — tap to try again';
+      if (interim) { interim.style.display='block'; interim.style.color='var(--muted)'; interim.style.fontStyle='italic'; interim.textContent='Nothing heard — tap to try again'; }
     }
   };
   micTranRec.onerror = function(e) {
@@ -2198,7 +2201,12 @@ function resetMicTranBtn() {
   btn.style.background = '';
   btn.style.borderColor = '';
   btn.style.color = '';
-  btn.innerHTML = '&#127908; Speak in ' + getLangName(getSrc());
+  btn.classList.remove('listening');
+  btn.innerHTML = '&#127908; <span id="micTranBtnLbl">Speak in ' + getLangName(getSrc()) + '</span>';
+  var statusEl = document.getElementById('micTranStatus');
+  if (statusEl) statusEl.textContent = '';
+  var interim = document.getElementById('micInterim');
+  if (interim) interim.style.display = 'none';
 }
 
 // ── LISTEN / RECORD ───────────────────────────────────────────────────────────
