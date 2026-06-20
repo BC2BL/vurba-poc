@@ -482,18 +482,30 @@ textarea:focus{border-color:var(--teal)}
 
   <!-- TRANSLATE -->
   <div class="sec" id="translate">
-    <div class="box">
-      <div class="lbl" id="translateSrcLbl">Type in English</div>
-      <textarea id="tin" placeholder="Type or speak..." id="tinPlaceholder" rows="3"></textarea>
+
+    <!-- Input area: text field + mic button side by side -->
+    <div class="box" style="padding-bottom:8px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div class="lbl" id="translateSrcLbl" style="margin:0">Type or speak in English</div>
+        <div id="micTranStatus" style="font-size:10px;color:#E24B4A;font-weight:600;display:none">● Recording...</div>
+      </div>
+      <!-- Row: textarea + mic button -->
+      <div style="display:flex;gap:8px;align-items:center">
+        <textarea id="tin" placeholder="Type here or tap the mic to speak..." rows="3" style="flex:1;resize:none"></textarea>
+        <!-- Mic button — sits beside the textarea -->
+        <button id="mictranbtn" onclick="translateFromSpeech()"
+          style="width:48px;height:48px;border-radius:50%;border:2px solid var(--tealLt);background:rgba(15,181,199,0.12);color:var(--tealLt);font-size:22px;cursor:pointer;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">
+          <span id="micTranBtnLbl">&#127908;</span>
+        </button>
+      </div>
+      <!-- Live transcription — shown while recording, replaces placeholder feel -->
+      <div id="micInterim" style="display:none;margin-top:8px;padding:8px 10px;background:rgba(15,181,199,0.08);border:1px solid rgba(15,181,199,0.3);border-radius:8px;font-size:13px;color:var(--tealLt);font-style:italic;min-height:36px;line-height:1.5"></div>
     </div>
+
+    <!-- Translate button -->
     <button class="bf g" id="trbtn" onclick="doTranslate()">&#127760; <span id="trbtnLabel">Translate to Japanese</span></button>
-    <div id="micTranArea">
-      <button class="bf t" id="mictranbtn" onclick="translateFromSpeech()" style="margin-bottom:6px">
-        &#127908; <span id="micTranBtnLbl">Speak in English</span>
-      </button>
-      <div id="micTranStatus" style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:6px;min-height:16px"></div>
-      <div id="micInterim" style="display:none;background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:14px;color:var(--muted);font-style:italic;min-height:44px;line-height:1.5"></div>
-    </div>
+
+    <!-- Result -->
     <div class="box" id="tres">
       <div class="lbl">Japanese</div>
       <div class="ph">Translation appears here</div>
@@ -1857,9 +1869,9 @@ function onLangChange() {
   var trbtnLbl=document.getElementById('trbtnLabel');
   if (trbtnLbl) trbtnLbl.textContent='Translate to '+tgtName;
   var srcLbl=document.getElementById('translateSrcLbl');
-  if (srcLbl) srcLbl.textContent='Type in '+srcName;
+  if (srcLbl) srcLbl.textContent='Type or speak in '+srcName;
   var micLbl=document.getElementById('micTranBtnLbl');
-  if (micLbl) micLbl.textContent='Speak in '+srcName;
+  if (micLbl && micLbl.innerHTML === '&#127908;') micLbl.innerHTML = '&#127908;'; // mic stays as icon
   // Listen tab
   var listenTgt=document.getElementById('listenTgtLbl');
   if (listenTgt) listenTgt.textContent='What was said ('+tgtName+')';
@@ -2119,6 +2131,7 @@ function translateFromSpeech() {
     return;
   }
   if (micTranRec) {
+    // Stop recording
     try { micTranRec.abort(); } catch(e) {}
     micTranRec = null; micTranStream = null;
     clearSilenceTimer('tran');
@@ -2127,14 +2140,19 @@ function translateFromSpeech() {
   }
   micTranConf = 0;
   var btn = document.getElementById('mictranbtn');
+  // Active state — red pulsing mic
   btn.style.background = 'rgba(226,75,74,0.2)';
   btn.style.borderColor = '#E24B4A';
   btn.style.color = '#E24B4A';
   btn.classList.add('listening');
-  btn.innerHTML = '&#9646;&#9646; <span id="micTranBtnLbl">Tap to stop</span>';
-  // Status label below button
+  document.getElementById('micTranBtnLbl').innerHTML = '&#9646;&#9646;';
+  // Show recording indicator in header
   var statusEl = document.getElementById('micTranStatus');
-  if (statusEl) statusEl.textContent = 'Listening in ' + getLangName(getSrc()) + '...';
+  if (statusEl) { statusEl.textContent = '● Recording...'; statusEl.style.display = 'block'; }
+  // Show interim box
+  var interim = document.getElementById('micInterim');
+  interim.style.display = 'block';
+  interim.textContent = 'Listening in ' + getLangName(getSrc()) + '...';
   // Show interim transcript box
   var interim = document.getElementById('micInterim');
   interim.style.display = 'block';
@@ -2146,7 +2164,7 @@ function translateFromSpeech() {
     micTranRec = null; micTranStream = null;
     resetMicTranBtn();
     var el = document.getElementById('micInterim');
-    if (el) el.textContent = 'No speech detected — tap to try again';
+    if (el) { el.style.display = 'block'; el.style.color = 'var(--muted)'; el.style.fontStyle = 'italic'; el.textContent = 'No speech detected — tap the mic to try again'; }
   });
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   micTranRec = new SR();
@@ -2165,10 +2183,14 @@ function translateFromSpeech() {
       else interim_txt+=e.results[i][0].transcript;
     }
     if (bestConf>0) micTranConf=bestConf;
-    var display=final_txt||interim_txt;
-    var el=document.getElementById('micInterim');
-    if(el){el.style.color=final_txt?'#fff':'var(--muted)';el.style.fontStyle=final_txt?'normal':'italic';el.textContent=display||'Waiting for speech...';}
-    if(final_txt) document.getElementById('tin').value=final_txt;
+    var display = final_txt || interim_txt;
+    var el = document.getElementById('micInterim');
+    if (el) {
+      el.style.color = final_txt ? 'var(--tealLt)' : 'rgba(15,181,199,0.6)';
+      el.style.fontStyle = final_txt ? 'normal' : 'italic';
+      el.textContent = display || 'Listening...';
+    }
+    if (final_txt) document.getElementById('tin').value = final_txt;
   };
   micTranRec.onend = function() {
     clearSilenceTimer('tran');
@@ -2178,10 +2200,19 @@ function translateFromSpeech() {
     resetMicTranBtn();
     var interim = document.getElementById('micInterim');
     if (final_txt) {
-      if (interim) { interim.style.display='block'; interim.style.color='var(--green)'; interim.style.fontStyle='normal'; interim.textContent='✓ Heard: "' + final_txt + '" — translating...'; }
-      doTranslate();
+      // Text is already in textarea — hide interim, let user review and translate
+      if (interim) interim.style.display = 'none';
+      // Focus textarea so user can edit if needed
+      var tin = document.getElementById('tin');
+      if (tin) { tin.value = final_txt; tin.focus(); }
+      toast('Tap Translate when ready');
     } else {
-      if (interim) { interim.style.display='block'; interim.style.color='var(--muted)'; interim.style.fontStyle='italic'; interim.textContent='Nothing heard — tap to try again'; }
+      if (interim) {
+        interim.style.display = 'block';
+        interim.style.color = 'var(--muted)';
+        interim.style.fontStyle = 'italic';
+        interim.textContent = 'Nothing heard — tap the mic to try again';
+      }
     }
   };
   micTranRec.onerror = function(e) {
@@ -2198,15 +2229,15 @@ function translateFromSpeech() {
 function resetMicTranBtn() {
   var btn = document.getElementById('mictranbtn');
   if (!btn) return;
-  btn.style.background = '';
-  btn.style.borderColor = '';
-  btn.style.color = '';
+  // Restore to idle: teal circular mic button
+  btn.style.background = 'rgba(15,181,199,0.12)';
+  btn.style.borderColor = 'var(--tealLt)';
+  btn.style.color = 'var(--tealLt)';
   btn.classList.remove('listening');
-  btn.innerHTML = '&#127908; <span id="micTranBtnLbl">Speak in ' + getLangName(getSrc()) + '</span>';
+  document.getElementById('micTranBtnLbl').innerHTML = '&#127908;';
+  // Hide recording indicator
   var statusEl = document.getElementById('micTranStatus');
-  if (statusEl) statusEl.textContent = '';
-  var interim = document.getElementById('micInterim');
-  if (interim) interim.style.display = 'none';
+  if (statusEl) statusEl.style.display = 'none';
 }
 
 // ── LISTEN / RECORD ───────────────────────────────────────────────────────────
