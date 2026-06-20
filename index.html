@@ -295,6 +295,9 @@ textarea:focus{border-color:var(--teal)}
 .btn-got-it{width:100%;padding:14px;background:#EE6B4D;border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;-webkit-appearance:none}
 
 /* ── NOTE-TAKER ── */
+.listen-lang-toggle{display:flex;gap:8px;margin-bottom:12px}
+.listen-lang-btn{flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--bdr);background:transparent;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;gap:6px}
+.listen-lang-btn.active{background:rgba(15,181,199,0.15);border-color:var(--tealLt);color:var(--tealLt)}
 .mode-toggle{display:flex;background:var(--mid);border:1px solid var(--bdr);border-radius:10px;padding:3px;margin-bottom:12px;gap:3px}
 .mode-btn{flex:1;padding:7px;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;-webkit-appearance:none;background:transparent;color:var(--muted);transition:all .2s}
 .mode-btn.active{background:var(--card);color:var(--white)}
@@ -507,6 +510,18 @@ textarea:focus{border-color:var(--teal)}
 
   <!-- LISTEN -->
   <div class="sec" id="listen">
+
+    <!-- Language direction toggle — shared by Phrase and Note-taker -->
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:6px">Listening in</div>
+    <div class="listen-lang-toggle">
+      <button class="listen-lang-btn active" id="listenLangTgt" onclick="setListenLang('tgt')">
+        <span id="listenLangTgtFlag">🇯🇵</span> <span id="listenLangTgtName">Japanese</span>
+      </button>
+      <button class="listen-lang-btn" id="listenLangSrc" onclick="setListenLang('src')">
+        <span id="listenLangSrcFlag">🇺🇸</span> <span id="listenLangSrcName">English</span>
+      </button>
+    </div>
+
     <!-- Mode toggle -->
     <div class="mode-toggle">
       <button class="mode-btn active" id="modePhraseBtn" onclick="setListenMode('phrase')">&#127911; Phrase</button>
@@ -524,11 +539,11 @@ textarea:focus{border-color:var(--teal)}
       </div>
       <div class="tb">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-          <div class="lbl" style="margin-bottom:0" id="listenTgtLbl">What was said</div>
+          <div class="lbl" style="margin-bottom:0" id="listenTgtLbl">What was said in Japanese</div>
           <div id="clbl" style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;display:none"></div>
         </div>
         <div class="tja" id="tja">—</div>
-        <div class="lbl" style="margin-top:10px" id="listenSrcLbl">In English</div>
+        <div class="lbl" style="margin-top:10px" id="listenSrcLbl">Translated to English</div>
         <div class="ten" id="ten">—</div>
         <div class="tnote" id="tnote"></div>
       </div>
@@ -1806,7 +1821,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   buildPhrases();
   updateReview();
-  onLangChange(); // sync all language labels on load
+  onLangChange(); // sync all language labels on load — also calls updateListenLangToggle
   // Start onboarding on first launch
   if (isFirstLaunch) {
     setTimeout(initOnboarding, 400); // slight delay so app renders first
@@ -1878,6 +1893,8 @@ function onLangChange() {
   if (jaSt) jaSt.textContent='Tap to speak ('+tgtName+')';
   // Rebuild phrases
   buildPhrases();
+  // Update Listen tab language toggle labels
+  updateListenLangToggle();
 }
 
 // ── PHRASES ───────────────────────────────────────────────────────────────────
@@ -2231,6 +2248,57 @@ function resetMicTranBtn() {
 }
 
 // ── LISTEN / RECORD ───────────────────────────────────────────────────────────
+
+// ── LISTEN LANGUAGE TOGGLE ────────────────────────────────────────────────────
+function setListenLang(dir) {
+  listenLang = dir;
+  var isTgt = (dir === 'tgt');
+  // Update pill active states
+  document.getElementById('listenLangTgt').className = 'listen-lang-btn' + (isTgt ? ' active' : '');
+  document.getElementById('listenLangSrc').className = 'listen-lang-btn' + (!isTgt ? ' active' : '');
+  // Update Phrase mode labels
+  var hearLang  = isTgt ? getLangName(getTgt()) : getLangName(getSrc());
+  var transLang = isTgt ? getLangName(getSrc()) : getLangName(getTgt());
+  var tgtLbl = document.getElementById('listenTgtLbl');
+  var srcLbl = document.getElementById('listenSrcLbl');
+  if (tgtLbl) tgtLbl.textContent = 'What was said in ' + hearLang;
+  if (srcLbl) srcLbl.textContent = 'Translated to ' + transLang;
+  // Update mic status hint
+  var mst = document.getElementById('mst');
+  if (mst && !isListening) mst.textContent = 'Tap to start listening';
+  // Update note-taker status
+  var ntMst = document.getElementById('ntMst');
+  if (ntMst && !ntActive) ntMst.textContent = 'Tap to start recording';
+}
+
+function updateListenLangToggle() {
+  // Called from onLangChange — keeps toggle labels in sync with global lang pair
+  var tgtName = getLangName(getTgt());
+  var srcName = getLangName(getSrc());
+  var tgtFlag = (LANG_CONFIG[getTgt()] && LANG_CONFIG[getTgt()].flag) || '🌐';
+  var srcFlag = (LANG_CONFIG[getSrc()] && LANG_CONFIG[getSrc()].flag) || '🌐';
+  var tnEl = document.getElementById('listenLangTgtName');
+  var tfEl = document.getElementById('listenLangTgtFlag');
+  var snEl = document.getElementById('listenLangSrcName');
+  var sfEl = document.getElementById('listenLangSrcFlag');
+  if (tnEl) tnEl.textContent = tgtName;
+  if (tfEl) tfEl.textContent = tgtFlag;
+  if (snEl) snEl.textContent = srcName;
+  if (sfEl) sfEl.textContent = srcFlag;
+  // Refresh labels for current direction
+  setListenLang(listenLang);
+}
+
+function getListenSpeechCode() {
+  return listenLang === 'tgt' ? getSpeechCode(getTgt()) : getSpeechCode(getSrc());
+}
+
+function getListenTranslatePrompt(txt) {
+  var hearLang  = listenLang === 'tgt' ? getLangName(getTgt()) : getLangName(getSrc());
+  var transLang = listenLang === 'tgt' ? getLangName(getSrc()) : getLangName(getTgt());
+  return 'Translate this ' + hearLang + ' text to ' + transLang + '. Reply with ONLY the translation, no other text.\n"' + txt + '"';
+}
+
 function toggleListen() {
   if (isListening) stopListen();
   else startListen();
@@ -2247,7 +2315,8 @@ function startListen() {
   var btn = document.getElementById('micbtn');
   btn.className = 'mb rec';
   btn.innerHTML = '<span style="font-size:28px">&#9646;</span>';
-  document.getElementById('mst').textContent = 'Listening for ' + getLangName(getTgt()) + '...';
+  var hearLangName = listenLang === 'tgt' ? getLangName(getTgt()) : getLangName(getSrc());
+  document.getElementById('mst').textContent = 'Listening in ' + hearLangName + '...';
 
   // Audio recording for training data
   navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream) {
@@ -2260,7 +2329,7 @@ function startListen() {
 
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   recognition = new SR();
-  recognition.lang = getSpeechCode(getTgt());
+  recognition.lang = getListenSpeechCode();
   recognition.interimResults = true;
   recognition.continuous = false;
 
@@ -2289,12 +2358,11 @@ function startListen() {
       document.getElementById('mst').textContent = 'Translating...';
       btn.className = 'mb proc';
       btn.innerHTML = '<span class="spin" style="width:32px;height:32px;border-width:3px"></span>';
-      callClaude(
-        'Translate this ' + getLangName(getTgt()) + ' text to ' + getLangName(getSrc()) +
-        '. Reply with ONLY the translation, no other text.\n"' + txt + '"'
-      ).then(function(en) {
+      callClaude(getListenTranslatePrompt(txt)).then(function(en) {
         document.getElementById('ten').textContent = en.trim();
         document.getElementById('tnote').textContent = listenConf < 50 ? '⚠️ Low confidence — try a quieter spot' : '';
+        // Refresh labels to show what was heard vs translated
+        setListenLang(listenLang);
         log({type:'listen', srcText:txt, tgtText:en.trim(), conf:listenConf, inputMethod:'speech'});
         updateReview();
       }).catch(function() {
@@ -2533,6 +2601,7 @@ function exportData() {
 
 // ── NOTE-TAKER MODE ──────────────────────────────────────────────────────────
 var ntActive       = false;
+var listenLang     = 'tgt'; // 'tgt' = listen in target lang, 'src' = listen in source lang
 var ntRec          = null;       // SpeechRecognition instance
 var ntEntries      = [];         // [{ts, src, tgt}]
 var ntStartTime    = null;
@@ -2607,7 +2676,7 @@ function ntListenChain() {
 
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   ntRec = new SR();
-  ntRec.lang = getSpeechCode(getTgt());
+  ntRec.lang = getListenSpeechCode(); // follows Listen language toggle
   ntRec.interimResults = true;
   ntRec.continuous = false;
 
@@ -2650,7 +2719,8 @@ function addNtEntry(srcText) {
   renderNtEntry(entry, idx);
 
   // Translate via Claude
-  var sysPrompt = 'Translate the following to ' + getLangName(getSrc()) + '. Reply with ONLY the translation, no other text.';
+  var transLang = listenLang === 'tgt' ? getLangName(getSrc()) : getLangName(getTgt());
+  var sysPrompt = 'Translate the following to ' + transLang + '. Reply with ONLY the translation, no other text.';
   callClaude(srcText, sysPrompt).then(function(tgt) {
     entry.tgt = tgt.trim();
     var el = document.getElementById('nt-entry-' + idx);
