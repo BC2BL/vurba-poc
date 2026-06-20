@@ -203,6 +203,30 @@ textarea:focus{border-color:var(--teal)}
 .ob-dest{padding:10px 12px;background:var(--card);border:1px solid var(--bdr);border-radius:12px;font-size:13px;color:var(--off);cursor:pointer;-webkit-appearance:none;text-align:left;display:flex;align-items:center;gap:8px}
 .ob-dest:active{background:rgba(61,214,140,0.15);border-color:var(--green)}
 
+/* ── CHECK-IN NUDGE SHEET ── */
+#nudgeOverlay{position:fixed;inset:0;background:rgba(5,10,20,0.6);z-index:80;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);display:none}
+#nudgeSheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--mid);border-radius:24px 24px 0 0;padding:24px 20px 44px;z-index:81;border-top:1px solid var(--bdr);display:none}
+#nudgeSheet.show{display:block;animation:slideUp .3s ease}
+.nudge-handle{width:36px;height:4px;background:var(--bdr);border-radius:2px;margin:0 auto 20px}
+.nudge-rabbit-row{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.nudge-rabbit{font-size:48px;flex-shrink:0;animation:nudgeBob .9s ease-in-out infinite alternate}
+@keyframes nudgeBob{from{transform:translateY(0)}to{transform:translateY(-5px)}}
+.nudge-msg-title{font-size:17px;font-weight:700;color:var(--white);margin-bottom:6px;line-height:1.3}
+.nudge-msg-body{font-size:13px;color:var(--off);line-height:1.6}
+.btn-checkin-now{width:100%;padding:15px;background:var(--green);border:none;border-radius:16px;color:var(--navy);font-size:16px;font-weight:700;cursor:pointer;-webkit-appearance:none;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;animation:pulseBtn 2s ease-in-out infinite}
+@keyframes pulseBtn{0%,100%{box-shadow:0 0 0 0 rgba(61,214,140,0.4)}50%{box-shadow:0 0 0 10px rgba(61,214,140,0)}}
+.nudge-secondary{display:flex;gap:8px}
+.btn-later{flex:1;padding:12px;background:transparent;border:1px solid var(--bdr);border-radius:12px;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;-webkit-appearance:none}
+.btn-remind{flex:1;padding:12px;background:rgba(239,159,39,0.10);border:1px solid rgba(239,159,39,0.3);border-radius:12px;color:var(--amber);font-size:13px;font-weight:500;cursor:pointer;-webkit-appearance:none}
+/* Loading state */
+.nudge-spinner{width:28px;height:28px;border:3px solid rgba(61,214,140,0.2);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;margin:8px auto 12px}
+.nudge-loading-text{font-size:13px;color:var(--muted);text-align:center;margin-bottom:16px}
+/* Success state */
+.nudge-success-icon{font-size:44px;text-align:center;margin:4px 0 8px}
+.nudge-success-title{font-size:18px;font-weight:700;color:var(--green);text-align:center;margin-bottom:6px}
+.nudge-success-sub{font-size:13px;color:var(--off);text-align:center;line-height:1.6;margin-bottom:16px}
+.btn-got-it{width:100%;padding:14px;background:var(--green);border:none;border-radius:14px;color:var(--navy);font-size:15px;font-weight:700;cursor:pointer;-webkit-appearance:none}
+
 /* ── NOTE-TAKER ── */
 .mode-toggle{display:flex;background:var(--mid);border:1px solid var(--bdr);border-radius:10px;padding:3px;margin-bottom:12px;gap:3px}
 .mode-btn{flex:1;padding:7px;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;-webkit-appearance:none;background:transparent;color:var(--muted);transition:all .2s}
@@ -493,6 +517,63 @@ textarea:focus{border-color:var(--teal)}
   <div id="showEn" style="font-size:15px;color:#888888;margin-bottom:16px;word-break:break-word;width:100%"></div>
   <button id="showListen" style="background:#0B1423;color:#3DD68C;border:2px solid #0B1423;border-radius:14px;padding:14px 32px;font-size:16px;font-weight:600;cursor:pointer;-webkit-appearance:none;min-width:160px;margin-bottom:12px">&#127911; Listen</button>
   <button id="showClose" style="background:transparent;color:#aaaaaa;border:1.5px solid #dddddd;border-radius:14px;padding:12px 32px;font-size:15px;font-weight:500;cursor:pointer;-webkit-appearance:none;min-width:160px">Close</button>
+</div>
+
+<!-- CHECK-IN NUDGE SHEET -->
+<div id="nudgeOverlay" onclick="nudgeDismiss()"></div>
+<div id="nudgeSheet">
+  <div class="nudge-handle"></div>
+
+  <!-- State 1: Default prompt -->
+  <div id="nudgeStateDefault">
+    <div class="nudge-rabbit-row">
+      <div class="nudge-rabbit">🐰</div>
+      <div>
+        <div class="nudge-msg-title">Check in to get the right phrases</div>
+        <div class="nudge-msg-body">I'll detect where you are and load exactly what you need — restaurant, pharmacy, wherever you are.</div>
+      </div>
+    </div>
+    <button class="btn-checkin-now" onclick="nudgeCheckin()">
+      📍&nbsp; Check in now
+    </button>
+    <div class="nudge-secondary">
+      <button class="btn-later" onclick="nudgeDismiss()">Do it later</button>
+      <button class="btn-remind" onclick="nudgeRemind()">⏰ Remind me</button>
+    </div>
+  </div>
+
+  <!-- State 2: Loading -->
+  <div id="nudgeStateLoading" style="display:none">
+    <div class="nudge-rabbit-row">
+      <div class="nudge-rabbit">🐰</div>
+      <div>
+        <div class="nudge-msg-title">Finding your location…</div>
+        <div class="nudge-msg-body">Just a moment!</div>
+      </div>
+    </div>
+    <div class="nudge-spinner"></div>
+    <div class="nudge-loading-text">Detecting venue nearby</div>
+  </div>
+
+  <!-- State 3: Success -->
+  <div id="nudgeStateSuccess" style="display:none">
+    <div class="nudge-success-icon" id="nudgeSuccessIcon">🍜</div>
+    <div class="nudge-success-title" id="nudgeSuccessTitle"></div>
+    <div class="nudge-success-sub" id="nudgeSuccessSub"></div>
+    <button class="btn-got-it" onclick="nudgeFinish()">Let's go! →</button>
+  </div>
+
+  <!-- State 4: No venue found -->
+  <div id="nudgeStateNotFound" style="display:none">
+    <div class="nudge-rabbit-row">
+      <div class="nudge-rabbit">🐰</div>
+      <div>
+        <div class="nudge-msg-title">No venue detected nearby</div>
+        <div class="nudge-msg-body">That's okay — browse the phrases and check in again when you arrive somewhere.</div>
+      </div>
+    </div>
+    <button class="btn-got-it" onclick="nudgeDismiss()">Got it</button>
+  </div>
 </div>
 
 <!-- ONBOARDING OVERLAY -->
@@ -3042,7 +3123,15 @@ function onVenueDetected(venue, lat, lng) {
 
   switchScenario(venue.scenario);
   saveVenueVisit(venue, lat, lng);
-  showAgentModal(venue);
+  // If nudge is active, show success state inside the sheet before agent modal
+  var nudgeSheet = document.getElementById('nudgeSheet');
+  if (nudgeSheet && nudgeSheet.classList.contains('show')) {
+    nudgeShowSuccess(venue.name, null, venue.scenario);
+    // Show agent modal after user taps Let's go
+    document.getElementById('nudgeSheet').dataset.pendingVenue = JSON.stringify(venue);
+  } else {
+    showAgentModal(venue);
+  }
 }
 
 function onGPSError(err) {
@@ -3082,6 +3171,78 @@ function showAgentModal(venue) {
   setTimeout(function() {
     modal.classList.add('show');
   }, 20);
+}
+
+// ── CHECK-IN NUDGE SHEET ──────────────────────────────────────────────────────
+var NUDGE_KEY = 'vurba_nudge_done';
+var nudgeRemindTimer = null;
+
+function showNudgeSheet() {
+  if (localStorage.getItem(NUDGE_KEY)) return; // already checked in before
+  nudgeSetState('default');
+  document.getElementById('nudgeOverlay').style.display = 'block';
+  document.getElementById('nudgeSheet').className = 'show';
+}
+
+function nudgeSetState(state) {
+  ['Default','Loading','Success','NotFound'].forEach(function(s) {
+    document.getElementById('nudgeState' + s).style.display = 'none';
+  });
+  var map = { default:'Default', loading:'Loading', success:'Success', notfound:'NotFound' };
+  document.getElementById('nudgeState' + map[state]).style.display = 'block';
+}
+
+function nudgeCheckin() {
+  nudgeSetState('loading');
+  // Fire real GPS detection
+  if (!navigator.geolocation) { nudgeSetState('notfound'); return; }
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      simulateVenueDetection(pos.coords.latitude, pos.coords.longitude);
+      // onVenueDetected will call nudgeShowSuccess
+    },
+    function() { nudgeSetState('notfound'); },
+    { timeout: 8000, enableHighAccuracy: true }
+  );
+}
+
+function nudgeShowSuccess(venueName, scenarioEmoji, scenarioLabel) {
+  var emojiMap = { restaurant:'🍜', shopping:'🛍️', medical:'🏥', transport:'🚌', workplace:'💼', pharmacy:'💊' };
+  document.getElementById('nudgeSuccessIcon').textContent = emojiMap[scenarioLabel] || '📍';
+  document.getElementById('nudgeSuccessTitle').textContent = venueName || 'Venue detected';
+  document.getElementById('nudgeSuccessSub').textContent = 'Loaded your ' + (scenarioLabel || '') + ' phrases — tap any card to expand it.';
+  nudgeSetState('success');
+  localStorage.setItem(NUDGE_KEY, '1');
+}
+
+function nudgeFinish() {
+  var sheet = document.getElementById('nudgeSheet');
+  var pending = sheet.dataset.pendingVenue;
+  document.getElementById('nudgeOverlay').style.display = 'none';
+  sheet.className = '';
+  sheet.style.display = 'none';
+  if (pending) {
+    try { showAgentModal(JSON.parse(pending)); } catch(e) {}
+    delete sheet.dataset.pendingVenue;
+  }
+}
+
+function nudgeDismiss() {
+  document.getElementById('nudgeOverlay').style.display = 'none';
+  document.getElementById('nudgeSheet').className = '';
+  document.getElementById('nudgeSheet').style.display = 'none';
+}
+
+function nudgeRemind() {
+  nudgeDismiss();
+  // Re-show after 5 minutes
+  clearTimeout(nudgeRemindTimer);
+  nudgeRemindTimer = setTimeout(function() {
+    nudgeSetState('default');
+    document.getElementById('nudgeOverlay').style.display = 'block';
+    document.getElementById('nudgeSheet').className = 'show';
+  }, 5 * 60 * 1000);
+  toast('Remind you in 5 minutes!');
 }
 
 // ── ONBOARDING ───────────────────────────────────────────────────────────────
@@ -3205,8 +3366,8 @@ function obFinish() {
   document.getElementById('onboardingOverlay').style.display = 'none';
   localStorage.setItem(ONBOARDING_KEY, '1');
   isFirstLaunch = false;
-  // Brief welcome toast
-  toast('Welcome to Vurba! Tap Check in when you arrive somewhere 🐰');
+  // Show nudge sheet instead of toast
+  setTimeout(showNudgeSheet, 600);
 }
 
 // ── MY LIBRARY ───────────────────────────────────────────────────────────────
