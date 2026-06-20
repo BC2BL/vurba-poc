@@ -502,6 +502,7 @@ textarea:focus{border-color:var(--teal)}
       <div class="lbl">Japanese</div>
       <div class="ph">Translation appears here</div>
     </div>
+    <button id="clearTranBtn" onclick="clearTranslation()" style="display:none;width:100%;padding:10px;background:transparent;border:1px solid rgba(226,75,74,0.3);border-radius:10px;color:var(--red);font-size:13px;font-weight:500;cursor:pointer;-webkit-appearance:none;margin-top:6px">✕ Clear translation</button>
   </div>
 
   <!-- LISTEN -->
@@ -2032,6 +2033,15 @@ function speak(text) {
 }
 
 // ── TRANSLATE ─────────────────────────────────────────────────────────────────
+function clearTranslation() {
+  document.getElementById('tin').value = '';
+  document.getElementById('tres').innerHTML = '<div class="lbl" id="tresLbl">Translation</div><div class="ph">Translation appears here</div>';
+  document.getElementById('clearTranBtn').style.display = 'none';
+  var interim = document.getElementById('micInterim');
+  if (interim) interim.style.display = 'none';
+  document.getElementById('tin').focus();
+}
+
 function doTranslate() {
   var text = document.getElementById('tin').value.trim();
   if (!text) { toast('Please type something first'); return; }
@@ -2087,6 +2097,8 @@ function doTranslate() {
         if (pinBtn) pinBtn.addEventListener('click', function(){
           openCatPicker(text, tgtTrans, tgtRo);
         });
+        // Show clear button
+        document.getElementById('clearTranBtn').style.display = 'block';
         speakLang(tgtTrans, tgt2);
         log({type:'translate', src:src2, tgt:tgt2, srcText:text, tgtText:tgtTrans, ro:tgtRo, speechConf: micTranConf > 0 ? micTranConf : null, inputMethod: micTranConf > 0 ? 'speech' : 'typed'});
         updateReview();
