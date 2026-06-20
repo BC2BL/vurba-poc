@@ -189,7 +189,7 @@ textarea:focus{border-color:var(--teal)}
 
 /* ── ONBOARDING ── */
 #onboardingOverlay{position:fixed;inset:0;z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;background:rgba(5,10,20,0.85);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-.ob-sheet{background:var(--mid);border-radius:24px 24px 0 0;padding:28px 24px 44px;width:100%;max-width:480px;animation:slideUp .35s ease}
+.ob-sheet{background:var(--mid);border-radius:24px 24px 0 0;padding:28px 24px 44px;width:100%;max-width:480px;animation:slideUp .35s ease;max-height:90vh;overflow-y:auto}
 @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
 .ob-rabbit{font-size:52px;text-align:center;margin-bottom:12px;animation:bounce 1s ease infinite alternate}
 @keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-6px)}}
@@ -200,7 +200,7 @@ textarea:focus{border-color:var(--teal)}
 .ob-btn-primary{width:100%;padding:14px;background:var(--green);border:none;border-radius:14px;color:var(--navy);font-size:15px;font-weight:700;cursor:pointer;-webkit-appearance:none;margin-bottom:10px}
 .ob-btn-secondary{width:100%;padding:12px;background:transparent;border:1px solid var(--bdr);border-radius:14px;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;-webkit-appearance:none;margin-bottom:6px}
 /* Destination picker */
-.ob-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;max-height:220px;overflow-y:auto}
+.ob-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
 .ob-dest{padding:10px 12px;background:var(--card);border:1px solid var(--bdr);border-radius:12px;font-size:13px;color:var(--off);cursor:pointer;-webkit-appearance:none;text-align:left;display:flex;align-items:center;gap:8px}
 .ob-dest:active{background:rgba(61,214,140,0.15);border-color:var(--green)}
 
@@ -686,6 +686,7 @@ var COUNTRY_LANG_MAP = {
   'BR': {tgt:'pt', name:'Portuguese',   flag:'🇧🇷', confidence:'high'},
   'PT': {tgt:'pt', name:'Portuguese',   flag:'🇵🇹', confidence:'high'},
   'MX': {tgt:'es', name:'Spanish',      flag:'🇲🇽', confidence:'high'},
+  'CR': {tgt:'es', name:'Spanish',      flag:'🇨🇷', confidence:'high'},
   'ES': {tgt:'es', name:'Spanish',      flag:'🇪🇸', confidence:'high'},
   'ID': {tgt:'id', name:'Indonesian',   flag:'🇮🇩', confidence:'high'},
   'SG': {tgt:'zh', name:'Mandarin',     flag:'🇸🇬', confidence:'medium'}, // ask — could be English
@@ -3300,6 +3301,7 @@ var DESTINATIONS = [
   {code:'ES', lang:'es',  flag:'🇪🇸', label:'Spain'},
   {code:'MX', lang:'es',  flag:'🇲🇽', label:'Mexico'},
   {code:'SG', lang:'zh',  flag:'🇸🇬', label:'Singapore'},
+  {code:'CR', lang:'es',  flag:'🇨🇷', label:'Costa Rica'},
 ];
 
 var obDetectedLang = null;
