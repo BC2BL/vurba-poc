@@ -49,20 +49,21 @@ html,body{background:var(--navy);color:#fff;font-family:-apple-system,BlinkMacSy
 .spk-4{background:rgba(238,107,77,0.15)!important;color:#EE6B4D!important;border-color:rgba(238,107,77,0.3)!important}
 .spk-5{background:rgba(100,181,246,0.15)!important;color:#64B5F6!important;border-color:rgba(100,181,246,0.3)!important}
 .pc{background:var(--card);border-width:1px;border-style:solid;border-color:var(--bdr);border-radius:12px;padding:12px 14px;margin-bottom:8px;position:relative;overflow:hidden;max-width:100%}
-.pc.used{border-color:rgba(61,214,140,.4)}
+/* .pc.used removed */
 .pc-0{background:rgba(61,214,140,0.18);border-color:rgba(61,214,140,0.45)}
 .pc-1{background:rgba(15,181,199,0.18);border-color:rgba(15,181,199,0.45)}
 .pc-2{background:rgba(239,159,39,0.18);border-color:rgba(239,159,39,0.45)}
 .pc-3{background:rgba(179,136,255,0.18);border-color:rgba(179,136,255,0.45)}
 .pc-4{background:rgba(238,107,77,0.18);border-color:rgba(238,107,77,0.45)}
 .pc-5{background:rgba(100,181,246,0.18);border-color:rgba(100,181,246,0.45)}
+.ab.sav.saved{background:rgba(61,214,140,0.12)!important;border-color:rgba(61,214,140,0.4)!important;color:var(--green)!important;cursor:default;font-weight:600}
 .en{font-size:13px;color:var(--off);margin-bottom:4px}
 .ja{font-size:17px;color:#fff;font-weight:600;margin-bottom:3px;word-break:break-word;overflow-wrap:break-word}
 .ro{font-size:11px;color:var(--tealLt)}
 .acts{display:flex;gap:8px;margin-top:10px}
 .ab{flex:1;padding:8px;border-radius:8px;border:1px solid var(--bdr);background:var(--mid);color:var(--off);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;-webkit-appearance:none}
 .ab.p{background:rgba(61,214,140,.15);border-color:rgba(61,214,140,.4);color:var(--green)}
-.ubadge{position:absolute;top:10px;right:12px;width:8px;height:8px;background:var(--green);border-radius:50%}
+/* ubadge removed */
 
 /* ── TRANSLATE ── */
 .box{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:14px;margin-bottom:12px}
@@ -1685,9 +1686,8 @@ function buildPhrases() {
       var srcP=getPhrase(p,src), tgtP=getPhrase(p,tgt);
       var srcText=srcP.text, tgtText=tgtP.text, tgtRo=tgtP.ro;
       var d=document.createElement('div');
-      d.className='pc pc-'+catIdx+(used[p.en]?' used':'');
-      d.innerHTML=(used[p.en]?'<div class="ubadge"></div>':'')+
-        '<div class="en">'+srcText+'</div>'+
+      d.className='pc pc-'+catIdx;
+      d.innerHTML='<div class="en">'+srcText+'</div>'+
         '<div class="ja">'+tgtText+'</div>'+
         (tgtRo?'<div class="ro">'+tgtRo+'</div>':'')+
         '<div class="acts" style="display:none">'+
@@ -1716,13 +1716,28 @@ function buildPhrases() {
         e.stopPropagation();
         showFull(tgtText,tgtRo,srcText,tgt);
       });
-      d.querySelector('.sav').addEventListener('click',(function(st,tt,ro){
-        return function(e){
+      // Check if already saved — update button state on render
+      (function(st, tt, ro, btn_ref) {
+        var alreadySaved = vocabLibrary.some(function(v){ return v.srcText === st && v.srcLang === getSrc() && v.tgtLang === getTgt(); });
+        if (alreadySaved) {
+          d.querySelector('.sav').classList.add('saved');
+          d.querySelector('.sav').textContent = '✓ Saved';
+        }
+        d.querySelector('.sav').addEventListener('click', function(e) {
           e.stopPropagation();
+          var btn = d.querySelector('.sav');
+          if (btn.classList.contains('saved')) return; // already saved
           var added = addToLibrary(st, tt, ro, 'phrase');
-          if (added) toast('Saved to My Library! ⭐');
-        };
-      })(srcText, tgtText, tgtRo));
+          if (added) {
+            btn.classList.add('saved');
+            btn.textContent = '✓ Saved';
+          } else {
+            // Already in library from a previous session
+            btn.classList.add('saved');
+            btn.textContent = '✓ Saved';
+          }
+        });
+      })(srcText, tgtText, tgtRo);
       c.appendChild(d);
     });
   });
