@@ -52,12 +52,12 @@ html,body{background:var(--navy);color:#fff;font-family:-apple-system,BlinkMacSy
 .spk-5{background:rgba(100,181,246,0.15)!important;color:#64B5F6!important;border-color:rgba(100,181,246,0.3)!important}
 .pc{background:var(--card);border-width:1px;border-style:solid;border-color:var(--bdr);border-radius:12px;padding:12px 14px;margin-bottom:8px;position:relative;overflow:hidden;max-width:100%}
 /* .pc.used removed */
-.pc-0{background:rgba(61,214,140,0.18);border-color:rgba(61,214,140,0.45)}
-.pc-1{background:rgba(15,181,199,0.18);border-color:rgba(15,181,199,0.45)}
-.pc-2{background:rgba(239,159,39,0.18);border-color:rgba(239,159,39,0.45)}
-.pc-3{background:rgba(179,136,255,0.18);border-color:rgba(179,136,255,0.45)}
-.pc-4{background:rgba(238,107,77,0.18);border-color:rgba(238,107,77,0.45)}
-.pc-5{background:rgba(100,181,246,0.18);border-color:rgba(100,181,246,0.45)}
+.pc-0{background:rgba(61,214,140,0.32);border-color:rgba(61,214,140,0.45)}
+.pc-1{background:rgba(15,181,199,0.32);border-color:rgba(15,181,199,0.45)}
+.pc-2{background:rgba(239,159,39,0.32);border-color:rgba(239,159,39,0.45)}
+.pc-3{background:rgba(179,136,255,0.32);border-color:rgba(179,136,255,0.45)}
+.pc-4{background:rgba(238,107,77,0.32);border-color:rgba(238,107,77,0.45)}
+.pc-5{background:rgba(100,181,246,0.32);border-color:rgba(100,181,246,0.45)}
 .ab.sav.saved{background:rgba(61,214,140,0.12)!important;border-color:rgba(61,214,140,0.4)!important;color:var(--green)!important;cursor:default;font-weight:600}
 .en{font-size:13px;color:var(--off);margin-bottom:4px}
 .ja{font-size:17px;color:#fff;font-weight:600;margin-bottom:3px;word-break:break-word;overflow-wrap:break-word}
@@ -207,6 +207,21 @@ textarea:focus{border-color:var(--teal)}
 #lessonOverlay{position:fixed;inset:0;background:rgba(5,10,20,0.7);z-index:350;display:none;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
 #lessonPanel{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#FFF5F0;border-radius:22px 22px 0 0;padding:20px 18px 44px;z-index:351;display:none;border-top:4px solid #EE6B4D;max-height:85vh;overflow-y:auto}
 #lessonPanel.show{display:block;animation:slideUp .3s ease}
+/* ── CONFIRM MODAL ── */
+#confirmOverlay{position:fixed;inset:0;background:rgba(5,10,20,0.7);z-index:750;display:none;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.modal-wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;z-index:751}
+#confirmModal{background:#FFF5F0;border-radius:20px;padding:28px 24px;width:100%;max-width:340px;border-top:4px solid #EE6B4D;text-align:center}
+.confirm-icon{font-size:36px;margin-bottom:10px}
+.confirm-title{font-size:17px;font-weight:700;color:#1a0804;margin-bottom:8px}
+.confirm-body{font-size:13px;color:#712B13;line-height:1.6;margin-bottom:20px}
+.confirm-row{display:flex;gap:10px}
+.confirm-cancel{flex:1;padding:12px;background:transparent;border:1px solid #F0997B;border-radius:12px;color:#993C1D;font-size:14px;font-weight:500;cursor:pointer;-webkit-appearance:none}
+.confirm-ok{flex:1;padding:12px;background:#EE6B4D;border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;-webkit-appearance:none}
+
+/* ── COMING SOON MODAL ── */
+#comingSoonOverlay{position:fixed;inset:0;background:rgba(5,10,20,0.7);z-index:750;display:none;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+#comingSoonModal{background:#FFF5F0;border-radius:20px;padding:28px 24px;width:calc(100% - 48px);max-width:340px;border-top:4px solid #EE6B4D;text-align:center}
+
 .lesson-handle{width:36px;height:4px;background:#F0997B;border-radius:2px;margin:0 auto 16px}
 .lesson-phrase{font-size:22px;font-weight:700;color:#1a0804;text-align:center;margin-bottom:4px}
 .lesson-ro{font-size:13px;color:#EE6B4D;text-align:center;margin-bottom:14px}
@@ -236,14 +251,14 @@ textarea:focus{border-color:var(--teal)}
 .cp-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#993C1D;margin-bottom:5px}
 .cp-input{width:100%;background:#fff;border:1px solid #F0997B;border-radius:10px;color:#1a0804;font-size:14px;padding:10px 12px;-webkit-appearance:none;resize:none;font-family:inherit;box-sizing:border-box}
 .cp-input:focus{outline:none;border-color:rgba(61,214,140,0.5)}
-.cp-translate-btn{width:100%;padding:10px;background:rgba(238,107,77,0.10);border:1px solid rgba(238,107,77,0.35);border-radius:10px;color:#993C1D;font-size:13px;font-weight:600;cursor:pointer;-webkit-appearance:none;margin-bottom:10px}
+.cp-translate-btn{width:100%;padding:10px;background:rgba(238,107,77,0.22);border:1px solid rgba(238,107,77,0.35);border-radius:10px;color:#993C1D;font-size:13px;font-weight:600;cursor:pointer;-webkit-appearance:none;margin-bottom:10px}
 .cp-save-btn{width:100%;padding:13px;background:#EE6B4D;border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;-webkit-appearance:none}
 .cp-save-btn:disabled{opacity:.4;cursor:default}
 .cp-cancel{width:100%;padding:10px;background:transparent;border:none;color:#993C1D;font-size:13px;cursor:pointer;-webkit-appearance:none;margin-top:4px}
 .add-phrase-btn{width:100%;padding:8px;background:transparent;border:1px dashed var(--bdr);border-radius:10px;color:var(--muted);font-size:12px;cursor:pointer;-webkit-appearance:none;margin-top:4px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:5px}
 .add-phrase-btn:active{background:rgba(61,214,140,0.05);border-color:rgba(61,214,140,0.3);color:var(--green)}
 .custom-badge{display:inline-flex;align-items:center;gap:3px;background:rgba(239,159,39,0.12);border:1px solid rgba(239,159,39,0.3);border-radius:6px;padding:1px 6px;font-size:9px;font-weight:700;color:var(--amber);margin-left:6px}
-.pin-btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;background:rgba(239,159,39,0.10);border:1px solid rgba(239,159,39,0.3);border-radius:8px;color:var(--amber);font-size:11px;font-weight:600;cursor:pointer;-webkit-appearance:none}
+.pin-btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;background:rgba(239,159,39,0.22);border:1px solid rgba(239,159,39,0.3);border-radius:8px;color:var(--amber);font-size:11px;font-weight:600;cursor:pointer;-webkit-appearance:none}
 #customPhraseOverlay{position:fixed;inset:0;background:rgba(5,10,20,0.7);z-index:300;display:none;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
 #customPhraseSheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#FFF5F0;border-radius:22px 22px 0 0;padding:20px 18px 40px;z-index:301;display:none;border-top:4px solid #EE6B4D}
 #customPhraseSheet.show{display:block;animation:slideUp .3s ease}
@@ -266,7 +281,7 @@ textarea:focus{border-color:var(--teal)}
 @keyframes pulseBtn{0%,100%{box-shadow:0 0 0 0 rgba(238,107,77,0.4)}50%{box-shadow:0 0 0 10px rgba(238,107,77,0)}}
 .nudge-secondary{display:flex;gap:8px}
 .btn-later{flex:1;padding:12px;background:transparent;border:1px solid #F0997B;border-radius:12px;color:#993C1D;font-size:13px;font-weight:500;cursor:pointer;-webkit-appearance:none}
-.btn-remind{flex:1;padding:12px;background:rgba(238,107,77,0.10);border:1px solid rgba(238,107,77,0.3);border-radius:12px;color:#993C1D;font-size:13px;font-weight:500;cursor:pointer;-webkit-appearance:none}
+.btn-remind{flex:1;padding:12px;background:rgba(238,107,77,0.22);border:1px solid rgba(238,107,77,0.3);border-radius:12px;color:#993C1D;font-size:13px;font-weight:500;cursor:pointer;-webkit-appearance:none}
 /* Loading state */
 .nudge-spinner{width:28px;height:28px;border:3px solid rgba(238,107,77,0.2);border-top-color:#EE6B4D;border-radius:50%;animation:spin .8s linear infinite;margin:8px auto 12px}
 .nudge-loading-text{font-size:13px;color:#712B13;text-align:center;margin-bottom:16px}
@@ -575,9 +590,7 @@ textarea:focus{border-color:var(--teal)}
       <div class="sb"><div class="sn" id="st">0</div><div class="sl">Translations</div></div>
       <div class="sb"><div class="sn" id="sa">0</div><div class="sl">Audio clips</div></div>
     </div>
-    <button class="eb" id="expbtn">&#8659; Export training data (JSON)</button>
-    <button class="eb" id="clrbtn" style="color:var(--red);border-color:rgba(226,75,74,.3)">&#128465; Clear session</button>
-    <div id="rlist"></div>
+
   </div>
 
 </div>
@@ -727,6 +740,34 @@ textarea:focus{border-color:var(--teal)}
     <div class="nav-dot"></div>
   </div>
 </nav>
+
+<!-- CONFIRM DELETE MODAL -->
+<div id="confirmOverlay" onclick="closeConfirm()"></div>
+<div id="confirmModalWrap" class="modal-wrap" style="display:none">
+  <div id="confirmModal">
+    <div class="confirm-icon">🗑️</div>
+    <div class="confirm-title">Remove this phrase?</div>
+    <div class="confirm-body">It will be removed from My Library. You can always save it again from the Phrases tab.</div>
+    <div class="confirm-row">
+      <button class="confirm-cancel" onclick="closeConfirm()">Keep it</button>
+      <button class="confirm-ok" id="confirmOkBtn">Remove</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMING SOON MODAL -->
+<div id="comingSoonOverlay" onclick="closeComingSoon()"></div>
+<div id="comingSoonModalWrap" class="modal-wrap" style="display:none">
+  <div id="comingSoonModal">
+    <div class="confirm-icon">🐰✨</div>
+    <div class="confirm-title">Coming soon!</div>
+    <div class="confirm-body" style="color:#712B13;line-height:1.7">
+      <strong style="color:#EE6B4D">AI-guided phrase learning</strong> is on its way.<br><br>
+      When it launches, tapping Learn will walk you through how the phrase is built, let you hear it, practice saying it, and track your progress — all powered by AI and personalised to your library.
+    </div>
+    <button class="confirm-ok" style="width:100%" onclick="closeComingSoon()">Can't wait! 🙌</button>
+  </div>
+</div>
 
 <!-- LEARN THIS PHRASE PANEL -->
 <div id="lessonOverlay" onclick="closeLesson()"></div>
@@ -1748,15 +1789,21 @@ window.addEventListener('DOMContentLoaded', function() {
     window.speechSynthesis.cancel();
   });
 
-  // Export / clear
-  document.getElementById('expbtn').addEventListener('click', exportData);
-  document.getElementById('clrbtn').addEventListener('click', clearSession);
+  // Export / clear — handled dynamically in buildSettingsContent
+  var expbtn = document.getElementById('expbtn');
+  var clrbtn = document.getElementById('clrbtn');
+  if (expbtn) expbtn.addEventListener('click', exportData);
+  if (clrbtn) clrbtn.addEventListener('click', clearSession);
 
   buildPhrases();
   updateReview();
   // Start onboarding on first launch
   if (isFirstLaunch) {
     setTimeout(initOnboarding, 400); // slight delay so app renders first
+  }
+  // Quick API key sanity check
+  if (!API_KEY || API_KEY.length < 20) {
+    console.warn('Vurba: API_KEY missing or invalid');
   }
 });
 
@@ -2342,18 +2389,14 @@ function clearSilenceTimer(key) {
 function callClaude(prompt, system) {
   var body = {
     model:'claude-sonnet-4-6',
-    max_tokens:300,
+    max_tokens:1000,
     messages:[{role:'user',content:prompt}]
   };
   if (system) body.system = system;
-  return fetch('https://api.anthropic.com/v1/messages', {
+  // Calls our Vercel proxy — API key lives in Vercel environment variables
+  return fetch('/api/claude', {
     method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'x-api-key': API_KEY,
-      'anthropic-version':'2023-06-01',
-      'anthropic-dangerous-direct-browser-access':'true'
-    },
+    headers:{'Content-Type':'application/json'},
     body:JSON.stringify(body)
   }).then(function(r){
     if (!r.ok) return r.text().then(function(t){ throw new Error(t); });
@@ -2393,6 +2436,7 @@ function updateReview() {
   document.getElementById('sa').textContent = clips.length;
 
   var list = document.getElementById('rlist');
+  if (!list) return; // rlist removed from settings panel — nothing to update
   if (!session.length) {
     list.innerHTML = '<div class="re">No activity yet — use Phrases or Translate to get started</div>';
     return;
@@ -2692,7 +2736,19 @@ function cpTranslate() {
     }
     document.getElementById('cpSaveBtn').disabled = false;
     btn.textContent = 'Re-translate'; btn.disabled = false;
-  }).catch(function(){ toast('Translation failed'); btn.textContent='Try again'; btn.disabled=false; });
+  }).catch(function(err){ 
+    var msg = err && err.message ? err.message : 'Unknown error';
+    // Check for common issues
+    if (msg.indexOf('401') > -1 || msg.indexOf('invalid') > -1) {
+      toast('API key issue — check console');
+    } else if (msg.indexOf('529') > -1 || msg.indexOf('overloaded') > -1) {
+      toast('AI busy — please try again');
+    } else {
+      toast('Translation failed — try again');
+    }
+    console.error('cpTranslate error:', msg);
+    btn.textContent='Try again'; btn.disabled=false; 
+  });
 }
 function cpSave() {
   var en = document.getElementById('cpEnInput').value.trim();
@@ -2885,11 +2941,11 @@ function getMasteryStage(item) {
 }
 
 var MASTERY_CONFIG = {
-  noticed:    { label:'Noticed',    color:'#7BA7B8', bg:'rgba(123,167,184,0.12)', emoji:'👀' },
-  familiar:   { label:'Familiar',   color:'#0FB5C7', bg:'rgba(15,181,199,0.12)',  emoji:'📖' },
-  practicing: { label:'Practicing', color:'#EF9F27', bg:'rgba(239,159,39,0.12)',  emoji:'🔄' },
-  confident:  { label:'Confident',  color:'#3DD68C', bg:'rgba(61,214,140,0.12)',  emoji:'💪' },
-  mastered:   { label:'Mastered',   color:'#B388FF', bg:'rgba(179,136,255,0.12)', emoji:'⭐' },
+  noticed:    { label:'Noticed',    color:'#7BA7B8', bg:'#0F2440', emoji:'👀' },
+  familiar:   { label:'Familiar',   color:'#0FB5C7', bg:'#0A2535', emoji:'📖' },
+  practicing: { label:'Practicing', color:'#EF9F27', bg:'#1A1400', emoji:'🔄' },
+  confident:  { label:'Confident',  color:'#3DD68C', bg:'#091A12', emoji:'💪' },
+  mastered:   { label:'Mastered',   color:'#B388FF', bg:'#130C2A', emoji:'⭐' },
 };
 
 function addToLibrary(srcText, tgtText, ro, source) {
@@ -3869,7 +3925,7 @@ function buildLibraryUI() {
   var html = '';
 
   // Rabbit + message
-  html += '<div style="display:flex;gap:12px;align-items:flex-start;background:var(--mid);border:1px solid var(--bdr);border-radius:14px;padding:14px;margin-bottom:16px">';
+  html += '<div style="display:flex;gap:12px;align-items:flex-start;background:#0F2440;border:1px solid #1A3350;border-radius:14px;padding:14px;margin-bottom:16px">';
   html += '<div style="font-size:36px;flex-shrink:0">🐰</div>';
   html += '<div>';
   html += '<div style="font-size:11px;font-weight:700;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Vurba AI</div>';
@@ -3896,9 +3952,9 @@ function buildLibraryUI() {
   var total = vocabLibrary.length;
   var masteredCount = vocabLibrary.filter(function(v){ return getMasteryStage(v)==='mastered'; }).length;
   html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">';
-  html += '<div style="background:var(--mid);border:1px solid var(--bdr);border-radius:10px;padding:10px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--green)">' + total + '</div><div style="font-size:10px;color:var(--muted)">Saved</div></div>';
-  html += '<div style="background:var(--mid);border:1px solid var(--bdr);border-radius:10px;padding:10px;text-align:center"><div style="font-size:22px;font-weight:700;color:#B388FF">' + masteredCount + '</div><div style="font-size:10px;color:var(--muted)">Mastered</div></div>';
-  html += '<div style="background:var(--mid);border:1px solid var(--bdr);border-radius:10px;padding:10px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--tealLt)">' + stats.sessionCount + '</div><div style="font-size:10px;color:var(--muted)">Sessions</div></div>';
+  html += '<div style="background:#0F2440;border:1px solid #1A3350;border-radius:10px;padding:10px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--green)">' + total + '</div><div style="font-size:10px;color:var(--muted)">Saved</div></div>';
+  html += '<div style="background:#0F2440;border:1px solid #1A3350;border-radius:10px;padding:10px;text-align:center"><div style="font-size:22px;font-weight:700;color:#B388FF">' + masteredCount + '</div><div style="font-size:10px;color:var(--muted)">Mastered</div></div>';
+  html += '<div style="background:#0F2440;border:1px solid #1A3350;border-radius:10px;padding:10px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--tealLt)">' + stats.sessionCount + '</div><div style="font-size:10px;color:var(--muted)">Sessions</div></div>';
   html += '</div>';
 
   if (total === 0) {
@@ -3914,19 +3970,19 @@ function buildLibraryUI() {
     var cfg = MASTERY_CONFIG[stage];
     html += '<div style="font-size:11px;font-weight:600;color:' + cfg.color + ';text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">' + cfg.emoji + ' ' + cfg.label + ' (' + items.length + ')</div>';
     items.forEach(function(item) {
-      html += '<div style="background:' + cfg.bg + ';border:1px solid ' + cfg.color.replace(')',',0.3)').replace('rgb','rgba') + ';border-radius:10px;padding:10px 12px;margin-bottom:6px">';
+      html += '<div style="background:' + cfg.bg + ';border-left:3px solid ' + cfg.color + ';border-top:1px solid rgba(255,255,255,0.08);border-right:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;margin-bottom:6px">';
       html += '<div style="display:flex;justify-content:space-between;align-items:flex-start">';
       html += '<div style="flex:1">';
       var privBadge = item.isPrivate ? ' <span style="display:inline-flex;background:rgba(239,159,39,0.12);border:1px solid rgba(239,159,39,0.3);border-radius:6px;padding:1px 6px;font-size:9px;font-weight:700;color:#EF9F27">Private</span>' : '';
       html += '<div style="font-size:13px;color:var(--muted)">' + item.srcText + privBadge + '</div>';
-      html += '<div style="font-size:16px;font-weight:600;color:#fff;margin:2px 0">' + item.tgtText + '</div>';
+      html += '<div style="font-size:17px;font-weight:700;color:#ffffff;margin:3px 0">' + item.tgtText + '</div>';
       if (item.ro) html += '<div style="font-size:11px;color:' + cfg.color + '">' + item.ro + '</div>';
       var metaStr = 'Viewed ' + item.views + 'x &middot; ' + getLangName(item.srcLang) + ' &rarr; ' + getLangName(item.tgtLang) + (item.isCustom && item.category ? ' &middot; ' + item.category : '');
-      html += '<div style="font-size:10px;color:var(--muted);margin-top:4px">' + metaStr + '</div>';
+      html += '<div style="font-size:10px;color:#7BA7B8;margin-top:4px">' + metaStr + '</div>';
       html += '</div>';
-      html += '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;align-items:center">';
-      html += '<button onclick="(function(){var it=vocabLibrary.find(function(v){return v.id===\"' + item.id + '\"});if(it)openLesson(it);})()" style="background:#EE6B4D;border:none;border-radius:8px;color:#fff;cursor:pointer;padding:6px 10px;font-size:10px;font-weight:700;-webkit-appearance:none;white-space:nowrap">Learn</button>';
-      html += '<button onclick="removeFromLibrary(' + JSON.stringify(item.id) + ')" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:2px;font-size:13px;-webkit-appearance:none">&#10005;</button>';
+      html += '<div style="display:flex;flex-direction:column;gap:12px;flex-shrink:0;align-items:center;padding-left:8px">';
+      html += '<button onclick="openComingSoon()" style="background:#EE6B4D;border:none;border-radius:8px;color:#fff;cursor:pointer;padding:7px 12px;font-size:10px;font-weight:700;-webkit-appearance:none;white-space:nowrap;width:56px">Learn</button>';
+      html += '<button data-rmid="' + item.id + '" onclick="openConfirm(this.dataset.rmid)" style="background:rgba(226,75,74,0.12);border:1px solid rgba(226,75,74,0.3);border-radius:8px;color:#E24B4A;cursor:pointer;padding:5px 8px;font-size:11px;-webkit-appearance:none;width:56px">&#10005;</button>';
       html += '</div>';
       html += '</div></div>';
     });
@@ -3942,6 +3998,30 @@ function saveSuggested(idx) {
   var added = addToLibrary(s.srcText, s.tgtText, s.ro, 'translate');
   if (added) toast('Saved to My Library! ⭐');
   buildLibraryUI();
+}
+
+function openConfirm(id) {
+  document.getElementById('confirmOverlay').style.display = 'block';
+  document.getElementById('confirmModalWrap').style.display = 'flex';
+  document.getElementById('confirmOkBtn').onclick = function() {
+    removeFromLibrary(id);
+    closeConfirm();
+  };
+}
+
+function closeConfirm() {
+  document.getElementById('confirmOverlay').style.display = 'none';
+  document.getElementById('confirmModalWrap').style.display = 'none';
+}
+
+function openComingSoon() {
+  document.getElementById('comingSoonOverlay').style.display = 'block';
+  document.getElementById('comingSoonModalWrap').style.display = 'flex';
+}
+
+function closeComingSoon() {
+  document.getElementById('comingSoonOverlay').style.display = 'none';
+  document.getElementById('comingSoonModalWrap').style.display = 'none';
 }
 
 function removeFromLibrary(id) {
@@ -4031,39 +4111,7 @@ function buildSettingsContent() {
   html += '<button onclick="resetApp();" class="eb" style="color:var(--amber);border-color:rgba(239,159,39,0.3)">&#8635; Reset to first launch</button>';
   html += '<div style="font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5">Restarts onboarding flow. Keeps your saved phrases.</div>';
 
-  // Log entries
-  if (session.length === 0) {
-    html += '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px">No activity yet</div>';
-  } else {
-    html += '<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">';
-    session.slice().reverse().forEach(function(s) {
-      var time = new Date(s.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-      var badge='', body='';
-      if (s.type==='phrase') {
-        badge='<span class="rb rp">Phrase</span>';
-        body='<div style="font-size:12px;color:var(--off)">'+s.en+'</div>'
-           + '<div style="font-size:15px;font-weight:600;margin-top:2px">'+s.ja+'</div>'
-           + '<div style="font-size:11px;color:var(--tealLt)">'+s.ro+'</div>';
-      } else if (s.type==='translate') {
-        var confPill='';
-        if (s.speechConf){var cc=s.speechConf>=70?'#3DD68C':s.speechConf>=40?'#EF9F27':'#E24B4A';confPill=' <span style="font-size:9px;padding:1px 6px;border-radius:10px;background:rgba(127,167,184,0.15);color:'+cc+'">&#127908; '+s.speechConf+'%</span>';}
-        badge='<span class="rb rtr">'+(s.inputMethod==='speech'?'Spoken':'Typed')+'</span>'+confPill;
-        body='<div style="font-size:12px;color:var(--muted)">'+s.en+'</div>'
-           + '<div style="font-size:15px;font-weight:600;margin-top:2px">'+s.ja+'</div>'
-           + '<div style="font-size:11px;color:var(--tealLt)">'+s.ro+'</div>';
-      } else if (s.type==='listen') {
-        badge='<span class="rb rl">Listen · '+s.conf+'% conf</span>';
-        body='<div style="font-size:15px;font-weight:600">'+s.ja+'</div>'
-           + '<div style="font-size:12px;color:var(--tealLt);margin-top:2px">'+s.en+'</div>';
-      } else if (s.type==='converse') {
-        badge='<span class="rb" style="background:rgba(128,0,255,0.12);color:#b388ff">Converse · '+(s.lang==='en'?'EN':'JA')+'</span>';
-        body='<div style="font-size:14px;color:var(--off)">'+s.original+'</div>'
-           + '<div style="font-size:12px;color:var(--muted);margin-top:2px">'+s.translation+'</div>';
-      }
-      html += '<div class="rc"><div class="rt">'+time+'</div>'+badge+body+'</div>';
-    });
-    html += '</div>';
-  }
+  // Session log removed from settings — visible in My Library instead
   document.getElementById('settingsPanelBody').innerHTML = html;
 }
 
