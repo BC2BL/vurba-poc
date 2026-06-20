@@ -110,16 +110,16 @@ textarea:focus{border-color:var(--teal)}
 .eb{width:100%;padding:13px;border-radius:12px;border:1px solid var(--bdr);background:var(--mid);color:var(--off);font-size:13px;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px;-webkit-appearance:none}
 
 /* ── TOAST ── */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green);color:var(--navy);font-size:13px;font-weight:600;padding:10px 20px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:99;white-space:nowrap}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#EE6B4D;color:#fff;font-size:13px;font-weight:600;padding:10px 20px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:99;white-space:nowrap}
 .toast.show{opacity:1}
 
 /* ── SETTINGS PANEL ── */
 #settingsPanel{
   position:fixed;top:0;right:-100%;width:88%;max-width:360px;height:100%;
-  background:var(--mid);z-index:500;
+  background:#FFF5F0;z-index:500;
   transition:right 0.3s cubic-bezier(0.4,0,0.2,1);
   display:flex;flex-direction:column;overflow:hidden;
-  box-shadow:-4px 0 24px rgba(0,0,0,0.4);
+  border-left:4px solid #EE6B4D;
 }
 #settingsPanel.open{right:0}
 #settingsOverlay{
@@ -191,16 +191,16 @@ textarea:focus{border-color:var(--teal)}
 
 /* ── ONBOARDING ── */
 #onboardingOverlay{position:fixed;inset:0;z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;background:rgba(5,10,20,0.85);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-.ob-sheet{background:var(--mid);border-radius:24px 24px 0 0;padding:28px 24px 44px;width:100%;max-width:480px;animation:slideUp .35s ease;max-height:90vh;overflow-y:auto}
+.ob-sheet{background:#FFF5F0;border-radius:24px 24px 0 0;padding:28px 24px 44px;width:100%;max-width:480px;animation:slideUp .35s ease;max-height:90vh;overflow-y:auto;border-top:4px solid #EE6B4D}
 @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
 .ob-rabbit{font-size:52px;text-align:center;margin-bottom:12px;animation:bounce 1s ease infinite alternate}
 @keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-6px)}}
-.ob-title{font-size:20px;font-weight:700;color:var(--white);text-align:center;margin-bottom:8px}
-.ob-body{font-size:14px;color:var(--off);text-align:center;line-height:1.6;margin-bottom:24px}
-.ob-flag{font-size:40px;text-align:center;margin:8px 0}
-.ob-lang{font-size:22px;font-weight:700;color:var(--green);text-align:center;margin-bottom:20px}
-.ob-btn-primary{width:100%;padding:14px;background:var(--green);border:none;border-radius:14px;color:var(--navy);font-size:15px;font-weight:700;cursor:pointer;-webkit-appearance:none;margin-bottom:10px}
-.ob-btn-secondary{width:100%;padding:12px;background:transparent;border:1px solid var(--bdr);border-radius:14px;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;-webkit-appearance:none;margin-bottom:6px}
+.ob-title{font-size:20px;font-weight:700;color:#1a0804;text-align:center;margin-bottom:8px}
+.ob-body{font-size:14px;color:#712B13;text-align:center;line-height:1.6;margin-bottom:24px}
+.ob-flag{font-size:40px;text-align:center;margin:8px 0;color:#1a0804}
+.ob-lang{font-size:22px;font-weight:700;color:#EE6B4D;text-align:center;margin-bottom:20px}
+.ob-btn-primary{width:100%;padding:14px;background:#EE6B4D;border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;-webkit-appearance:none;margin-bottom:10px}
+.ob-btn-secondary{width:100%;padding:12px;background:transparent;border:1px solid #F0997B;border-radius:14px;color:#993C1D;font-size:14px;font-weight:500;cursor:pointer;-webkit-appearance:none;margin-bottom:6px}
 /* Destination picker */
 .ob-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
 .cp-handle{width:36px;height:4px;background:#F0997B;border-radius:2px;margin:0 auto 16px}
@@ -223,8 +223,8 @@ textarea:focus{border-color:var(--teal)}
 #customPhraseSheet.show{display:block;animation:slideUp .3s ease}
 #catPickerOverlay{position:fixed;inset:0;background:rgba(5,10,20,0.7);z-index:300;display:none}
 #catPickerSheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#FFF5F0;border-radius:22px 22px 0 0;padding:20px 18px 40px;z-index:301;display:none;border-top:4px solid #EE6B4D}
-.ob-dest{padding:10px 12px;background:var(--card);border:1px solid var(--bdr);border-radius:12px;font-size:13px;color:var(--off);cursor:pointer;-webkit-appearance:none;text-align:left;display:flex;align-items:center;gap:8px}
-.ob-dest:active{background:rgba(61,214,140,0.15);border-color:var(--green)}
+.ob-dest{padding:10px 12px;background:#fff;border:1px solid #F0997B;border-radius:12px;font-size:13px;color:#1a0804;cursor:pointer;-webkit-appearance:none;text-align:left;display:flex;align-items:center;gap:8px}
+.ob-dest:active{background:rgba(238,107,77,0.12);border-color:#EE6B4D}
 
 /* ── CHECK-IN NUDGE SHEET ── */
 #nudgeOverlay{position:fixed;inset:0;background:rgba(5,10,20,0.6);z-index:209;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);display:none}
@@ -559,10 +559,10 @@ textarea:focus{border-color:var(--teal)}
 <div class="toast" id="toast"></div>
 
 <!-- FULL SCREEN SHOW OVERLAY -->
-<div id="showOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#ffffff;z-index:999;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;overflow-y:auto">
-  <div id="showJa" style="font-size:clamp(18px,8vw,52px);font-weight:700;color:#0B1423;line-height:1.5;margin-bottom:10px;word-break:break-word;overflow-wrap:break-word;width:100%;hyphens:auto"></div>
-  <div id="showRo" style="font-size:15px;color:#0A7E8C;margin-bottom:12px;letter-spacing:0.3px;word-break:break-word;width:100%"></div>
-  <div id="showEn" style="font-size:15px;color:#888888;margin-bottom:16px;word-break:break-word;width:100%"></div>
+<div id="showOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#FFF5F0;z-index:999;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;overflow-y:auto;border-top:4px solid #EE6B4D">
+  <div id="showJa" style="font-size:clamp(18px,8vw,52px);font-weight:700;color:#1a0804;line-height:1.5;margin-bottom:10px;word-break:break-word;overflow-wrap:break-word;width:100%;hyphens:auto"></div>
+  <div id="showRo" style="font-size:15px;color:#EE6B4D;margin-bottom:12px;letter-spacing:0.3px;word-break:break-word;width:100%"></div>
+  <div id="showEn" style="font-size:15px;color:#712B13;margin-bottom:16px;word-break:break-word;width:100%"></div>
   <button id="showListen" style="background:#0B1423;color:#3DD68C;border:2px solid #0B1423;border-radius:14px;padding:14px 32px;font-size:16px;font-weight:600;cursor:pointer;-webkit-appearance:none;min-width:160px;margin-bottom:12px">&#127911; Listen</button>
   <button id="showClose" style="background:transparent;color:#aaaaaa;border:1.5px solid #dddddd;border-radius:14px;padding:12px 32px;font-size:15px;font-weight:500;cursor:pointer;-webkit-appearance:none;min-width:160px">Close</button>
 </div>
@@ -734,13 +734,13 @@ textarea:focus{border-color:var(--teal)}
   <button class="cp-cancel" onclick="closeCatPicker()">Cancel</button>
 </div>
 <!-- MY LIBRARY PANEL -->
-<div id="libraryPanel" style="display:none;position:fixed;inset:0;z-index:700;background:var(--navy);overflow-y:auto;-webkit-overflow-scrolling:touch">
+<div id="libraryPanel" style="display:none;position:fixed;inset:0;z-index:700;background:#FFF5F0;overflow-y:auto;-webkit-overflow-scrolling:touch">
   <!-- Header -->
-  <div style="background:var(--mid);padding:52px 16px 14px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1">
-    <div style="font-size:16px;font-weight:700;color:var(--white)">&#127775; My Library</div>
-    <button onclick="closeLibrary()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;-webkit-appearance:none;padding:4px">&#10005;</button>
+  <div style="background:#FFF5F0;padding:52px 16px 14px;border-bottom:2px solid #EE6B4D;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1">
+    <div style="font-size:16px;font-weight:700;color:#1a0804">&#127775; My Library</div>
+    <button onclick="closeLibrary()" style="background:none;border:none;color:#993C1D;font-size:22px;cursor:pointer;-webkit-appearance:none;padding:4px">&#10005;</button>
   </div>
-  <div style="padding:14px" id="libraryBody"></div>
+  <div style="padding:14px;background:#FFF5F0" id="libraryBody"></div>
 </div>
 
 <!-- SETTINGS PANEL -->
