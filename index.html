@@ -1,3 +1,4 @@
+<!-- VERSION v058 | 2026-06-20 17:08 | Pre-custom phrase addition — Stage 1 -->
 <!-- VERSION v054 | 2026-06-20 16:51 | Pre-responsive bottom nav mobile layout -->
 <!DOCTYPE html>
 <html lang="en">
@@ -202,6 +203,26 @@ textarea:focus{border-color:var(--teal)}
 .ob-btn-secondary{width:100%;padding:12px;background:transparent;border:1px solid var(--bdr);border-radius:14px;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;-webkit-appearance:none;margin-bottom:6px}
 /* Destination picker */
 .ob-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.cp-handle{width:36px;height:4px;background:var(--bdr);border-radius:2px;margin:0 auto 16px}
+.cp-title{font-size:15px;font-weight:700;color:var(--white);margin-bottom:4px}
+.cp-subtitle{font-size:11px;color:var(--muted);margin-bottom:14px}
+.cp-field{margin-bottom:10px}
+.cp-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:5px}
+.cp-input{width:100%;background:var(--card);border:1px solid var(--bdr);border-radius:10px;color:var(--white);font-size:14px;padding:10px 12px;-webkit-appearance:none;resize:none;font-family:inherit;box-sizing:border-box}
+.cp-input:focus{outline:none;border-color:rgba(61,214,140,0.5)}
+.cp-translate-btn{width:100%;padding:10px;background:rgba(15,181,199,0.12);border:1px solid rgba(15,181,199,0.3);border-radius:10px;color:var(--tealLt);font-size:13px;font-weight:600;cursor:pointer;-webkit-appearance:none;margin-bottom:10px}
+.cp-save-btn{width:100%;padding:13px;background:var(--green);border:none;border-radius:12px;color:var(--navy);font-size:14px;font-weight:700;cursor:pointer;-webkit-appearance:none}
+.cp-save-btn:disabled{opacity:.4;cursor:default}
+.cp-cancel{width:100%;padding:10px;background:transparent;border:none;color:var(--muted);font-size:13px;cursor:pointer;-webkit-appearance:none;margin-top:4px}
+.add-phrase-btn{width:100%;padding:8px;background:transparent;border:1px dashed var(--bdr);border-radius:10px;color:var(--muted);font-size:12px;cursor:pointer;-webkit-appearance:none;margin-top:4px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:5px}
+.add-phrase-btn:active{background:rgba(61,214,140,0.05);border-color:rgba(61,214,140,0.3);color:var(--green)}
+.custom-badge{display:inline-flex;align-items:center;gap:3px;background:rgba(239,159,39,0.12);border:1px solid rgba(239,159,39,0.3);border-radius:6px;padding:1px 6px;font-size:9px;font-weight:700;color:var(--amber);margin-left:6px}
+.pin-btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;background:rgba(239,159,39,0.10);border:1px solid rgba(239,159,39,0.3);border-radius:8px;color:var(--amber);font-size:11px;font-weight:600;cursor:pointer;-webkit-appearance:none}
+#customPhraseOverlay{position:fixed;inset:0;background:rgba(5,10,20,0.7);z-index:300;display:none;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+#customPhraseSheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--mid);border-radius:22px 22px 0 0;padding:20px 18px 40px;z-index:301;display:none;border-top:1px solid var(--bdr)}
+#customPhraseSheet.show{display:block;animation:slideUp .3s ease}
+#catPickerOverlay{position:fixed;inset:0;background:rgba(5,10,20,0.7);z-index:300;display:none}
+#catPickerSheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--mid);border-radius:22px 22px 0 0;padding:20px 18px 40px;z-index:301;display:none;border-top:1px solid var(--bdr)}
 .ob-dest{padding:10px 12px;background:var(--card);border:1px solid var(--bdr);border-radius:12px;font-size:13px;color:var(--off);cursor:pointer;-webkit-appearance:none;text-align:left;display:flex;align-items:center;gap:8px}
 .ob-dest:active{background:rgba(61,214,140,0.15);border-color:var(--green)}
 
@@ -680,6 +701,37 @@ textarea:focus{border-color:var(--teal)}
   </div>
 </nav>
 
+<!-- CUSTOM PHRASE SHEET -->
+<div id="customPhraseOverlay" onclick="closeCustomPhrase()"></div>
+<div id="customPhraseSheet">
+  <div class="cp-handle"></div>
+  <div class="cp-title" id="cpTitle">Add phrase</div>
+  <div class="cp-subtitle">Type in English and I will translate it for you</div>
+  <div class="cp-field">
+    <div class="cp-label">Your phrase (English)</div>
+    <textarea class="cp-input" id="cpEnInput" rows="2" placeholder="e.g. Do you have a kids menu?"></textarea>
+  </div>
+  <button class="cp-translate-btn" id="cpTranslateBtn" onclick="cpTranslate()">Translate automatically</button>
+  <div class="cp-field" id="cpTgtField" style="display:none">
+    <div class="cp-label" id="cpTgtLabel">Translation</div>
+    <textarea class="cp-input" id="cpTgtInput" rows="2"></textarea>
+  </div>
+  <div class="cp-field" id="cpRoField" style="display:none">
+    <div class="cp-label">Romanisation (optional)</div>
+    <input class="cp-input" id="cpRoInput" type="text" placeholder="Pronunciation guide">
+  </div>
+  <button class="cp-save-btn" id="cpSaveBtn" onclick="cpSave()" disabled>Save as private phrase</button>
+  <button class="cp-cancel" onclick="closeCustomPhrase()">Cancel</button>
+</div>
+<!-- CATEGORY PICKER -->
+<div id="catPickerOverlay" onclick="closeCatPicker()"></div>
+<div id="catPickerSheet">
+  <div class="cp-handle"></div>
+  <div class="cp-title" style="margin-bottom:4px">Pin to Phrases</div>
+  <div class="cp-subtitle">Choose a scenario and category</div>
+  <div id="catPickerList" style="display:flex;flex-direction:column;gap:4px;max-height:320px;overflow-y:auto"></div>
+  <button class="cp-cancel" onclick="closeCatPicker()">Cancel</button>
+</div>
 <!-- MY LIBRARY PANEL -->
 <div id="libraryPanel" style="display:none;position:fixed;inset:0;z-index:700;background:var(--navy);overflow-y:auto;-webkit-overflow-scrolling:touch">
   <!-- Header -->
@@ -1816,6 +1868,55 @@ function buildPhrases() {
       })(srcText, tgtText, tgtRo);
       c.appendChild(d);
     });
+
+    // Custom phrases for this category from vocabLibrary
+    var customItems = vocabLibrary.filter(function(v) {
+      return v.isCustom && v.scenario === CURRENT_SCENARIO && v.category === cat.cat
+        && v.srcLang === getSrc() && v.tgtLang === getTgt();
+    });
+    customItems.forEach(function(v) {
+      var cd = document.createElement('div');
+      cd.className = 'pc pc-'+catIdx;
+      cd.innerHTML =
+        '<div class="en">' + v.srcText + ' <span class="custom-badge">Private</span></div>' +
+        '<div class="ja">' + v.tgtText + '</div>' +
+        (v.ro ? '<div class="ro">' + v.ro + '</div>' : '') +
+        '<div class="acts" style="display:none">' +
+          '<button class="ab spk spk-'+catIdx+'">&#127911; Listen</button>' +
+          '<button class="ab shw">&#128269; Show</button>' +
+          '<button class="ab" style="color:var(--red);border-color:rgba(226,75,74,.3)" data-cpid="'+v.id+'">&#128465;</button>' +
+        '</div>';
+      // Expand on tap
+      cd.addEventListener('click', function(e) {
+        if (e.target.closest('.ab')) return;
+        var acts = cd.querySelector('.acts');
+        var isOpen = acts.style.display !== 'none';
+        document.querySelectorAll('.acts').forEach(function(a){ a.style.display='none'; });
+        acts.style.display = isOpen ? 'none' : 'flex';
+      });
+      cd.querySelector('.spk').addEventListener('click', function(e) {
+        e.stopPropagation(); speakLang(v.tgtText, getTgt());
+      });
+      cd.querySelector('.shw').addEventListener('click', function(e) {
+        e.stopPropagation(); showFull(v.tgtText, v.ro, v.srcText, getTgt());
+      });
+      cd.querySelector('[data-cpid]').addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (!confirm('Remove this private phrase?')) return;
+        vocabLibrary = vocabLibrary.filter(function(x){ return x.id !== v.id; });
+        saveVocabLibrary(); buildPhrases();
+      });
+      c.appendChild(cd);
+    });
+
+    // "+ Add phrase" button
+    (function(scenarioId, categoryName) {
+      var addBtn = document.createElement('button');
+      addBtn.className = 'add-phrase-btn';
+      addBtn.innerHTML = '+ Add your own phrase';
+      addBtn.addEventListener('click', function() { openCustomPhrase(scenarioId, categoryName); });
+      c.appendChild(addBtn);
+    })(CURRENT_SCENARIO, cat.cat);
   });
 }
 
@@ -1883,12 +1984,17 @@ function doTranslate() {
             '<button class="ab p" id="spkres" style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px">&#127911; Listen</button>' +
             '<button class="ab" id="showres" style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px">&#128269; Show</button>' +
             '<button class="ab" id="saveres" style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px;color:#EF9F27;border-color:rgba(239,159,39,0.3)">&#10133; Save</button>' +
+            '<button class="ab pin-btn" id="pinres" style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px">&#128204; Pin to Phrases</button>' +
           '</div>';
         document.getElementById('spkres').addEventListener('click', function(){ speakLang(tgtTrans, tgt2); });
         document.getElementById('showres').addEventListener('click', function(){ showFull(tgtTrans, tgtRo, text, tgt2); });
         document.getElementById('saveres').addEventListener('click', function(){
           var added = addToLibrary(text, tgtTrans, tgtRo, 'translate');
           if (added) toast('Saved to My Library! ⭐');
+        });
+        var pinBtn = document.getElementById('pinres');
+        if (pinBtn) pinBtn.addEventListener('click', function(){
+          openCatPicker(text, tgtTrans, tgtRo);
         });
         speakLang(tgtTrans, tgt2);
         log({type:'translate', src:src2, tgt:tgt2, srcText:text, tgtText:tgtTrans, ro:tgtRo, speechConf: micTranConf > 0 ? micTranConf : null, inputMethod: micTranConf > 0 ? 'speech' : 'typed'});
@@ -2510,6 +2616,98 @@ function clearNotes() {
 // Schema: { id, srcText, tgtText, ro, srcLang, tgtLang, addedAt, source,
 //           views, practiceCount, lastSeen, masteryStage }
 // Mastery stages: 'noticed' → 'familiar' → 'practicing' → 'confident' → 'mastered'
+
+// ── CUSTOM PHRASES ────────────────────────────────────────────────────────────
+var cpCurrentScenario = null, cpCurrentCat = null, cpPinData = null;
+
+function openCustomPhrase(scenario, catName) {
+  cpCurrentScenario = scenario; cpCurrentCat = catName;
+  document.getElementById('cpTitle').textContent = 'Add to "' + catName + '"';
+  ['cpEnInput','cpTgtInput','cpRoInput'].forEach(function(id){ document.getElementById(id).value=''; });
+  ['cpTgtField','cpRoField'].forEach(function(id){ document.getElementById(id).style.display='none'; });
+  document.getElementById('cpSaveBtn').disabled = true;
+  document.getElementById('cpTranslateBtn').textContent = 'Translate automatically';
+  document.getElementById('cpTranslateBtn').disabled = false;
+  document.getElementById('customPhraseOverlay').style.display = 'block';
+  var sheet = document.getElementById('customPhraseSheet');
+  sheet.style.display = 'block'; sheet.className = 'show';
+  setTimeout(function(){ document.getElementById('cpEnInput').focus(); }, 300);
+}
+function closeCustomPhrase() {
+  document.getElementById('customPhraseOverlay').style.display = 'none';
+  var s = document.getElementById('customPhraseSheet');
+  s.className = ''; s.style.display = 'none';
+}
+function cpTranslate() {
+  var text = document.getElementById('cpEnInput').value.trim();
+  if (!text) { toast('Please enter a phrase first'); return; }
+  var btn = document.getElementById('cpTranslateBtn');
+  btn.textContent = 'Translating...'; btn.disabled = true;
+  var tgt = getTgt(), needsRo = LANG_CONFIG[tgt] && LANG_CONFIG[tgt].ro;
+  var sys = 'Translate the following English phrase to ' + getLangName(tgt) + '.' +
+    (needsRo ? ' After the translation add a pipe | then the romanisation in Latin characters.' : '') +
+    ' Reply with ONLY the translation. No explanations.';
+  callClaude(text, sys).then(function(result) {
+    var parts = result.trim().split('|');
+    document.getElementById('cpTgtInput').value = parts[0].trim();
+    document.getElementById('cpTgtLabel').textContent = 'Translation (' + getLangName(tgt) + ')';
+    document.getElementById('cpTgtField').style.display = 'block';
+    if (needsRo && parts[1]) {
+      document.getElementById('cpRoInput').value = parts[1].trim();
+      document.getElementById('cpRoField').style.display = 'block';
+    }
+    document.getElementById('cpSaveBtn').disabled = false;
+    btn.textContent = 'Re-translate'; btn.disabled = false;
+  }).catch(function(){ toast('Translation failed'); btn.textContent='Try again'; btn.disabled=false; });
+}
+function cpSave() {
+  var en = document.getElementById('cpEnInput').value.trim();
+  var tg = document.getElementById('cpTgtInput').value.trim();
+  var ro = document.getElementById('cpRoInput').value.trim();
+  if (!en || !tg) { toast('Enter both phrase and translation'); return; }
+  var item = { id:'cp-'+Date.now(), srcText:en, tgtText:tg, ro:ro,
+    srcLang:getSrc(), tgtLang:getTgt(), addedAt:new Date().toISOString(),
+    lastSeen:new Date().toISOString(), source:'custom',
+    scenario:cpCurrentScenario, category:cpCurrentCat,
+    isCustom:true, isPrivate:true, views:0, practiceCount:0 };
+  vocabLibrary.unshift(item); saveVocabLibrary(); buildPhrases();
+  closeCustomPhrase(); toast('Private phrase added!');
+}
+function openCatPicker(enText, tgtText, ro) {
+  cpPinData = {enText:enText, tgtText:tgtText, ro:ro||''};
+  var list = document.getElementById('catPickerList'); list.innerHTML = '';
+  var scs = [{id:'restaurant',label:'Restaurant',p:PHRASES},{id:'shopping',label:'Shopping',p:PHRASES_SHOPPING},
+    {id:'medical',label:'Medical',p:PHRASES_MEDICAL},{id:'transport',label:'Transport',p:PHRASES_TRANSPORT},
+    {id:'workplace',label:'Workplace',p:PHRASES_WORKPLACE},{id:'pharmacy',label:'Pharmacy',p:PHRASES_PHARMACY}];
+  scs.forEach(function(sc) {
+    var h = document.createElement('div');
+    h.style.cssText = 'font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:8px 0 4px';
+    h.textContent = sc.label; list.appendChild(h);
+    (sc.p||[]).forEach(function(cat) {
+      var btn = document.createElement('button');
+      btn.style.cssText = 'width:100%;padding:9px 12px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;color:var(--off);font-size:12px;text-align:left;cursor:pointer;-webkit-appearance:none;margin-bottom:4px';
+      btn.textContent = cat.cat;
+      btn.addEventListener('click', function(){ cpCurrentScenario=sc.id; cpCurrentCat=cat.cat; cpPinSave(); });
+      list.appendChild(btn);
+    });
+  });
+  document.getElementById('catPickerOverlay').style.display = 'block';
+  document.getElementById('catPickerSheet').style.display = 'block';
+}
+function closeCatPicker() {
+  document.getElementById('catPickerOverlay').style.display = 'none';
+  document.getElementById('catPickerSheet').style.display = 'none';
+}
+function cpPinSave() {
+  if (!cpPinData || !cpCurrentScenario || !cpCurrentCat) return;
+  var item = { id:'cp-'+Date.now(), srcText:cpPinData.enText, tgtText:cpPinData.tgtText, ro:cpPinData.ro,
+    srcLang:getSrc(), tgtLang:getTgt(), addedAt:new Date().toISOString(),
+    lastSeen:new Date().toISOString(), source:'custom',
+    scenario:cpCurrentScenario, category:cpCurrentCat,
+    isCustom:true, isPrivate:true, views:0, practiceCount:0 };
+  vocabLibrary.unshift(item); saveVocabLibrary(); buildPhrases();
+  closeCatPicker(); toast('Pinned to ' + cpCurrentCat + '!');
+}
 
 var vocabLibrary = [];
 try { vocabLibrary = JSON.parse(localStorage.getItem('vl') || '[]'); } catch(e) {}
@@ -3557,10 +3755,12 @@ function buildLibraryUI() {
       html += '<div style="background:' + cfg.bg + ';border:1px solid ' + cfg.color.replace(')',',0.3)').replace('rgb','rgba') + ';border-radius:10px;padding:10px 12px;margin-bottom:6px">';
       html += '<div style="display:flex;justify-content:space-between;align-items:flex-start">';
       html += '<div style="flex:1">';
-      html += '<div style="font-size:13px;color:var(--muted)">' + item.srcText + '</div>';
+      var privBadge = item.isPrivate ? ' <span style="display:inline-flex;background:rgba(239,159,39,0.12);border:1px solid rgba(239,159,39,0.3);border-radius:6px;padding:1px 6px;font-size:9px;font-weight:700;color:#EF9F27">Private</span>' : '';
+      html += '<div style="font-size:13px;color:var(--muted)">' + item.srcText + privBadge + '</div>';
       html += '<div style="font-size:16px;font-weight:600;color:#fff;margin:2px 0">' + item.tgtText + '</div>';
       if (item.ro) html += '<div style="font-size:11px;color:' + cfg.color + '">' + item.ro + '</div>';
-      html += '<div style="font-size:10px;color:var(--muted);margin-top:4px">Viewed ' + item.views + 'x · ' + getLangName(item.srcLang) + ' → ' + getLangName(item.tgtLang) + '</div>';
+      var metaStr = 'Viewed ' + item.views + 'x &middot; ' + getLangName(item.srcLang) + ' &rarr; ' + getLangName(item.tgtLang) + (item.isCustom && item.category ? ' &middot; ' + item.category : '');
+      html += '<div style="font-size:10px;color:var(--muted);margin-top:4px">' + metaStr + '</div>';
       html += '</div>';
       html += '<button onclick="removeFromLibrary(' + JSON.stringify(item.id) + ')" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;font-size:14px;-webkit-appearance:none;flex-shrink:0">&#10005;</button>';
       html += '</div></div>';
