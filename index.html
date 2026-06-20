@@ -1710,8 +1710,7 @@ function buildPhrases() {
         // phraseId: stable English key so character can track repeats across sessions
         var phraseId = p.en.toLowerCase().replace(/[^a-z0-9]+/g,'_').substr(0,40);
         log({type:'phrase', phraseId:phraseId, src:src, tgt:tgt, srcText:srcText, tgtText:tgtText, ro:tgtRo});
-        buildPhrases();
-        toast('Speaking: '+srcText);
+        // Don't rebuild phrases — keeps card expanded after listen
       });
       d.querySelector('.shw').addEventListener('click',function(e){
         e.stopPropagation();
@@ -2594,6 +2593,25 @@ function clearSession() {
   buildPhrases();
   buildSettingsContent();
   toast('Session cleared — character memory preserved');
+}
+
+function resetApp() {
+  if (!confirm('Reset Vurba to first launch? This clears onboarding, check-in history and venue visits — but keeps your phrase library.')) return;
+  // Clear onboarding + nudge flags
+  localStorage.removeItem(ONBOARDING_KEY);
+  localStorage.removeItem('vurba_first_checkin');
+  localStorage.removeItem(NUDGE_KEY);
+  localStorage.removeItem('venue_visits');
+  // Reset language to defaults
+  document.getElementById('srcLang').value = 'en';
+  document.getElementById('tgtLang').value = 'ja';
+  onLangChange();
+  switchScenario('restaurant');
+  closeSettings();
+  // Restart onboarding after short delay
+  isFirstLaunch = true;
+  setTimeout(function() { initOnboarding(); }, 400);
+  toast('App reset — showing onboarding again');
 }
 
 function clearAllHistory() {
@@ -3544,6 +3562,10 @@ function buildSettingsContent() {
   html += '<button onclick="closeSettings();openLibrary();" class="eb" style="margin-bottom:4px">&#127775; My Library</button>';
   html += '<button onclick="closeSettings();clearSession();" class="eb" style="color:var(--red);border-color:rgba(226,75,74,.3);margin-top:6px">&#128465; Clear session</button>';
   html += '<button onclick="closeSettings();clearAllHistory();" class="eb" style="color:var(--red);border-color:rgba(226,75,74,.3);margin-top:4px;opacity:0.6">&#9888;&#65039; Erase all character memory</button>';
+  html += '<div style="height:1px;background:var(--bdr);margin:14px 0 10px"></div>';
+  html += '<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">&#127381; Demo & Testing</div>';
+  html += '<button onclick="resetApp();" class="eb" style="color:var(--amber);border-color:rgba(239,159,39,0.3)">&#8635; Reset to first launch</button>';
+  html += '<div style="font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5">Restarts onboarding flow. Keeps your saved phrases.</div>';
 
   // Log entries
   if (session.length === 0) {
