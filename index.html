@@ -3213,8 +3213,11 @@ var nudgeRemindTimer = null;
 function showNudgeSheet() {
   if (localStorage.getItem(NUDGE_KEY)) return; // already checked in before
   nudgeSetState('default');
+  // Must set display explicitly — inline style from prior dismiss overrides className
+  var sheet = document.getElementById('nudgeSheet');
+  sheet.style.display = 'block';
+  sheet.className = 'show';
   document.getElementById('nudgeOverlay').style.display = 'block';
-  document.getElementById('nudgeSheet').className = 'show';
 }
 
 function nudgeSetState(state) {
@@ -3262,8 +3265,10 @@ function nudgeFinish() {
 
 function nudgeDismiss() {
   document.getElementById('nudgeOverlay').style.display = 'none';
-  document.getElementById('nudgeSheet').className = '';
-  document.getElementById('nudgeSheet').style.display = 'none';
+  var sheet = document.getElementById('nudgeSheet');
+  sheet.className = '';
+  sheet.style.display = 'none';
+  sheet.removeAttribute('data-pending-venue');
 }
 
 function nudgeRemind() {
@@ -3272,8 +3277,10 @@ function nudgeRemind() {
   clearTimeout(nudgeRemindTimer);
   nudgeRemindTimer = setTimeout(function() {
     nudgeSetState('default');
+    var s = document.getElementById('nudgeSheet');
+    s.style.display = 'block';
+    s.className = 'show';
     document.getElementById('nudgeOverlay').style.display = 'block';
-    document.getElementById('nudgeSheet').className = 'show';
   }, 5 * 60 * 1000);
   toast('Remind you in 5 minutes!');
 }
