@@ -1,3 +1,4 @@
+<!-- VERSION v054 | 2026-06-20 16:51 | Pre-responsive bottom nav mobile layout -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +14,7 @@
   --muted:#7BA7B8; --off:#E8F4F8; --red:#E24B4A; --amber:#EF9F27;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{background:var(--navy);color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100%;overflow-x:hidden;max-width:100%}
+html,body{background:var(--navy);color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100%;overflow-x:hidden;overflow-y:scroll;max-width:100%}
 
 /* ── TOP BAR ── */
 .top{background:var(--mid);padding:52px 14px 10px;border-bottom:1px solid var(--bdr)}
@@ -240,6 +241,30 @@ textarea:focus{border-color:var(--teal)}
 .nt-entry-time{font-size:10px;color:var(--muted);margin-bottom:4px}
 .nt-entry-src{font-size:14px;color:#fff;margin-bottom:3px}
 .nt-entry-tgt{font-size:12px;color:var(--tealLt)}
+
+/* ── BOTTOM NAV (mobile only) ── */
+@media (max-width:768px) {
+  .tabs{display:none!important}
+  .bottom-nav{
+    display:flex!important;position:fixed;bottom:0;left:0;right:0;
+    background:var(--mid);border-top:1px solid var(--bdr);
+    padding:6px 0 env(safe-area-inset-bottom,16px);
+    z-index:200;
+  }
+  .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .nav-icon{color:var(--muted);transition:color .15s}
+  .nav-label{font-size:10px;color:var(--muted);font-weight:500}
+  .nav-item.active .nav-icon,.nav-item.active .nav-label{color:var(--green)}
+  .nav-item.active .nav-label{font-weight:700}
+  .nav-dot{width:4px;height:4px;border-radius:50%;background:var(--green);opacity:0}
+  .nav-item.active .nav-dot{opacity:1}
+  .sec{padding-bottom:80px}
+}
+@media (min-width:769px){
+  .bottom-nav{display:none!important}
+}
+/* Default hidden — overridden by media query */
+.bottom-nav{display:none}
 
 /* ── SPINNER ── */
 .spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:var(--green);border-radius:50%;animation:sp .7s linear infinite}
@@ -618,6 +643,42 @@ textarea:focus{border-color:var(--teal)}
     </div>
   </div>
 </div>
+
+<!-- BOTTOM NAV (mobile only) -->
+<nav class="bottom-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-item active" id="navPhrases" onclick="switchToTab('phrases')">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="24" height="24" aria-hidden="true">
+      <rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/>
+      <rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>
+    </svg>
+    <div class="nav-label">Phrases</div>
+    <div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" id="navConverse" onclick="switchToTab('converse')">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="24" height="24" aria-hidden="true">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <div class="nav-label">Converse</div>
+    <div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" id="navTranslate" onclick="switchToTab('translate')">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="24" height="24" aria-hidden="true">
+      <path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/>
+      <path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/>
+    </svg>
+    <div class="nav-label">Translate</div>
+    <div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" id="navListen" onclick="switchToTab('listen')">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="24" height="24" aria-hidden="true">
+      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+      <line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
+    </svg>
+    <div class="nav-label">Listen</div>
+    <div class="nav-dot"></div>
+  </div>
+</nav>
 
 <!-- MY LIBRARY PANEL -->
 <div id="libraryPanel" style="display:none;position:fixed;inset:0;z-index:700;background:var(--navy);overflow-y:auto;-webkit-overflow-scrolling:touch">
@@ -1561,17 +1622,31 @@ try { vurbaHistory = JSON.parse(localStorage.getItem('vh') || '[]'); } catch(e){
 // Load current session events
 try { session = JSON.parse(localStorage.getItem('vs') || '[]'); } catch(e){}
 
+// ── BOTTOM NAV SWITCH ────────────────────────────────────────────────────────
+function switchToTab(sec) {
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+  document.querySelectorAll('.sec').forEach(function(s){ s.classList.remove('on'); });
+  // Activate top tab
+  var topTab = document.querySelector('.tab[data-sec="'+sec+'"]');
+  if (topTab) topTab.classList.add('on');
+  // Activate section
+  var secEl = document.getElementById(sec);
+  if (secEl) secEl.classList.add('on');
+  // Sync bottom nav
+  var navMap = {phrases:'navPhrases', converse:'navConverse', translate:'navTranslate', listen:'navListen'};
+  Object.keys(navMap).forEach(function(k) {
+    var el = document.getElementById(navMap[k]);
+    if (el) el.classList.toggle('active', k === sec);
+  });
+}
+
 // ── BOOT ──────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', function() {
   // Tab switching
   document.getElementById('tabs').addEventListener('click', function(e) {
     var tab = e.target.closest('.tab');
     if (!tab) return;
-    var sec = tab.getAttribute('data-sec');
-    document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
-    document.querySelectorAll('.sec').forEach(function(s){ s.classList.remove('on'); });
-    tab.classList.add('on');
-    document.getElementById(sec).classList.add('on');
+    switchToTab(tab.getAttribute('data-sec'));
   });
 
   // Translate button
