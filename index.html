@@ -1898,6 +1898,7 @@ function buildPhrases() {
       var d=document.createElement('div');
       d.className='pc pc-'+catIdx;
       d.style.position='relative';
+      var alreadySaved = vocabLibrary.some(function(v){ return v.srcText === srcText && v.srcLang === getSrc() && v.tgtLang === getTgt(); });
       d.innerHTML=(alreadySaved?'<div class="saved-dot"></div>':'')+
         '<div class="en">'+srcText+'</div>'+
         '<div class="ja">'+tgtText+'</div>'+
