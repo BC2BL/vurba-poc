@@ -203,6 +203,32 @@ textarea:focus{border-color:var(--teal)}
 .ob-btn-secondary{width:100%;padding:12px;background:transparent;border:1px solid #F0997B;border-radius:14px;color:#993C1D;font-size:14px;font-weight:500;cursor:pointer;-webkit-appearance:none;margin-bottom:6px}
 /* Destination picker */
 .ob-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+/* ── LEARN THIS PHRASE PANEL ── */
+#lessonOverlay{position:fixed;inset:0;background:rgba(5,10,20,0.7);z-index:350;display:none;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+#lessonPanel{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#FFF5F0;border-radius:22px 22px 0 0;padding:20px 18px 44px;z-index:351;display:none;border-top:4px solid #EE6B4D;max-height:85vh;overflow-y:auto}
+#lessonPanel.show{display:block;animation:slideUp .3s ease}
+.lesson-handle{width:36px;height:4px;background:#F0997B;border-radius:2px;margin:0 auto 16px}
+.lesson-phrase{font-size:22px;font-weight:700;color:#1a0804;text-align:center;margin-bottom:4px}
+.lesson-ro{font-size:13px;color:#EE6B4D;text-align:center;margin-bottom:14px}
+.lesson-section{margin-bottom:16px}
+.lesson-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#993C1D;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.lesson-section-title::after{content:"";flex:1;height:1px;background:#F0997B}
+.lesson-breakdown{display:flex;flex-direction:column;gap:6px}
+.lesson-component{background:#fff;border:1px solid #F0997B;border-radius:10px;padding:10px 12px}
+.lesson-component .comp-text{font-size:15px;font-weight:700;color:#1a0804;margin-bottom:2px}
+.lesson-component .comp-meaning{font-size:12px;color:#EE6B4D;margin-bottom:2px}
+.lesson-component .comp-function{font-size:11px;color:#712B13}
+.lesson-tip{background:rgba(238,107,77,0.08);border:1px solid rgba(238,107,77,0.25);border-radius:10px;padding:10px 12px;font-size:12px;color:#712B13;line-height:1.6;font-style:italic}
+.lesson-context{background:#fff;border:1px solid #F0997B;border-radius:10px;padding:12px;font-size:13px;color:#1a0804;line-height:1.6;margin-bottom:10px}
+.lesson-options{display:flex;flex-direction:column;gap:6px}
+.lesson-opt{padding:10px 12px;border-radius:9px;border:1px solid #F0997B;background:#fff;color:#1a0804;font-size:13px;text-align:left;cursor:pointer;-webkit-appearance:none;width:100%}
+.lesson-opt.correct{background:#edfaf3;border-color:#3DD68C;color:#085041}
+.lesson-opt.wrong{background:#fef0eb;border-color:#EE6B4D;color:#4A1B0C}
+.lesson-loading{text-align:center;padding:24px 0}
+.lesson-spinner{width:32px;height:32px;border:3px solid rgba(238,107,77,0.2);border-top-color:#EE6B4D;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+.lesson-loading-text{font-size:13px;color:#712B13}
+.lesson-close{width:100%;padding:12px;background:transparent;border:1px solid #F0997B;border-radius:12px;color:#993C1D;font-size:13px;cursor:pointer;-webkit-appearance:none;margin-top:12px}
+
 .cp-handle{width:36px;height:4px;background:#F0997B;border-radius:2px;margin:0 auto 16px}
 .cp-title{font-size:15px;font-weight:700;color:#1a0804;margin-bottom:4px}
 .cp-subtitle{font-size:11px;color:#712B13;margin-bottom:14px}
@@ -701,6 +727,13 @@ textarea:focus{border-color:var(--teal)}
     <div class="nav-dot"></div>
   </div>
 </nav>
+
+<!-- LEARN THIS PHRASE PANEL -->
+<div id="lessonOverlay" onclick="closeLesson()"></div>
+<div id="lessonPanel">
+  <div class="lesson-handle"></div>
+  <div id="lessonContent"></div>
+</div>
 
 <!-- CUSTOM PHRASE SHEET -->
 <div id="customPhraseOverlay" onclick="closeCustomPhrase()"></div>
@@ -2710,6 +2743,129 @@ function cpPinSave() {
   closeCatPicker(); toast('Pinned to ' + cpCurrentCat + '!');
 }
 
+// ── LEARN THIS PHRASE ────────────────────────────────────────────────────────
+var currentLesson = null;
+
+function openLesson(item) {
+  currentLesson = item;
+  var panel = document.getElementById('lessonPanel');
+  panel.style.display = 'block';
+  panel.className = 'show';
+  document.getElementById('lessonOverlay').style.display = 'block';
+  document.getElementById('lessonContent').innerHTML =
+    '<div class="lesson-loading">' +
+    '<div class="lesson-spinner"></div>' +
+    '<div class="lesson-loading-text">Generating your lesson...</div>' +
+    '</div>';
+  generateLesson(item);
+}
+
+function closeLesson() {
+  document.getElementById('lessonOverlay').style.display = 'none';
+  var panel = document.getElementById('lessonPanel');
+  panel.className = '';
+  panel.style.display = 'none';
+}
+
+function generateLesson(item) {
+  var sys = 'You are a language learning expert. Generate a micro-lesson JSON for this saved phrase.' +
+    ' The learner speaks ' + getLangName(item.srcLang) + ' and is learning ' + getLangName(item.tgtLang) + '.' +
+    ' The phrase is: "' + item.tgtText + '" meaning "' + item.srcText + '".' +
+    (item.scenario ? ' Context: ' + item.scenario + ' scenario.' : '') +
+    ' Return ONLY valid JSON with this structure: {' +
+    '"breakdown":[{"component":"text segment","meaning":"what it means","function":"grammatical role"}],' +
+    '"memoryTip":"A short memorable tip to remember this phrase",' +
+    '"contextPrompt":"A realistic situation prompt",' +
+    '"contextOptions":["correct answer","wrong option 1","wrong option 2"]' +
+    '}. Max 3 breakdown components. Keep language simple. No markdown.';
+
+  callClaude('Generate lesson for: ' + item.tgtText, sys).then(function(result) {
+    try {
+      var clean = result.trim().replace(/```json|```/g, '').trim();
+      var lesson = JSON.parse(clean);
+      renderLesson(item, lesson);
+    } catch(e) {
+      document.getElementById('lessonContent').innerHTML =
+        '<div class="lesson-phrase">' + item.tgtText + '</div>' +
+        '<div class="lesson-ro">' + (item.ro || '') + '</div>' +
+        '<div class="lesson-tip">Could not generate lesson — please check your connection.</div>' +
+        '<button class="lesson-close" onclick="closeLesson()">Close</button>';
+    }
+  }).catch(function() {
+    document.getElementById('lessonContent').innerHTML =
+      '<div class="lesson-tip">Connection error — try again.</div>' +
+      '<button class="lesson-close" onclick="closeLesson()">Close</button>';
+  });
+}
+
+function renderLesson(item, lesson) {
+  var shuffled = (lesson.contextOptions || []).slice().sort(function(){ return Math.random()-0.5; });
+  var correct = lesson.contextOptions && lesson.contextOptions[0];
+
+  var html = '';
+  html += '<div class="lesson-phrase">' + item.tgtText + '</div>';
+  if (item.ro) html += '<div class="lesson-ro">' + item.ro + '</div>';
+
+  // Breakdown
+  if (lesson.breakdown && lesson.breakdown.length) {
+    html += '<div class="lesson-section">';
+    html += '<div class="lesson-section-title">Sentence breakdown</div>';
+    html += '<div class="lesson-breakdown">';
+    lesson.breakdown.forEach(function(b) {
+      html += '<div class="lesson-component">';
+      html += '<div class="comp-text">' + (b.component || '') + '</div>';
+      html += '<div class="comp-meaning">' + (b.meaning || '') + '</div>';
+      html += '<div class="comp-function">' + (b.function || '') + '</div>';
+      html += '</div>';
+    });
+    html += '</div></div>';
+  }
+
+  // Memory tip
+  if (lesson.memoryTip) {
+    html += '<div class="lesson-section">';
+    html += '<div class="lesson-section-title">Memory tip</div>';
+    html += '<div class="lesson-tip">' + lesson.memoryTip + '</div>';
+    html += '</div>';
+  }
+
+  // Context practice
+  if (lesson.contextPrompt && shuffled.length) {
+    html += '<div class="lesson-section">';
+    html += '<div class="lesson-section-title">Practice</div>';
+    html += '<div class="lesson-context">' + lesson.contextPrompt + '</div>';
+    html += '<div class="lesson-options">';
+    shuffled.forEach(function(opt) {
+      var isCorrect = (opt === correct);
+      html += '<button class="lesson-opt" data-correct="' + isCorrect + '" onclick="lessonAnswer(this,' + isCorrect + ')">' + opt + '</button>';
+    });
+    html += '</div></div>';
+  }
+
+  html += '<button class="lesson-close" onclick="closeLesson()">Done</button>';
+  document.getElementById('lessonContent').innerHTML = html;
+}
+
+function lessonAnswer(btn, isCorrect) {
+  // Disable all options
+  var opts = document.querySelectorAll('.lesson-opt');
+  opts.forEach(function(o) {
+    o.disabled = true;
+    if (o.dataset.correct === 'true') o.classList.add('correct');
+    else o.classList.add('wrong');
+  });
+  // Update mastery
+  if (currentLesson && isCorrect) {
+    var item = vocabLibrary.find(function(v){ return v.id === currentLesson.id; });
+    if (item) {
+      item.practiceCount = (item.practiceCount || 0) + 1;
+      item.lastSeen = new Date().toISOString();
+      saveVocabLibrary();
+    }
+  }
+}
+
+
 var vocabLibrary = [];
 try { vocabLibrary = JSON.parse(localStorage.getItem('vl') || '[]'); } catch(e) {}
 
@@ -3763,7 +3919,13 @@ function buildLibraryUI() {
       var metaStr = 'Viewed ' + item.views + 'x &middot; ' + getLangName(item.srcLang) + ' &rarr; ' + getLangName(item.tgtLang) + (item.isCustom && item.category ? ' &middot; ' + item.category : '');
       html += '<div style="font-size:10px;color:var(--muted);margin-top:4px">' + metaStr + '</div>';
       html += '</div>';
-      html += '<button onclick="removeFromLibrary(' + JSON.stringify(item.id) + ')" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;font-size:14px;-webkit-appearance:none;flex-shrink:0">&#10005;</button>';
+      html += '<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;align-items:center">';
+      html += '<button onclick="openLesson(vocabLibrary.find(function(v){return v.id===\"' + item.id + '\"}))" style="background:#EE6B4D;border:none;border-radius:8px;color:#fff;cursor:pointer;padding:5px 10px;font-size:10px;font-weight:700;-webkit-appearance:none;white-space:nowrap">Learn</button>';
+      html += '<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;align-items:center">';
+    html += '<button onclick="(function(){var it=vocabLibrary.find(function(v){return v.id===\'' + item.id + '\'});if(it)openLesson(it);})()" style="background:#EE6B4D;border:none;border-radius:8px;color:#fff;cursor:pointer;padding:5px 10px;font-size:10px;font-weight:700;-webkit-appearance:none;white-space:nowrap">Learn</button>';
+    html += '<button onclick="removeFromLibrary(' + JSON.stringify(item.id) + ')" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:2px;font-size:13px;-webkit-appearance:none">&#10005;</button>';
+    html += '</div>';
+      html += '</div>';
       html += '</div></div>';
     });
     html += '<div style="height:1px;background:var(--bdr);margin:10px 0 14px"></div>';
