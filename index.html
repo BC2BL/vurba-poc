@@ -1,0 +1,3477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Vurba — Restaurant · Japanese</title>
+<style>
+:root {
+  --navy:#0B1423; --mid:#0F1E35; --card:#112236; --bdr:#1A3350;
+  --teal:#0A7E8C; --tealLt:#0FB5C7; --green:#3DD68C;
+  --muted:#7BA7B8; --off:#E8F4F8; --red:#E24B4A; --amber:#EF9F27;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--navy);color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100%;overflow-x:hidden;max-width:100%}
+
+/* ── TOP BAR ── */
+.top{background:var(--mid);padding:52px 14px 10px;border-bottom:1px solid var(--bdr)}
+.app{font-size:12px;font-weight:700;color:var(--green);letter-spacing:1.5px}
+.pill{display:inline-flex;align-items:center;gap:6px;background:rgba(61,214,140,.12);border:1px solid rgba(61,214,140,.3);border-radius:20px;padding:4px 12px;margin-top:4px}
+.pill span{font-size:12px;color:var(--green);font-weight:500}
+.dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
+
+/* ── TABS ── */
+.tabs{display:flex;background:var(--mid);border-bottom:1px solid var(--bdr);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1;min-width:60px;padding:10px 4px;text-align:center;font-size:11px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;user-select:none}
+.tab.on{color:var(--green);border-bottom-color:var(--green)}
+.tab i{display:block;font-size:18px;margin-bottom:2px}
+
+/* ── CONTENT ── */
+.body{padding:12px 12px 100px;max-width:100%;overflow-x:hidden}
+.sec{display:none}
+.sec.on{display:block}
+
+/* ── PHRASE CARDS ── */
+.cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin:14px 0 6px;display:flex;align-items:center;gap:6px}
+.cat:first-child{margin-top:4px}.cat::after{content:"";flex:1;height:1px;background:var(--bdr)}.cat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
+.cat-0{color:#3DD68C}.cat-1{color:#0FB5C7}.cat-2{color:#EF9F27}.cat-3{color:#B388FF}.cat-4{color:#EE6B4D}.cat-5{color:#64B5F6}
+/* Phrase card colour variants */
+
+/* Listen button colour variants */
+.spk-0{background:rgba(61,214,140,0.15)!important;color:#3DD68C!important;border-color:rgba(61,214,140,0.3)!important}
+.spk-1{background:rgba(15,181,199,0.15)!important;color:#0FB5C7!important;border-color:rgba(15,181,199,0.3)!important}
+.spk-2{background:rgba(239,159,39,0.15)!important;color:#EF9F27!important;border-color:rgba(239,159,39,0.3)!important}
+.spk-3{background:rgba(179,136,255,0.15)!important;color:#B388FF!important;border-color:rgba(179,136,255,0.3)!important}
+.spk-4{background:rgba(238,107,77,0.15)!important;color:#EE6B4D!important;border-color:rgba(238,107,77,0.3)!important}
+.spk-5{background:rgba(100,181,246,0.15)!important;color:#64B5F6!important;border-color:rgba(100,181,246,0.3)!important}
+.pc{background:var(--card);border-width:1px;border-style:solid;border-color:var(--bdr);border-radius:12px;padding:12px 14px;margin-bottom:8px;position:relative;overflow:hidden;max-width:100%}
+.pc.used{border-color:rgba(61,214,140,.4)}
+.pc-0{background:rgba(61,214,140,0.18);border-color:rgba(61,214,140,0.45)}
+.pc-1{background:rgba(15,181,199,0.18);border-color:rgba(15,181,199,0.45)}
+.pc-2{background:rgba(239,159,39,0.18);border-color:rgba(239,159,39,0.45)}
+.pc-3{background:rgba(179,136,255,0.18);border-color:rgba(179,136,255,0.45)}
+.pc-4{background:rgba(238,107,77,0.18);border-color:rgba(238,107,77,0.45)}
+.pc-5{background:rgba(100,181,246,0.18);border-color:rgba(100,181,246,0.45)}
+.en{font-size:13px;color:var(--off);margin-bottom:4px}
+.ja{font-size:17px;color:#fff;font-weight:600;margin-bottom:3px;word-break:break-word;overflow-wrap:break-word}
+.ro{font-size:11px;color:var(--tealLt)}
+.acts{display:flex;gap:8px;margin-top:10px}
+.ab{flex:1;padding:8px;border-radius:8px;border:1px solid var(--bdr);background:var(--mid);color:var(--off);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;-webkit-appearance:none}
+.ab.p{background:rgba(61,214,140,.15);border-color:rgba(61,214,140,.4);color:var(--green)}
+.ubadge{position:absolute;top:10px;right:12px;width:8px;height:8px;background:var(--green);border-radius:50%}
+
+/* ── TRANSLATE ── */
+.box{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:14px;margin-bottom:12px}
+.lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+textarea{width:100%;background:var(--mid);border:1px solid var(--bdr);border-radius:8px;color:#fff;font-size:16px;padding:10px 12px;outline:none;resize:none;min-height:80px;font-family:inherit;-webkit-appearance:none}
+textarea:focus{border-color:var(--teal)}
+.rja{font-size:22px;font-weight:700;color:#fff;margin-bottom:4px;word-break:break-word;overflow-wrap:break-word}
+.rro{font-size:13px;color:var(--tealLt)}
+.ph{color:var(--muted);font-size:14px;font-style:italic}
+.bf{width:100%;padding:14px;border-radius:12px;border:none;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;-webkit-appearance:none}
+.bf.g{background:var(--green);color:var(--navy)}
+.bf.t{background:rgba(15,181,199,.15);border:1px solid var(--tealLt);color:var(--tealLt)}
+.bf:disabled{opacity:.4}
+
+/* ── LISTEN ── */
+.mc{text-align:center;padding:20px 0}
+.mb{width:80px;height:80px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:32px;-webkit-appearance:none}
+.mb.idle{background:rgba(15,181,199,.15);border:2px solid var(--tealLt);color:var(--tealLt)}
+.mb.rec{background:var(--red);border:2px solid var(--red);color:#fff;animation:mp 1s ease-in-out infinite}
+.mb.proc{background:rgba(239,159,39,.2);border:2px solid var(--amber);color:var(--amber)}
+@keyframes mp{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.ms{font-size:14px;color:var(--muted);margin-bottom:10px;min-height:20px}
+.cb{height:4px;background:var(--bdr);border-radius:2px;margin:6px 0;overflow:hidden}
+.cf{height:4px;border-radius:2px;background:var(--green);transition:width .3s}
+.tb{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:14px;margin-top:12px;text-align:left}
+.tja{font-size:18px;font-weight:600;color:#fff;margin-bottom:6px;min-height:28px}
+.ten{font-size:14px;color:var(--tealLt);min-height:20px}
+.tnote{font-size:11px;color:var(--muted);margin-top:6px}
+
+/* ── REVIEW ── */
+.re{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px}
+.rc{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.rt{font-size:10px;color:var(--muted);margin-bottom:4px}
+.rb{display:inline-block;font-size:9px;padding:2px 7px;border-radius:10px;margin-bottom:6px}
+.rp{background:rgba(61,214,140,.15);color:var(--green)}
+.rtr{background:rgba(15,181,199,.15);color:var(--tealLt)}
+.rl{background:rgba(239,159,39,.15);color:var(--amber)}
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.sb{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:10px;text-align:center}
+.sn{font-size:24px;font-weight:700;color:var(--green)}
+.sl{font-size:10px;color:var(--muted);margin-top:2px}
+.eb{width:100%;padding:13px;border-radius:12px;border:1px solid var(--bdr);background:var(--mid);color:var(--off);font-size:13px;cursor:pointer;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px;-webkit-appearance:none}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green);color:var(--navy);font-size:13px;font-weight:600;padding:10px 20px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:99;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* ── SETTINGS PANEL ── */
+#settingsPanel{
+  position:fixed;top:0;right:-100%;width:88%;max-width:360px;height:100%;
+  background:var(--mid);z-index:500;
+  transition:right 0.3s cubic-bezier(0.4,0,0.2,1);
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:-4px 0 24px rgba(0,0,0,0.4);
+}
+#settingsPanel.open{right:0}
+#settingsOverlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0);z-index:499;
+  pointer-events:none;transition:background 0.3s;
+}
+#settingsOverlay.open{background:rgba(0,0,0,0.55);pointer-events:auto}
+.sp-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:52px 16px 14px;border-bottom:1px solid var(--bdr);flex-shrink:0;
+}
+.sp-title{font-size:16px;font-weight:600;color:var(--white)}
+.sp-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;-webkit-appearance:none;line-height:1;padding:4px}
+.sp-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px}
+
+/* ── SCENARIO SWITCHER ── */
+.scenario-strip{display:flex;gap:6px;padding:6px 12px;overflow-x:auto;scrollbar-width:none;background:var(--navy);border-bottom:1px solid var(--bdr)}.scenario-strip::-webkit-scrollbar{display:none}
+.scenario-bar label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-right:2px;white-space:nowrap}
+.sc-btn{flex-shrink:0;padding:4px 12px;border-radius:20px;border:1px solid var(--bdr);background:transparent;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;-webkit-appearance:none;white-space:nowrap}
+.sc-btn.active{background:rgba(61,214,140,0.12);border-color:rgba(61,214,140,0.5);color:var(--green);font-weight:600}
+
+/* ── LANGUAGE SELECTOR ── */
+.lang-bar{background:var(--navy);border-bottom:1px solid var(--bdr);padding:8px 12px;display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;overflow:hidden}
+.lang-bar label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;display:none}
+.lang-sel{flex:1;min-width:0;background:var(--card);border:1px solid var(--bdr);border-radius:8px;color:var(--white);font-size:11px;padding:4px 18px 4px 6px;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%237BA7B8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 5px center;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lang-arrow{font-size:11px;color:var(--muted);flex-shrink:0}
+
+/* ── GPS CHECK-IN ── */
+.checkin-bar{display:flex;align-items:center;gap:8px;background:rgba(61,214,140,0.05);border-bottom:1px solid rgba(61,214,140,0.12);padding:5px 12px;font-size:11px}
+.checkin-btn{display:flex;align-items:center;gap:5px;background:rgba(61,214,140,0.12);border:1px solid rgba(61,214,140,0.35);border-radius:14px;padding:4px 10px;color:var(--green);font-size:11px;font-weight:600;cursor:pointer;-webkit-appearance:none}
+.checkin-btn.scanning{background:rgba(15,181,199,0.12);border-color:rgba(15,181,199,0.35);color:var(--tealLt)}
+.checkin-btn.locked{background:rgba(61,214,140,0.2);border-color:var(--green)}
+.checkin-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
+.checkin-dot.pulse{animation:pulse 1.5s ease-in-out infinite}
+.checkin-dot.spin-dot{background:var(--tealLt);animation:spin-dot 1s linear infinite}
+@keyframes spin-dot{to{transform:rotate(360deg) scale(1.2)}}
+.checkin-loc{font-size:11px;color:var(--muted);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── AGENT MODAL ── */
+#agentModal{display:none;position:fixed;inset:0;z-index:600;align-items:flex-end;justify-content:center;padding:0 0 40px}
+#agentModal .agent-body-wrap{animation:slide-up 0.35s cubic-bezier(0.34,1.56,0.64,1)}
+#agentModal.show{display:flex}
+#agentBackdrop{position:absolute;inset:0;background:rgba(0,0,0,0.55)}
+#agentCard{position:relative;background:var(--mid);border:1px solid var(--bdr);border-radius:24px 24px 16px 16px;padding:0;width:100%;max-width:420px;overflow:visible}
+@keyframes slide-up{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes slide-down{from{transform:translateY(0);opacity:1}to{transform:translateY(100%);opacity:0}}
+.agent-header{background:#0B1E35;padding:20px 20px 0;text-align:center}
+.agent-avatar{width:80px;height:88px;border-radius:40px;background:var(--navy);border:3px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;position:relative;animation:agent-float 3s ease-in-out infinite;overflow:visible}
+@keyframes agent-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.agent-glow{position:absolute;inset:-4px;border-radius:40px;border:2px solid rgba(61,214,140,0.3);animation:agent-glow 2s ease-in-out infinite}
+@keyframes agent-glow{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:0.8;transform:scale(1.06)}}
+.agent-name{font-size:11px;font-weight:700;color:var(--green);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
+.agent-waves{display:flex;align-items:center;justify-content:center;gap:3px;height:20px;margin-bottom:16px}
+.agent-wave{width:3px;border-radius:3px;background:var(--green);animation:wave 1.2s ease-in-out infinite}
+.agent-wave:nth-child(1){animation-delay:0s;height:6px}
+.agent-wave:nth-child(2){animation-delay:.15s;height:14px}
+.agent-wave:nth-child(3){animation-delay:.3s;height:10px}
+.agent-wave:nth-child(4){animation-delay:.15s;height:14px}
+.agent-wave:nth-child(5){animation-delay:0s;height:6px}
+@keyframes wave{0%,100%{transform:scaleY(0.5);opacity:.5}50%{transform:scaleY(1);opacity:1}}
+.agent-body{padding:20px}
+.agent-bubble{background:var(--card);border:1px solid var(--cardBdr);border-radius:16px 16px 16px 4px;padding:14px 16px;margin-bottom:14px;position:relative}
+.agent-bubble::before{content:'';position:absolute;bottom:-1px;left:-1px;width:12px;height:12px;background:var(--card);border-left:1px solid var(--cardBdr);border-bottom:1px solid var(--cardBdr);border-radius:0 0 0 8px}
+.agent-msg{font-size:14px;color:var(--white);line-height:1.6}
+.agent-msg strong{color:var(--green)}
+.agent-scenario-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(61,214,140,0.12);border:1px solid rgba(61,214,140,0.3);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--green);font-weight:600;margin-top:8px}
+.agent-dismiss{width:100%;padding:14px;border-radius:12px;border:none;background:var(--green);color:var(--navy);font-size:15px;font-weight:700;cursor:pointer;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;gap:8px}
+.agent-secondary{width:100%;padding:10px;border-radius:12px;border:1px solid var(--cardBdr);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;-webkit-appearance:none;margin-top:8px}
+
+/* ── ONBOARDING ── */
+#onboardingOverlay{position:fixed;inset:0;z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;background:rgba(5,10,20,0.85);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.ob-sheet{background:var(--mid);border-radius:24px 24px 0 0;padding:28px 24px 44px;width:100%;max-width:480px;animation:slideUp .35s ease}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.ob-rabbit{font-size:52px;text-align:center;margin-bottom:12px;animation:bounce 1s ease infinite alternate}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-6px)}}
+.ob-title{font-size:20px;font-weight:700;color:var(--white);text-align:center;margin-bottom:8px}
+.ob-body{font-size:14px;color:var(--off);text-align:center;line-height:1.6;margin-bottom:24px}
+.ob-flag{font-size:40px;text-align:center;margin:8px 0}
+.ob-lang{font-size:22px;font-weight:700;color:var(--green);text-align:center;margin-bottom:20px}
+.ob-btn-primary{width:100%;padding:14px;background:var(--green);border:none;border-radius:14px;color:var(--navy);font-size:15px;font-weight:700;cursor:pointer;-webkit-appearance:none;margin-bottom:10px}
+.ob-btn-secondary{width:100%;padding:12px;background:transparent;border:1px solid var(--bdr);border-radius:14px;color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;-webkit-appearance:none;margin-bottom:6px}
+/* Destination picker */
+.ob-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;max-height:220px;overflow-y:auto}
+.ob-dest{padding:10px 12px;background:var(--card);border:1px solid var(--bdr);border-radius:12px;font-size:13px;color:var(--off);cursor:pointer;-webkit-appearance:none;text-align:left;display:flex;align-items:center;gap:8px}
+.ob-dest:active{background:rgba(61,214,140,0.15);border-color:var(--green)}
+
+/* ── NOTE-TAKER ── */
+.mode-toggle{display:flex;background:var(--mid);border:1px solid var(--bdr);border-radius:10px;padding:3px;margin-bottom:12px;gap:3px}
+.mode-btn{flex:1;padding:7px;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;-webkit-appearance:none;background:transparent;color:var(--muted);transition:all .2s}
+.mode-btn.active{background:var(--card);color:var(--white)}
+.nt-timer{font-size:28px;font-weight:700;color:var(--green);text-align:center;margin-bottom:4px;font-variant-numeric:tabular-nums}
+.nt-progress{height:4px;background:var(--bdr);border-radius:2px;margin-bottom:16px;overflow:hidden}
+.nt-bar{height:100%;background:var(--green);border-radius:2px;width:0%;transition:width .5s linear}
+.nt-log{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.nt-entry{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:10px 12px}
+.nt-entry-time{font-size:10px;color:var(--muted);margin-bottom:4px}
+.nt-entry-src{font-size:14px;color:#fff;margin-bottom:3px}
+.nt-entry-tgt{font-size:12px;color:var(--tealLt)}
+
+/* ── SPINNER ── */
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:var(--green);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top" style="display:flex;align-items:flex-start;justify-content:space-between">
+  <div>
+    <div class="app">VURBA <span style="color:var(--muted);font-weight:400;font-size:10px">· POC v0.3</span></div>
+    
+  </div>
+  <button onclick="toggleSettings()" id="cogBtn" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:4px;margin-top:4px;-webkit-appearance:none;line-height:1">
+  <svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect y="0" width="20" height="2.5" rx="1.25" fill="currentColor"/>
+    <rect y="6.75" width="20" height="2.5" rx="1.25" fill="currentColor"/>
+    <rect y="13.5" width="20" height="2.5" rx="1.25" fill="currentColor"/>
+  </svg>
+</button>
+</div>
+
+<!-- SCENARIO SWITCHER -->
+<!-- GPS CHECK-IN BAR -->
+<div class="checkin-bar">
+  <div class="checkin-dot" id="checkinDot" style="width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
+  <span id="checkinLoc" style="flex:1;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Tap to check in nearby</span>
+  <button class="checkin-btn" id="checkinBtn" onclick="doCheckin()">
+    <span id="checkinBtnLabel">Check in</span>
+  </button>
+  <button onclick="testAgentModal('restaurant')" style="background:none;border:none;color:var(--muted);font-size:10px;cursor:pointer;padding:2px 5px;border-radius:4px;border:1px solid var(--bdr);white-space:nowrap;-webkit-appearance:none;flex-shrink:0">🧪</button>
+</div>
+
+<!-- AGENT MODAL -->
+<div id="agentModal">
+  <div id="agentBackdrop" onclick="dismissAgent()"></div>
+  <div id="agentCard">
+    <div class="agent-header">
+      <div class="agent-avatar">
+        <svg viewBox="0 0 80 90" width="74" height="84" xmlns="http://www.w3.org/2000/svg">
+          <!-- Left ear -->
+          <ellipse cx="24" cy="22" rx="9" ry="20" fill="#E8F4F8"/>
+          <ellipse cx="24" cy="22" rx="5" ry="14" fill="#FFB7C5"/>
+          <!-- Right ear -->
+          <ellipse cx="56" cy="22" rx="9" ry="20" fill="#E8F4F8"/>
+          <ellipse cx="56" cy="22" rx="5" ry="14" fill="#FFB7C5"/>
+          <!-- Head -->
+          <circle cx="40" cy="60" r="26" fill="#E8F4F8"/>
+          <!-- Cheeks -->
+          <ellipse cx="18" cy="65" rx="9" ry="6" fill="#FFB7C5" opacity="0.55"/>
+          <ellipse cx="62" cy="65" rx="9" ry="6" fill="#FFB7C5" opacity="0.55"/>
+          <!-- Eyes -->
+          <circle cx="31" cy="55" r="5" fill="#1a2a3a"/>
+          <circle cx="49" cy="55" r="5" fill="#1a2a3a"/>
+          <!-- Eye shine -->
+          <circle cx="33" cy="53" r="2" fill="#fff"/>
+          <circle cx="51" cy="53" r="2" fill="#fff"/>
+          <!-- Nose -->
+          <ellipse cx="40" cy="64" rx="3.5" ry="2.5" fill="#FFB7C5"/>
+          <!-- Mouth -->
+          <path d="M36 68 Q40 73 44 68" stroke="#c0a0a0" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <!-- Sparkle top-right -->
+          <text x="61" y="18" font-size="12" fill="#3DD68C" font-family="sans-serif">✦</text>
+        </svg>
+        <div class="agent-glow"></div>
+      </div>
+      <div class="agent-name">Vurba AI</div>
+      <div class="agent-waves">
+        <div class="agent-wave"></div>
+        <div class="agent-wave"></div>
+        <div class="agent-wave"></div>
+        <div class="agent-wave"></div>
+        <div class="agent-wave"></div>
+      </div>
+    </div>
+    <div class="agent-body">
+      <div class="agent-bubble">
+        <div class="agent-msg" id="agentMsg">Hi! I've noticed something...</div>
+        <div class="agent-scenario-pill" id="agentPill">🍜 Restaurant mode</div>
+      </div>
+      <button class="agent-dismiss" onclick="dismissAgent()">
+        ✓ Got it, thanks!
+      </button>
+      <button class="agent-secondary" onclick="dismissAgent()">
+        Keep current scenario
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LANGUAGE SELECTOR -->
+<div class="lang-bar">
+  <label>From</label>
+  <select class="lang-sel" id="srcLang" onchange="onLangChange()">
+    <option value="en">🇺🇸 English</option>
+    <option value="ja">🇯🇵 Japanese</option>
+    <option value="zh">🇨🇳 Mandarin (Simplified)</option>
+    <option value="zht">🇹🇼 Mandarin (Traditional)</option>
+    <option value="vi">🇻🇳 Vietnamese</option>
+    <option value="th">🇹🇭 Thai</option>
+    <option value="tl">🇵🇭 Tagalog</option>
+    <option value="km">🇰🇭 Khmer</option>
+    <option value="bn">🇧🇩 Bengali</option>
+    <option value="pt">🇧🇷 Portuguese</option>
+    <option value="es">🇪🇸 Spanish</option>
+    <option value="id">🇮🇩 Bahasa Indonesia</option>
+  </select>
+  <span class="lang-arrow">→</span>
+  <select class="lang-sel" id="tgtLang" onchange="onLangChange()">
+    <option value="ja" selected>🇯🇵 Japanese</option>
+    <option value="en">🇺🇸 English</option>
+    <option value="zh">🇨🇳 Mandarin (Simplified)</option>
+    <option value="zht">🇹🇼 Mandarin (Traditional)</option>
+    <option value="vi">🇻🇳 Vietnamese</option>
+    <option value="th">🇹🇭 Thai</option>
+    <option value="tl">🇵🇭 Tagalog</option>
+    <option value="km">🇰🇭 Khmer</option>
+    <option value="bn">🇧🇩 Bengali</option>
+    <option value="pt">🇧🇷 Portuguese</option>
+    <option value="es">🇪🇸 Spanish</option>
+    <option value="id">🇮🇩 Bahasa Indonesia</option>
+  </select>
+</div>
+
+<!-- TABS -->
+<div class="tabs" id="tabs">
+  <div class="tab on" data-sec="phrases">&#128218; Phrases</div>
+  <div class="tab" data-sec="converse">&#128172; Converse</div>
+  <div class="tab" data-sec="translate">&#127760; Translate</div>
+  <div class="tab" data-sec="listen">&#127911; Listen</div>
+</div>
+
+<!-- CONTENT -->
+<div class="body">
+
+  <!-- PHRASES -->
+  <div class="sec on" id="phrases">
+    <div class="scenario-strip">
+      <button class="sc-btn active" id="scRestaurant" onclick="switchScenario('restaurant')">🍜 Restaurant</button>
+      <button class="sc-btn" id="scShopping" onclick="switchScenario('shopping')">🛍️ Shopping</button>
+      <button class="sc-btn" id="scMedical" onclick="switchScenario('medical')">🏥 Medical</button>
+      <button class="sc-btn" id="scTransport" onclick="switchScenario('transport')">🚌 Transport</button>
+      <button class="sc-btn" id="scWorkplace" onclick="switchScenario('workplace')">💼 Workplace</button>
+      <button class="sc-btn" id="scPharmacy" onclick="switchScenario('pharmacy')">💊 Pharmacy</button>
+      <button class="sc-btn" id="scCustom" onclick="switchScenario('custom')" style="display:none">⚙️ Custom</button>
+    </div>
+    <div id="plist"></div>
+  </div>
+
+  <!-- TRANSLATE -->
+  <div class="sec" id="translate">
+    <div class="box">
+      <div class="lbl" id="translateSrcLbl">Type in English</div>
+      <textarea id="tin" placeholder="Type or speak..." id="tinPlaceholder" rows="3"></textarea>
+    </div>
+    <button class="bf g" id="trbtn" onclick="doTranslate()">&#127760; <span id="trbtnLabel">Translate to Japanese</span></button>
+    <div id="micTranArea">
+  <button class="bf t" id="mictranbtn" onclick="translateFromSpeech()">
+    &#127908; <span id="micTranBtnLbl">Speak in English</span>
+  </button>
+</div>
+    <div class="box" id="tres">
+      <div class="lbl">Japanese</div>
+      <div class="ph">Translation appears here</div>
+    </div>
+  </div>
+
+  <!-- LISTEN -->
+  <div class="sec" id="listen">
+    <!-- Mode toggle -->
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="modePhraseBtn" onclick="setListenMode('phrase')">&#127911; Phrase</button>
+      <button class="mode-btn" id="modeNoteBtn" onclick="setListenMode('note')">&#128221; Note-taker</button>
+    </div>
+
+    <!-- PHRASE MODE -->
+    <div id="phraseModeUI">
+      <div class="box" style="margin-bottom:12px">
+        <div style="font-size:12px;color:var(--muted);line-height:1.5"><span id="listenModeDesc">Tap the mic, then let someone speak. Vurba transcribes and translates.</span></div>
+      </div>
+      <div class="mc">
+        <button class="mb idle" id="micbtn" onclick="toggleListen()"><span id="mici" style="font-size:32px">&#127908;</span></button>
+        <div class="ms" id="mst">Tap to start listening</div>
+      </div>
+      <div class="tb">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <div class="lbl" style="margin-bottom:0" id="listenTgtLbl">What was said</div>
+          <div id="clbl" style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;display:none"></div>
+        </div>
+        <div class="tja" id="tja">—</div>
+        <div class="lbl" style="margin-top:10px" id="listenSrcLbl">In English</div>
+        <div class="ten" id="ten">—</div>
+        <div class="tnote" id="tnote"></div>
+      </div>
+    </div>
+
+    <!-- NOTE-TAKER MODE -->
+    <div id="noteModeUI" style="display:none">
+      <div class="box" style="margin-bottom:12px">
+        <div style="font-size:12px;color:var(--muted);line-height:1.5">Tap record to start. Vurba continuously listens, transcribes and translates for up to 2 minutes. Export as a bilingual note when done.</div>
+      </div>
+      <!-- Timer + progress -->
+      <div id="ntTimerWrap" style="display:none;margin-bottom:12px">
+        <div class="nt-timer" id="ntTimer">2:00</div>
+        <div class="nt-progress"><div class="nt-bar" id="ntBar"></div></div>
+        <div style="text-align:center;font-size:11px;color:var(--muted)" id="ntStatus">Listening...</div>
+      </div>
+      <!-- Record button -->
+      <div class="mc" style="margin-bottom:16px">
+        <button class="mb idle" id="ntBtn" onclick="toggleNoteTaker()"><span id="ntIcon" style="font-size:32px">&#127908;</span></button>
+        <div class="ms" id="ntMst">Tap to start recording</div>
+      </div>
+      <!-- Live transcript log -->
+      <div class="nt-log" id="ntLog"></div>
+      <!-- Export -->
+      <button id="ntExportBtn" onclick="exportNotes()" style="display:none;margin-top:10px" class="eb">&#8659; Export bilingual notes</button>
+      <button id="ntClearBtn" onclick="clearNotes()" style="display:none;margin-top:4px" class="eb" style="color:var(--red)">&#128465; Clear notes</button>
+    </div>
+  </div>
+
+  <!-- CONVERSE -->
+  <div class="sec" id="converse">
+    <div class="box" style="margin-bottom:12px">
+      <div class="lbl" style="margin-bottom:4px">Conversation mode</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.5">Tap a speaker button to listen. Each utterance is transcribed and translated, building a live conversation log. Tap the same button again to stop early.</div>
+    </div>
+
+    <!-- Speaker buttons -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div style="text-align:center">
+        <button id="speakEnBtn" onclick="toggleConvLang('en')"
+  style="width:70px;height:70px;border-radius:50%;border:2px solid var(--tealLt);background:rgba(15,181,199,0.12);color:var(--tealLt);font-size:26px;cursor:pointer;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;margin:0 auto 6px">&#127908;</button>
+        <div id="convSrcLabel" style="font-size:12px;font-weight:600;color:var(--tealLt)">English</div>
+        <div id="enStatus" style="font-size:10px;color:var(--muted);margin-top:2px">Tap to speak</div>
+      </div>
+      <div style="text-align:center">
+        <button id="speakJaBtn" onclick="toggleConvLang('ja')"
+  style="width:70px;height:70px;border-radius:50%;border:2px solid var(--green);background:rgba(61,214,140,0.12);color:var(--green);font-size:26px;cursor:pointer;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;margin:0 auto 6px">&#127908;</button>
+        <div id="convTgtLabel" style="font-size:12px;font-weight:600;color:var(--green)">Japanese</div>
+        <div id="jaStatus" style="font-size:10px;color:var(--muted);margin-top:2px">Tap to speak</div>
+      </div>
+    </div>
+
+    <!-- Live interim display -->
+    <div id="convInterim" style="background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:10px 12px;margin-bottom:10px;min-height:40px;font-size:14px;color:var(--muted);font-style:italic;display:none">...</div>
+
+    <!-- Conversation log -->
+    <div id="convLog" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px"></div>
+
+    <!-- Controls -->
+    <button id="convClearBtn" onclick="clearConv()" class="eb" style="color:var(--red);border-color:rgba(226,75,74,.3)">&#128465; Clear conversation</button>
+    <button id="convExportBtn" onclick="exportConv()" class="eb">&#8659; Export conversation (JSON)</button>
+  </div>
+
+  <!-- REVIEW -->
+  <div class="sec" id="review">
+    <div class="sg">
+      <div class="sb"><div class="sn" id="sp">0</div><div class="sl">Phrases</div></div>
+      <div class="sb"><div class="sn" id="st">0</div><div class="sl">Translations</div></div>
+      <div class="sb"><div class="sn" id="sa">0</div><div class="sl">Audio clips</div></div>
+    </div>
+    <button class="eb" id="expbtn">&#8659; Export training data (JSON)</button>
+    <button class="eb" id="clrbtn" style="color:var(--red);border-color:rgba(226,75,74,.3)">&#128465; Clear session</button>
+    <div id="rlist"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- FULL SCREEN SHOW OVERLAY -->
+<div id="showOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#ffffff;z-index:999;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;overflow-y:auto">
+  <div id="showJa" style="font-size:clamp(18px,8vw,52px);font-weight:700;color:#0B1423;line-height:1.5;margin-bottom:10px;word-break:break-word;overflow-wrap:break-word;width:100%;hyphens:auto"></div>
+  <div id="showRo" style="font-size:15px;color:#0A7E8C;margin-bottom:12px;letter-spacing:0.3px;word-break:break-word;width:100%"></div>
+  <div id="showEn" style="font-size:15px;color:#888888;margin-bottom:16px;word-break:break-word;width:100%"></div>
+  <button id="showListen" style="background:#0B1423;color:#3DD68C;border:2px solid #0B1423;border-radius:14px;padding:14px 32px;font-size:16px;font-weight:600;cursor:pointer;-webkit-appearance:none;min-width:160px;margin-bottom:12px">&#127911; Listen</button>
+  <button id="showClose" style="background:transparent;color:#aaaaaa;border:1.5px solid #dddddd;border-radius:14px;padding:12px 32px;font-size:15px;font-weight:500;cursor:pointer;-webkit-appearance:none;min-width:160px">Close</button>
+</div>
+
+<!-- ONBOARDING OVERLAY -->
+<div id="onboardingOverlay" style="display:none">
+  <div class="ob-sheet" id="onboardingSheet">
+    <!-- Step 1: GPS permission request -->
+    <div id="obStepGps">
+      <div class="ob-rabbit">🐰</div>
+      <div class="ob-title">Hi! I'm your language guide</div>
+      <div class="ob-body">To get you the right phrases instantly, I'd love to know where you are. Can I check your location?</div>
+      <button class="ob-btn-primary" onclick="obRequestGps()">📍 Use my location</button>
+      <button class="ob-btn-secondary" onclick="obShowDestPicker()">Choose destination instead</button>
+    </div>
+
+    <!-- Step 2a: Language confirmation (GPS success) -->
+    <div id="obStepConfirm" style="display:none">
+      <div class="ob-rabbit">🐰</div>
+      <div class="ob-title">Looks like you're in <span id="obCountryName"></span>!</div>
+      <div class="ob-flag" id="obLangFlag"></div>
+      <div class="ob-lang" id="obLangName"></div>
+      <div class="ob-body">Shall I set this as your translation language?</div>
+      <button class="ob-btn-primary" onclick="obConfirmLanguage()">✓ Yes, perfect</button>
+      <button class="ob-btn-secondary" onclick="obShowDestPicker()">Choose a different language</button>
+    </div>
+
+    <!-- Step 2b: Destination picker (GPS denied or manual) -->
+    <div id="obStepPicker" style="display:none">
+      <div class="ob-rabbit">🐰</div>
+      <div class="ob-title">Where are you headed?</div>
+      <div class="ob-body" style="margin-bottom:14px">I'll load the right phrases for you.</div>
+      <div class="ob-picker" id="obDestGrid"></div>
+      <button class="ob-btn-secondary" onclick="obSkip()">Skip for now</button>
+    </div>
+
+    <!-- Step 3: All set -->
+    <div id="obStepDone" style="display:none">
+      <div class="ob-rabbit">🐰</div>
+      <div class="ob-title">You're all set!</div>
+      <div class="ob-body">I've loaded your phrases. Tap <strong style="color:var(--green)">Check in</strong> when you arrive somewhere and I'll appear with exactly what you need. 🍜</div>
+      <button class="ob-btn-primary" onclick="obFinish()">Let's go →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MY LIBRARY PANEL -->
+<div id="libraryPanel" style="display:none;position:fixed;inset:0;z-index:700;background:var(--navy);overflow-y:auto;-webkit-overflow-scrolling:touch">
+  <!-- Header -->
+  <div style="background:var(--mid);padding:52px 16px 14px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1">
+    <div style="font-size:16px;font-weight:700;color:var(--white)">&#127775; My Library</div>
+    <button onclick="closeLibrary()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;-webkit-appearance:none;padding:4px">&#10005;</button>
+  </div>
+  <div style="padding:14px" id="libraryBody"></div>
+</div>
+
+<!-- SETTINGS PANEL -->
+<div id="settingsOverlay" onclick="closeSettings()"></div>
+<div id="settingsPanel">
+  <div class="sp-header">
+    <div class="sp-title">&#128196; Session review</div>
+    <button class="sp-close" onclick="closeSettings()">&#10005;</button>
+  </div>
+  <div class="sp-body" id="settingsPanelBody">
+    <!-- Stats injected here -->
+  </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// CONFIGURATION — replace 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 with your Anthropic API key
+// ─────────────────────────────────────────────────────────────────────────────
+var API_KEY = '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';
+var GOOGLE_PLACES_KEY = 'AIzaSyBoX2edisHVmBg7C0W4_NGcokLbWMSrP9U';
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Full multilingual phrase library
+// Each item has: en, ja, zh, zht, vi, pt, es, id (romanisation where needed)
+var LANG_CONFIG = {
+  'ja': { name:'Japanese', flag:'🇯🇵', speech:'ja-JP', ro:true },
+  'zh': { name:'Mandarin (Simplified)', flag:'🇨🇳', speech:'zh-CN', ro:true },
+  'zht':{ name:'Mandarin (Traditional)', flag:'🇹🇼', speech:'zh-TW', ro:true },
+  'vi': { name:'Vietnamese', flag:'🇻🇳', speech:'vi-VN', ro:false },
+  'th': { name:'Thai', flag:'🇹🇭', speech:'th-TH', ro:true },
+  'tl': { name:'Tagalog', flag:'🇵🇭', speech:'fil-PH', ro:false },
+  'km': { name:'Khmer (Cambodian)', flag:'🇰🇭', speech:'km-KH', ro:true },
+  'bn': { name:'Bengali (Bangla)', flag:'🇧🇩', speech:'bn-BD', ro:true },
+  'pt': { name:'Portuguese', flag:'🇧🇷', speech:'pt-BR', ro:false },
+  'es': { name:'Spanish', flag:'🇪🇸', speech:'es-ES', ro:false },
+  'id': { name:'Bahasa Indonesia', flag:'🇮🇩', speech:'id-ID', ro:false },
+  'en': { name:'English', flag:'🇺🇸', speech:'en-US', ro:false },
+};
+
+// Source languages (what the user speaks)
+var SRC_LANGS = ['en','ja','zh','zht','vi','th','tl','km','bn','pt','es','id'];
+
+// ── COUNTRY → LANGUAGE MAPPING ──────────────────────────────────────────────
+var COUNTRY_LANG_MAP = {
+  // Single clear mapping
+  'JP': {tgt:'ja', name:'Japanese',     flag:'🇯🇵', confidence:'high'},
+  'CN': {tgt:'zh', name:'Mandarin',     flag:'🇨🇳', confidence:'high'},
+  'TW': {tgt:'zht',name:'Mandarin',     flag:'🇹🇼', confidence:'high'},
+  'VN': {tgt:'vi', name:'Vietnamese',   flag:'🇻🇳', confidence:'high'},
+  'TH': {tgt:'th', name:'Thai',         flag:'🇹🇭', confidence:'high'},
+  'PH': {tgt:'tl', name:'Tagalog',      flag:'🇵🇭', confidence:'high'},
+  'KH': {tgt:'km', name:'Khmer',        flag:'🇰🇭', confidence:'high'},
+  'BD': {tgt:'bn', name:'Bengali',      flag:'🇧🇩', confidence:'high'},
+  'BR': {tgt:'pt', name:'Portuguese',   flag:'🇧🇷', confidence:'high'},
+  'PT': {tgt:'pt', name:'Portuguese',   flag:'🇵🇹', confidence:'high'},
+  'MX': {tgt:'es', name:'Spanish',      flag:'🇲🇽', confidence:'high'},
+  'ES': {tgt:'es', name:'Spanish',      flag:'🇪🇸', confidence:'high'},
+  'ID': {tgt:'id', name:'Indonesian',   flag:'🇮🇩', confidence:'high'},
+  'SG': {tgt:'zh', name:'Mandarin',     flag:'🇸🇬', confidence:'medium'}, // ask — could be English
+  'MY': {tgt:'id', name:'Malay/Bahasa', flag:'🇲🇾', confidence:'medium'},
+  'KR': {tgt:null, name:null,           flag:'🇰🇷', confidence:'low'},    // Korean — not yet supported
+  // English-speaking countries — infer src=en, can't know tgt
+  'US': {tgt:null, name:null, flag:'🇺🇸', confidence:'low'},
+  'AU': {tgt:null, name:null, flag:'🇦🇺', confidence:'low'},
+  'GB': {tgt:null, name:null, flag:'🇬🇧', confidence:'low'},
+  'CA': {tgt:null, name:null, flag:'🇨🇦', confidence:'low'},
+  'NZ': {tgt:null, name:null, flag:'🇳🇿', confidence:'low'},
+};
+
+// ── ONBOARDING STATE ─────────────────────────────────────────────────────────
+var ONBOARDING_KEY = 'vurba_onboarded';
+var isFirstLaunch = !localStorage.getItem(ONBOARDING_KEY);
+var detectedCountry = null;
+
+var PHRASES_SHOPPING = [
+  {cat:'Entering & browsing', items:[
+    {
+      en:"Just looking, thank you",
+      ja:'見ているだけです、ありがとう', ja_ro:'Mite iru dake desu, arigatou',
+      zh:'我只是看看，谢谢', zh_ro:'Wǒ zhǐshì kànkan, xièxie',
+      zht:'我只是看看，謝謝', zht_ro:'Wǒ zhǐshì kànkan, xièxie',
+      vi:'Tôi chỉ xem thôi, cảm ơn',
+      pt:'Só estou olhando, obrigado',
+      es:'Solo estoy mirando, gracias',
+      id:'Saya hanya melihat-lihat, terima kasih',
+      th:'แค่ดูก่อนครับ/ค่ะ ขอบคุณ', th_ro:'Khae du kon khrap/kha khopkhun',
+      tl:'Tinitingnan lang, salamat',
+      km:'ខ្ញុំគ្រាន់តែមើល សូមអរគុណ', km_ro:'khnhom kroan tae meul, som arkun',
+      bn:'শুধু দেখছি, ধন্যবাদ', bn_ro:'shudhu dekhchi, dhonnobad',
+    },
+    {
+      en:'Do you have this in other colours?',
+      ja:'他の色はありますか？', ja_ro:'Hoka no iro wa arimasu ka?',
+      zh:'这个有其他颜色吗？', zh_ro:'Zhège yǒu qítā yánsè ma?',
+      zht:'這個有其他顏色嗎？', zht_ro:'Zhège yǒu qítā yánsè ma?',
+      vi:'Cái này có màu khác không?',
+      pt:'Tem outras cores?',
+      es:'¿Tiene otros colores?',
+      id:'Apakah ada warna lain?',
+      th:'มีสีอื่นไหมครับ/ค่ะ', th_ro:'Mi si uen mai khrap/kha',
+      tl:'Mayroon ba itong ibang kulay?',
+      km:'នេះមានពណ៌ផ្សេងទៀតទេ?', km_ro:'nih mean poa pseh tiet te?',
+      bn:'এটা কি অন্য রঙে আছে?', bn_ro:'eta ki onyo ronge ache?',
+    },
+    {
+      en:'Do you have a bigger size?',
+      ja:'もっと大きいサイズはありますか？', ja_ro:'Motto ōkii saizu wa arimasu ka?',
+      zh:'有更大的尺码吗？', zh_ro:'Yǒu gèng dà de chǐmǎ ma?',
+      zht:'有更大的尺碼嗎？', zht_ro:'Yǒu gèng dà de chǐmǎ ma?',
+      vi:'Có size lớn hơn không?',
+      pt:'Tem um tamanho maior?',
+      es:'¿Tiene una talla más grande?',
+      id:'Ada ukuran yang lebih besar?',
+      th:'มีไซส์ใหญ่กว่านี้ไหมครับ/ค่ะ', th_ro:'Mi sai yai kwa ni mai khrap/kha',
+      tl:'Mayroon ba kayong mas malaking sukat?',
+      km:'មានទំហំធំជាងនេះទេ?', km_ro:'mean tomhom thom cheang nih te?',
+      bn:'এর চেয়ে বড় সাইজ আছে?', bn_ro:'er cheye boro size ache?',
+    },
+    {
+      en:'Do you have a smaller size?',
+      ja:'もっと小さいサイズはありますか？', ja_ro:'Motto chīsai saizu wa arimasu ka?',
+      zh:'有更小的尺码吗？', zh_ro:'Yǒu gèng xiǎo de chǐmǎ ma?',
+      zht:'有更小的尺碼嗎？', zht_ro:'Yǒu gèng xiǎo de chǐmǎ ma?',
+      vi:'Có size nhỏ hơn không?',
+      pt:'Tem um tamanho menor?',
+      es:'¿Tiene una talla más pequeña?',
+      id:'Ada ukuran yang lebih kecil?',
+      th:'มีไซส์เล็กกว่านี้ไหมครับ/ค่ะ', th_ro:'Mi sai lek kwa ni mai khrap/kha',
+      tl:'Mayroon ba kayong mas maliit na sukat?',
+      km:'មានទំហំតូចជាងនេះទេ?', km_ro:'mean tomhom toch cheang nih te?',
+      bn:'এর চেয়ে ছোট সাইজ আছে?', bn_ro:'er cheye chhoto size ache?',
+    },
+    {
+      en:'Where are the fitting rooms?',
+      ja:'試着室はどこですか？', ja_ro:'Shichakushitsu wa doko desu ka?',
+      zh:'试衣间在哪里？', zh_ro:'Shì yī jiān zài nǎlǐ?',
+      zht:'試衣間在哪裡？', zht_ro:'Shì yī jiān zài nǎlǐ?',
+      vi:'Phòng thử đồ ở đâu?',
+      pt:'Onde ficam os provadores?',
+      es:'¿Dónde están los probadores?',
+      id:'Di mana ruang ganti pakaian?',
+      th:'ห้องลองอยู่ที่ไหนครับ/ค่ะ', th_ro:'Hong long yu thi nai khrap/kha',
+      tl:'Nasaan ang fitting rooms?',
+      km:'បន្ទប់着ូរនៅឯណា?', km_ro:'bantob thoo nov ae na?',
+      bn:'ফিটিং রুম কোথায়?', bn_ro:'fitting room kothay?',
+    },
+  ]},
+  {cat:'Price & discounts', items:[
+    {
+      en:'How much does this cost?',
+      ja:'これはいくらですか？', ja_ro:'Kore wa ikura desu ka?',
+      zh:'这个多少钱？', zh_ro:'Zhège duōshǎo qián?',
+      zht:'這個多少錢？', zht_ro:'Zhège duōshǎo qián?',
+      vi:'Cái này bao nhiêu tiền?',
+      pt:'Quanto custa isso?',
+      es:'¿Cuánto cuesta esto?',
+      id:'Ini harganya berapa?',
+      th:'สิ่งนี้ราคาเท่าไรครับ/ค่ะ', th_ro:'Sing ni rakha thaorai khrap/kha',
+      tl:'Magkano ito?',
+      km:'នេះថ្លៃប៉ុន្មាន?', km_ro:'nih thlai ponman?',
+      bn:'এটার দাম কত?', bn_ro:'etar daam koto?',
+    },
+    {
+      en:'Is there a discount?',
+      ja:'割引はありますか？', ja_ro:'Waribiki wa arimasu ka?',
+      zh:'有折扣吗？', zh_ro:'Yǒu zhékòu ma?',
+      zht:'有折扣嗎？', zht_ro:'Yǒu zhékòu ma?',
+      vi:'Có giảm giá không?',
+      pt:'Tem desconto?',
+      es:'¿Hay descuento?',
+      id:'Ada diskon?',
+      th:'มีส่วนลดไหมครับ/ค่ะ', th_ro:'Mi suan lot mai',
+      tl:'May diskwento ba?',
+      th:'มีส่วนลดไหมครับ/ค่ะ', th_ro:'Mi suan lot mai khrap/kha',
+      tl:'Mayroon bang diskwento?',
+      km:'មានបញ្ចុះតម្លៃទេ?', km_ro:'mean banhchoh tomlay te?',
+      bn:'কোনো ছাড় আছে?', bn_ro:'kono chhaar ache?',
+    },
+    {
+      en:'Is this on sale?',
+      ja:'セール中ですか？', ja_ro:'Sēru-chū desu ka?',
+      zh:'这个在打折吗？', zh_ro:'Zhège zài dǎzhé ma?',
+      zht:'這個在打折嗎？', zht_ro:'Zhège zài dǎzhé ma?',
+      vi:'Cái này đang giảm giá không?',
+      pt:'Isso está em promoção?',
+      es:'¿Está en oferta?',
+      id:'Ini sedang diskon?',
+    },
+    {
+      en:'Can you give me a better price?',
+      ja:'もう少し安くなりますか？', ja_ro:'Mō sukoshi yasuku narimasu ka?',
+      zh:'能便宜一点吗？', zh_ro:'Néng piányí yīdiǎn ma?',
+      zht:'能便宜一點嗎？', zht_ro:'Néng piányí yīdiǎn ma?',
+      vi:'Bạn có thể bớt giá không?',
+      pt:'Pode fazer um preço melhor?',
+      es:'¿Puede darme un mejor precio?',
+      id:'Bisa lebih murah?',
+    },
+    {
+      en:'Do you have a tax refund form?',
+      ja:'免税の手続きはできますか？', ja_ro:'Menzei no tetsuzuki wa dekimasu ka?',
+      zh:'有退税表格吗？', zh_ro:'Yǒu tuìshuì biǎogé ma?',
+      zht:'有退稅表格嗎？', zht_ro:'Yǒu tuìshuì biǎogé ma?',
+      vi:'Bạn có mẫu hoàn thuế không?',
+      pt:'Tem formulário de reembolso de imposto?',
+      es:'¿Tiene formulario de devolución de impuestos?',
+      id:'Ada formulir pengembalian pajak?',
+    },
+  ]},
+  {cat:'Finding items', items:[
+    {
+      en:'Where can I find this?',
+      ja:'これはどこにありますか？', ja_ro:'Kore wa doko ni arimasu ka?',
+      zh:'这个在哪里找？', zh_ro:'Zhège zài nǎlǐ zhǎo?',
+      zht:'這個在哪裡找？', zht_ro:'Zhège zài nǎlǐ zhǎo?',
+      vi:'Tôi có thể tìm thấy cái này ở đâu?',
+      pt:'Onde posso encontrar isso?',
+      es:'¿Dónde puedo encontrar esto?',
+      id:'Di mana saya bisa menemukan ini?',
+    },
+    {
+      en:'Do you sell electronics?',
+      ja:'電化製品はありますか？', ja_ro:'Denkaseihin wa arimasu ka?',
+      zh:'你们卖电子产品吗？', zh_ro:'Nǐmen mài diànzǐ chǎnpǐn ma?',
+      zht:'你們賣電子產品嗎？', zht_ro:'Nǐmen mài diànzǐ chǎnpǐn ma?',
+      vi:'Bạn có bán đồ điện tử không?',
+      pt:'Vocês vendem eletrônicos?',
+      es:'¿Venden electrónicos?',
+      id:'Apakah Anda menjual elektronik?',
+    },
+    {
+      en:'Is this genuine / authentic?',
+      ja:'これは本物ですか？', ja_ro:'Kore wa honmono desu ka?',
+      zh:'这是正品吗？', zh_ro:'Zhè shì zhèngpǐn ma?',
+      zht:'這是正品嗎？', zht_ro:'Zhè shì zhèngpǐn ma?',
+      vi:'Đây có phải hàng thật không?',
+      pt:'Isso é original / autêntico?',
+      es:'¿Es auténtico / original?',
+      id:'Apakah ini asli?',
+    },
+    {
+      en:'Do you have a gift box?',
+      ja:'ギフト用の箱はありますか？', ja_ro:'Gifuto-yō no hako wa arimasu ka?',
+      zh:'有礼品盒吗？', zh_ro:'Yǒu lǐpǐn hé ma?',
+      zht:'有禮品盒嗎？', zht_ro:'Yǒu lǐpǐn hé ma?',
+      vi:'Bạn có hộp quà không?',
+      pt:'Tem caixa de presente?',
+      es:'¿Tienen caja de regalo?',
+      id:'Ada kotak hadiah?',
+    },
+  ]},
+  {cat:'Buying & payment', items:[
+    {
+      en:"I'll take this one",
+      ja:'これをいただきます', ja_ro:'Kore o itadakimasu',
+      zh:'我买这个', zh_ro:'Wǒ mǎi zhège',
+      zht:'我買這個', zht_ro:'Wǒ mǎi zhège',
+      vi:'Tôi mua cái này',
+      pt:'Vou levar esse',
+      es:'Me llevo este',
+      id:'Saya ambil yang ini',
+    },
+    {
+      en:'Can I pay by card?',
+      ja:'カードで払えますか？', ja_ro:'Kādo de harae masu ka?',
+      zh:'可以刷卡吗？', zh_ro:'Kěyǐ shuākǎ ma?',
+      zht:'可以刷卡嗎？', zht_ro:'Kěyǐ shuākǎ ma?',
+      vi:'Tôi có thể trả bằng thẻ không?',
+      pt:'Posso pagar com cartão?',
+      es:'¿Puedo pagar con tarjeta?',
+      id:'Bisa bayar pakai kartu?',
+      th:'จ่ายด้วยบัตรได้ไหมครับ/ค่ะ', th_ro:'Chai duai bat dai mai khrap/kha',
+      tl:'Maaari ba akong magbayad gamit ang card?',
+      km:'ខ្ញុំអាចបង់ដោយប័ណ្ណទេ?', km_ro:'khnhom ach bong doy ban te?',
+      bn:'কার্ড দিয়ে কি দেওয়া যাবে?', bn_ro:'card diye ki dewa jabe?',
+    },
+    {
+      en:'Do you accept contactless payment?',
+      ja:'タッチ決済は使えますか？', ja_ro:'Tatchi kessai wa tsukaemasu ka?',
+      zh:'支持非接触式支付吗？', zh_ro:'Zhīchí fēi jiēchùshì zhīfù ma?',
+      zht:'支援非接觸式支付嗎？', zht_ro:'Zhīchí fēi jiēchùshì zhīfù ma?',
+      vi:'Bạn có chấp nhận thanh toán không tiếp xúc không?',
+      pt:'Aceitam pagamento por aproximação?',
+      es:'¿Aceptan pago sin contacto?',
+      id:'Apakah menerima pembayaran contactless?',
+      th:'รับการชำระแบบไร้สัมผัสไหมครับ/ค่ะ', th_ro:'Rap kan chamra baep rai samphat mai khrap/kha',
+      tl:'Tumatanggap ba kayo ng contactless payment?',
+    },
+    {
+      en:'Can I get a receipt?',
+      ja:'領収書をもらえますか？', ja_ro:'Ryōshūsho o morae masu ka?',
+      zh:'可以给我收据吗？', zh_ro:'Kěyǐ gěi wǒ shōujù ma?',
+      zht:'可以給我收據嗎？', zht_ro:'Kěyǐ gěi wǒ shōujù ma?',
+      vi:'Tôi có thể nhận hóa đơn không?',
+      pt:'Pode me dar um recibo?',
+      es:'¿Me puede dar un recibo?',
+      id:'Boleh minta kwitansi?',
+    },
+  ]},
+  {cat:'Returns & problems', items:[
+    {
+      en:'I would like to return this',
+      ja:'これを返品したいのですが', ja_ro:'Kore o henpin shitai no desu ga',
+      zh:'我想退货', zh_ro:'Wǒ xiǎng tuìhuò',
+      zht:'我想退貨', zht_ro:'Wǒ xiǎng tuìhuò',
+      vi:'Tôi muốn trả lại cái này',
+      pt:'Gostaria de devolver isso',
+      es:'Me gustaría devolver esto',
+      id:'Saya ingin mengembalikan ini',
+      th:'ฉันต้องการคืนสินค้าครับ/ค่ะ', th_ro:'Chan tongkan khuen sinkha khrap/kha',
+      tl:'Gusto kong ibalik ito',
+      km:'ខ្ញុំចង់ប្រគល់វាមកវិញ', km_ro:'khnhom chong prokol vea mok vinh',
+      bn:'আমি এটা ফেরত দিতে চাই', bn_ro:'ami eta ferot dite chai',
+    },
+    {
+      en:'This is defective / broken',
+      ja:'これは不良品です', ja_ro:'Kore wa furyōhin desu',
+      zh:'这个有问题/坏了', zh_ro:'Zhège yǒu wèntí / huài le',
+      zht:'這個有問題/壞了', zht_ro:'Zhège yǒu wèntí / huài le',
+      vi:'Cái này bị lỗi / hỏng',
+      pt:'Isso está com defeito / quebrado',
+      es:'Esto está defectuoso / roto',
+      id:'Ini cacat / rusak',
+    },
+    {
+      en:'Can I exchange this?',
+      ja:'交換できますか？', ja_ro:'Kōkan dekimasu ka?',
+      zh:'可以换货吗？', zh_ro:'Kěyǐ huànhuò ma?',
+      zht:'可以換貨嗎？', zht_ro:'Kěyǐ huànhuò ma?',
+      vi:'Tôi có thể đổi cái này không?',
+      pt:'Posso trocar isso?',
+      es:'¿Puedo cambiarlo?',
+      id:'Boleh ditukar?',
+    },
+    {
+      en:'What is your return policy?',
+      ja:'返品ポリシーを教えてください', ja_ro:'Henpin porishī o oshiete kudasai',
+      zh:'你们的退货政策是什么？', zh_ro:'Nǐmen de tuìhuò zhèngcè shì shénme?',
+      zht:'你們的退貨政策是什麼？', zht_ro:'Nǐmen de tuìhuò zhèngcè shì shénme?',
+      vi:'Chính sách đổi trả của bạn là gì?',
+      pt:'Qual é a política de devolução?',
+      es:'¿Cuál es la política de devoluciones?',
+      id:'Apa kebijakan pengembalian barang?',
+    },
+  ]},
+];
+
+var PHRASES_MEDICAL = [
+  {cat:'Describing symptoms', items:[
+    {en:'I feel sick',ja:'気分が悪いです',ja_ro:'Kibun ga warui desu',zh:'我不舒服',zh_ro:'Wǒ bù shūfu',zht:'我不舒服',zht_ro:'Wǒ bù shūfu',vi:'Tôi cảm thấy không khỏe',pt:'Eu não estou me sentindo bem',es:'Me siento mal',id:'Saya merasa tidak enak badan'},
+    {en:'I have a fever',ja:'熱があります',ja_ro:'Netsu ga arimasu',zh:'我发烧了',zh_ro:'Wǒ fāshāo le',zht:'我發燒了',zht_ro:'Wǒ fāshāo le',vi:'Tôi bị sốt',pt:'Estou com febre',es:'Tengo fiebre',id:'Saya demam'},
+    {en:'My throat is sore',ja:'のどが痛いです',ja_ro:'Nodo ga itai desu',zh:'我喉咙痛',zh_ro:'Wǒ hóulóng tòng',zht:'我喉嚨痛',zht_ro:'Wǒ hóulóng tòng',vi:'Tôi bị đau họng',pt:'Minha garganta está doendo',es:'Me duele la garganta',id:'Tenggorokan saya sakit'},
+    {en:'I have a headache',ja:'頭が痛いです',ja_ro:'Atama ga itai desu',zh:'我头疼',zh_ro:'Wǒ tóuténg',zht:'我頭疼',zht_ro:'Wǒ tóuténg',vi:'Tôi bị đau đầu',pt:'Estou com dor de cabeça',es:'Tengo dolor de cabeza',id:'Saya sakit kepala'},
+    {en:'It hurts here',ja:'ここが痛いです',ja_ro:'Koko ga itai desu',zh:'这里痛',zh_ro:'Zhèlǐ tòng',zht:'這裡痛',zht_ro:'Zhèlǐ tòng',vi:'Chỗ này đau',pt:'Dói aqui',es:'Me duele aquí',id:'Di sini terasa sakit'},
+    {en:'I cannot sleep well',ja:'よく眠れません',ja_ro:'Yoku nemuremasen',zh:'我睡不好',zh_ro:'Wǒ shuì bù hǎo',zht:'我睡不好',zht_ro:'Wǒ shuì bù hǎo',vi:'Tôi không ngủ được',pt:'Não consigo dormir bem',es:'No puedo dormir bien',id:'Saya tidak bisa tidur nyenyak'},
+  ]},
+  {cat:'At the clinic', items:[
+    {en:'I need to see a doctor',ja:'医者に診てもらいたいです',ja_ro:'Isha ni mite moraitai desu',zh:'我需要看医生',zh_ro:'Wǒ xūyào kàn yīshēng',zht:'我需要看醫生',zht_ro:'Wǒ xūyào kàn yīshēng',vi:'Tôi cần gặp bác sĩ',pt:'Preciso ver um médico',es:'Necesito ver a un médico',id:'Saya perlu ke dokter'},
+    {en:'I have an appointment',ja:'予約があります',ja_ro:'Yoyaku ga arimasu',zh:'我有预约',zh_ro:'Wǒ yǒu yùyuē',zht:'我有預約',zht_ro:'Wǒ yǒu yùyuē',vi:'Tôi có lịch hẹn',pt:'Tenho uma consulta marcada',es:'Tengo una cita',id:'Saya punya janji'},
+    {en:'I am allergic to this medicine',ja:'この薬にアレルギーがあります',ja_ro:'Kono kusuri ni arerugī ga arimasu',zh:'我对这种药过敏',zh_ro:'Wǒ duì zhè zhǒng yào guòmǐn',zht:'我對這種藥過敏',zht_ro:'Wǒ duì zhè zhǒng yào guòmǐn',vi:'Tôi bị dị ứng với thuốc này',pt:'Sou alérgico a este remédio',es:'Soy alérgico a este medicamento',id:'Saya alergi obat ini'},
+    {en:'How many times a day do I take this?',ja:'これは一日何回飲みますか？',ja_ro:'Kore wa ichinichi nankai nomimasu ka?',zh:'这个一天吃几次？',zh_ro:'Zhège yītiān chī jǐ cì?',zht:'這個一天吃幾次？',zht_ro:'Zhège yītiān chī jǐ cì?',vi:'Uống thuốc này mấy lần một ngày?',pt:'Quantas vezes por dia tomo isso?',es:'¿Cuántas veces al día tomo esto?',id:'Obat ini diminum berapa kali sehari?'},
+    {en:'Please call an ambulance',ja:'救急車を呼んでください',ja_ro:'Kyūkyūsha o yonde kudasai',zh:'请叫救护车',zh_ro:'Qǐng jiào jiùhùchē',zht:'請叫救護車',zht_ro:'Qǐng jiào jiùhùchē',vi:'Xin hãy gọi xe cấp cứu',pt:'Por favor, chame uma ambulância',es:'Por favor llame a una ambulancia',id:'Tolong panggil ambulans'},
+  ]},
+  {cat:'Insurance & payment', items:[
+    {en:'I have health insurance',ja:'健康保険があります',ja_ro:'Kenkō hoken ga arimasu',zh:'我有医疗保险',zh_ro:'Wǒ yǒu yīliáo bǎoxiǎn',zht:'我有醫療保險',zht_ro:'Wǒ yǒu yīliáo bǎoxiǎn',vi:'Tôi có bảo hiểm y tế',pt:'Tenho seguro de saúde',es:'Tengo seguro médico',id:'Saya punya asuransi kesehatan'},
+    {en:'Can I get a receipt for insurance?',ja:'保険用の領収書をもらえますか？',ja_ro:'Hoken-yō no ryōshūsho o moraemasu ka?',zh:'可以给我保险用的收据吗？',zh_ro:'Kěyǐ gěi wǒ bǎoxiǎn yòng de shōujù ma?',zht:'可以給我保險用的收據嗎？',zht_ro:'Kěyǐ gěi wǒ bǎoxiǎn yòng de shōujù ma?',vi:'Cho tôi xin hóa đơn để bảo hiểm thanh toán được không?',pt:'Posso receber um recibo para o seguro?',es:'¿Puedo obtener un recibo para el seguro?',id:'Boleh minta kwitansi untuk asuransi?'},
+  ]},
+];
+
+var PHRASES_TRANSPORT = [
+  {cat:'Getting around', items:[
+    {en:'Does this bus go to the station?',ja:'このバスは駅に行きますか？',ja_ro:'Kono basu wa eki ni ikimasu ka?',zh:'这辆公交车去车站吗？',zh_ro:'Zhè liàng gōngjiāochē qù chēzhàn ma?',zht:'這輛公交車去車站嗎？',zht_ro:'Zhè liàng gōngjiāochē qù chēzhàn ma?',vi:'Xe buýt này có đi đến ga không?',pt:'Este ônibus vai para a estação?',es:'¿Este autobús va a la estación?',id:'Apakah bus ini ke stasiun?'},
+    {en:'Which platform for the airport?',ja:'空港は何番ホームですか？',ja_ro:'Kūkō wa nanban hōmu desu ka?',zh:'去机场在几号站台？',zh_ro:'Qù jīchǎng zài jǐ hào zhàntái?',zht:'去機場在幾號站台？',zht_ro:'Qù jīchǎng zài jǐ hào zhàntái?',vi:'Sân bay đi từ sân ga số mấy?',pt:'Qual plataforma para o aeroporto?',es:'¿Qué andén para el aeropuerto?',id:'Peron berapa untuk ke bandara?'},
+    {en:'One ticket to Shinjuku please',ja:'新宿まで一枚ください',ja_ro:'Shinjuku made ichimai kudasai',zh:'请给我一张去新宿的票',zh_ro:'Qǐng gěi wǒ yī zhāng qù Xīnsù de piào',zht:'請給我一張去新宿的票',zht_ro:'Qǐng gěi wǒ yī zhāng qù Xīnsù de piào',vi:'Cho tôi một vé đến Shinjuku',pt:'Um bilhete para Shinjuku, por favor',es:'Un billete a Shinjuku, por favor',id:'Satu tiket ke Shinjuku'},
+    {en:'How many stops to the next station?',ja:'次の駅まで何駅ありますか？',ja_ro:'Tsugi no eki made nan-eki arimasu ka?',zh:'到下一站还有几站？',zh_ro:'Dào xià yī zhàn hái yǒu jǐ zhàn?',zht:'到下一站還有幾站？',zht_ro:'Dào xià yī zhàn hái yǒu jǐ zhàn?',vi:'Còn mấy trạm nữa đến ga tiếp theo?',pt:'Quantas paradas até a próxima estação?',es:'¿Cuántas paradas hasta la siguiente estación?',id:'Berapa halte lagi ke stasiun berikutnya?'},
+    {en:'Please stop here',ja:'ここで止めてください',ja_ro:'Koko de tomete kudasai',zh:'请在这里停',zh_ro:'Qǐng zài zhèlǐ tíng',zht:'請在這裡停',zht_ro:'Qǐng zài zhèlǐ tíng',vi:'Cho tôi xuống đây',pt:'Por favor, pare aqui',es:'Por favor, pare aquí',id:'Tolong berhenti di sini'},
+  ]},
+  {cat:'Asking directions', items:[
+    {en:'How do I get to the hospital?',ja:'病院にはどうやって行けばいいですか？',ja_ro:'Byōin ni wa dō yatte ikeba ii desu ka?',zh:'怎么去医院？',zh_ro:'Zěnme qù yīyuàn?',zht:'怎麼去醫院？',zht_ro:'Zěnme qù yīyuàn?',vi:'Làm sao để đến bệnh viện?',pt:'Como chego ao hospital?',es:'¿Cómo llego al hospital?',id:'Bagaimana cara ke rumah sakit?'},
+    {en:'Is it far from here?',ja:'ここから遠いですか？',ja_ro:'Koko kara tōi desu ka?',zh:'离这里远吗？',zh_ro:'Lí zhèlǐ yuǎn ma?',zht:'離這裡遠嗎？',zht_ro:'Lí zhèlǐ yuǎn ma?',vi:'Từ đây có xa không?',pt:'É longe daqui?',es:'¿Está lejos de aquí?',id:'Jauh dari sini?'},
+    {en:'Please show me on the map',ja:'地図で教えてください',ja_ro:'Chizu de oshiete kudasai',zh:'请在地图上指给我看',zh_ro:'Qǐng zài dìtú shàng zhǐ gěi wǒ kàn',zht:'請在地圖上指給我看',zht_ro:'Qǐng zài dìtú shàng zhǐ gěi wǒ kàn',vi:'Vui lòng chỉ cho tôi trên bản đồ',pt:'Por favor, mostre no mapa',es:'Por favor, muéstrame en el mapa',id:'Tolong tunjukkan di peta'},
+    {en:'I am lost',ja:'道に迷いました',ja_ro:'Michi ni mayoimashita',zh:'我迷路了',zh_ro:'Wǒ mí lù le',zht:'我迷路了',zht_ro:'Wǒ mí lù le',vi:'Tôi bị lạc đường',pt:'Estou perdido',es:'Estoy perdido',id:'Saya tersesat'},
+    {en:'Turn left at the next corner',ja:'次の角を左に曲がってください',ja_ro:'Tsugi no kado o hidari ni magatte kudasai',zh:'在下一个路口左转',zh_ro:'Zài xià yīgè lùkǒu zuǒ zhuǎn',zht:'在下一個路口左轉',zht_ro:'Zài xià yīgè lùkǒu zuǒ zhuǎn',vi:'Rẽ trái ở góc tiếp theo',pt:'Vire à esquerda na próxima esquina',es:'Gire a la izquierda en la próxima esquina',id:'Belok kiri di tikungan berikutnya'},
+  ]},
+  {cat:'Taxis & rideshare', items:[
+    {en:'Please take me to this address',ja:'この住所に連れて行ってください',ja_ro:'Kono jūsho ni tsurete itte kudasai',zh:'请带我去这个地址',zh_ro:'Qǐng dài wǒ qù zhège dìzhǐ',zht:'請帶我去這個地址',zht_ro:'Qǐng dài wǒ qù zhège dìzhǐ',vi:'Xin hãy đưa tôi đến địa chỉ này',pt:'Por favor, me leve a este endereço',es:'Por favor, lléveme a esta dirección',id:'Tolong antar saya ke alamat ini'},
+    {en:'How much to the airport?',ja:'空港までいくらですか？',ja_ro:'Kūkō made ikura desu ka?',zh:'去机场多少钱？',zh_ro:'Qù jīchǎng duōshǎo qián?',zht:'去機場多少錢？',zht_ro:'Qù jīchǎng duōshǎo qián?',vi:'Đến sân bay hết bao nhiêu?',pt:'Quanto custa até o aeroporto?',es:'¿Cuánto cuesta al aeropuerto?',id:'Berapa ke bandara?'},
+  ]},
+];
+
+var PHRASES_WORKPLACE = [
+  {cat:'Daily communication', items:[
+    {en:'Good morning, I have arrived',ja:'おはようございます、出勤しました',ja_ro:'Ohayō gozaimasu, shukkin shimashita',zh:'早上好，我来了',zh_ro:'Zǎoshang hǎo, wǒ lái le',zht:'早上好，我來了',zht_ro:'Zǎoshang hǎo, wǒ lái le',vi:'Chào buổi sáng, tôi đã đến rồi',pt:'Bom dia, cheguei',es:'Buenos días, ya llegué',id:'Selamat pagi, saya sudah datang'},
+    {en:'I will be a little late today',ja:'今日は少し遅れます',ja_ro:'Kyō wa sukoshi okuremasu',zh:'我今天会晚一点到',zh_ro:'Wǒ jīntiān huì wǎn yīdiǎn dào',zht:'我今天會晚一點到',zht_ro:'Wǒ jīntiān huì wǎn yīdiǎn dào',vi:'Hôm nay tôi sẽ đến muộn một chút',pt:'Vou me atrasar um pouco hoje',es:'Hoy llegaré un poco tarde',id:'Hari ini saya akan sedikit terlambat'},
+    {en:'I have finished my work',ja:'仕事が終わりました',ja_ro:'Shigoto ga owarimashita',zh:'我工作完成了',zh_ro:'Wǒ gōngzuò wánchéng le',zht:'我工作完成了',zht_ro:'Wǒ gōngzuò wánchéng le',vi:'Tôi đã hoàn thành công việc',pt:'Terminei meu trabalho',es:'He terminado mi trabajo',id:'Pekerjaan saya sudah selesai'},
+    {en:'What should I do next?',ja:'次は何をすればいいですか？',ja_ro:'Tsugi wa nani o sureba ii desu ka?',zh:'接下来我应该做什么？',zh_ro:'Jiēxiàlái wǒ yīnggāi zuò shénme?',zht:'接下來我應該做什麼？',zht_ro:'Jiēxiàlái wǒ yīnggāi zuò shénme?',vi:'Tiếp theo tôi phải làm gì?',pt:'O que devo fazer a seguir?',es:'¿Qué debo hacer ahora?',id:'Selanjutnya saya harus apa?'},
+    {en:'I do not understand, please explain again',ja:'わかりません、もう一度説明してください',ja_ro:'Wakarimasen, mō ichido setsumei shite kudasai',zh:'我不明白，请再解释一遍',zh_ro:'Wǒ bù míngbai, qǐng zài jiěshì yībiàn',zht:'我不明白，請再解釋一遍',zht_ro:'Wǒ bù míngbai, qǐng zài jiěshì yībiàn',vi:'Tôi không hiểu, xin giải thích lại',pt:'Não entendi, por favor explique novamente',es:'No entendí, por favor explique de nuevo',id:'Saya tidak mengerti, mohon dijelaskan lagi'},
+  ]},
+  {cat:'Requesting & reporting', items:[
+    {en:'May I take a day off?',ja:'休みをとってもいいですか？',ja_ro:'Yasumi o totte mo ii desu ka?',zh:'我可以请假吗？',zh_ro:'Wǒ kěyǐ qǐngjià ma?',zht:'我可以請假嗎？',zht_ro:'Wǒ kěyǐ qǐngjià ma?',vi:'Tôi có thể xin nghỉ không?',pt:'Posso tirar um dia de folga?',es:'¿Puedo tomar el día libre?',id:'Boleh saya izin tidak masuk?'},
+    {en:'I have completed the task',ja:'作業が完了しました',ja_ro:'Sagyō ga kanryō shimashita',zh:'任务完成了',zh_ro:'Rènwù wánchéng le',zht:'任務完成了',zht_ro:'Rènwù wánchéng le',vi:'Tôi đã hoàn thành nhiệm vụ',pt:'Concluí a tarefa',es:'He completado la tarea',id:'Tugas sudah selesai'},
+    {en:'There is a problem, please check',ja:'問題があります、確認してください',ja_ro:'Mondai ga arimasu, kakunin shite kudasai',zh:'有问题，请检查一下',zh_ro:'Yǒu wèntí, qǐng jiǎnchá yīxià',zht:'有問題，請檢查一下',zht_ro:'Yǒu wèntí, qǐng jiǎnchá yīxià',vi:'Có vấn đề, xin hãy kiểm tra',pt:'Há um problema, por favor verifique',es:'Hay un problema, por favor revise',id:'Ada masalah, tolong diperiksa'},
+    {en:'Where is the safety equipment?',ja:'安全装置はどこですか？',ja_ro:'Anzen sōchi wa doko desu ka?',zh:'安全设备在哪里？',zh_ro:'Ānquán shèbèi zài nǎlǐ?',zht:'安全設備在哪裡？',zht_ro:'Ānquán shèbèi zài nǎlǐ?',vi:'Thiết bị an toàn ở đâu?',pt:'Onde está o equipamento de segurança?',es:'¿Dónde está el equipo de seguridad?',id:'Di mana peralatan keselamatan?'},
+    {en:'I need help with this',ja:'これを手伝ってもらえますか？',ja_ro:'Kore o tetsudatte moraemasu ka?',zh:'我需要帮助',zh_ro:'Wǒ xūyào bāngzhù',zht:'我需要幫助',zht_ro:'Wǒ xūyào bāngzhù',vi:'Tôi cần giúp đỡ với cái này',pt:'Preciso de ajuda com isso',es:'Necesito ayuda con esto',id:'Saya perlu bantuan dengan ini'},
+  ]},
+  {cat:'Breaks & schedule', items:[
+    {en:'What time is the break?',ja:'休憩は何時ですか？',ja_ro:'Kyūkei wa nanji desu ka?',zh:'休息时间是几点？',zh_ro:'Xiūxi shíjiān shì jǐ diǎn?',zht:'休息時間是幾點？',zht_ro:'Xiūxi shíjiān shì jǐ diǎn?',vi:'Mấy giờ nghỉ giải lao?',pt:'Que horas é o intervalo?',es:'¿A qué hora es el descanso?',id:'Jam berapa istirahat?'},
+    {en:'What time do we finish today?',ja:'今日は何時に終わりますか？',ja_ro:'Kyō wa nanji ni owarimasu ka?',zh:'今天几点结束？',zh_ro:'Jīntiān jǐ diǎn jiéshù?',zht:'今天幾點結束？',zht_ro:'Jīntiān jǐ diǎn jiéshù?',vi:'Hôm nay mấy giờ tan ca?',pt:'Que horas terminamos hoje?',es:'¿A qué hora terminamos hoy?',id:'Hari ini selesai jam berapa?'},
+    {en:'I am going on my break now',ja:'今から休憩に入ります',ja_ro:'Ima kara kyūkei ni hairimasu',zh:'我现在去休息',zh_ro:'Wǒ xiànzài qù xiūxi',zht:'我現在去休息',zht_ro:'Wǒ xiànzài qù xiūxi',vi:'Tôi đi nghỉ giải lao bây giờ',pt:'Vou fazer minha pausa agora',es:'Voy a tomar mi descanso ahora',id:'Saya mau istirahat sekarang'},
+  ]},
+];
+
+var PHRASES_PHARMACY = [
+  {cat:'Dispensing medication', items:[
+    {en:'Your prescription is ready',ja:'お薬の準備ができました',ja_ro:'Okusuri no junbi ga dekimashita',zh:'您的处方已准备好',zh_ro:'Nín de chǔfāng yǐ zhǔnbèi hǎo',zht:'您的處方已準備好',zht_ro:'Nín de chǔfāng yǐ zhǔnbèi hǎo',vi:'Đơn thuốc của bạn đã sẵn sàng',th:'ยาของคุณพร้อมแล้ว',th_ro:'Ya khong khun phrom laeo',tl:'Handa na ang iyong reseta',km:'ថ្នាំរបស់អ្នកត្រូវបានរៀបចំរួចរាល់',km_ro:'thnam robos anak trov ban rieap cham ruoc real',bn:'আপনার প্রেসক্রিপশন প্রস্তুত',bn_ro:'apnar prescription prostut',pt:'A sua receita está pronta',es:'Su receta está lista',id:'Resep Anda sudah siap'},
+    {en:'Take one tablet twice daily with food',ja:'食事と一緒に1日2回1錠服用してください',ja_ro:'Shokuji to issho ni ichinichi nikai ichijo fukuyo shite kudasai',zh:'随餐每日服用两次，每次一片',zh_ro:'Suí cān měirì fúyòng liǎng cì, měi cì yī piàn',zht:'隨餐每日服用兩次，每次一片',zht_ro:'Suí cān měirì fúyòng liǎng cì, měi cì yī piàn',vi:'Uống một viên hai lần mỗi ngày trong bữa ăn',th:'รับประทานวันละ 2 ครั้ง ครั้งละ 1 เม็ด พร้อมอาหาร',th_ro:'Rap prathan wan la song khrang khrang la nueng met phrom ahan',tl:'Uminom ng isang tablet nang dalawang beses sa isang araw kasabay ng pagkain',km:'ញ៉ាំមួយគ្រាប់ ពីរដងក្នុងមួយថ្ងៃ ជាមួយអាហារ',km_ro:'nyam muoy kroab pi dong knung muoy tngai cheamoy ahar',bn:'প্রতিদিন দুইবার খাবারের সাথে একটি ট্যাবলেট খান',bn_ro:'protidin duibar khabarer shathe ekti tablet khan',pt:'Tome um comprimido duas vezes ao dia com alimentos',es:'Tome un comprimido dos veces al día con comida',id:'Minum satu tablet dua kali sehari bersama makanan'},
+    {en:'Do not take with alcohol',ja:'アルコールと一緒に服用しないでください',ja_ro:'Arukoru to issho ni fukuyo shinaide kudasai',zh:'请勿与酒精同服',zh_ro:'Qǐng wù yǔ jiǔjīng tóng fú',zht:'請勿與酒精同服',zht_ro:'Qǐng wù yǔ jiǔjīng tóng fú',vi:'Không uống cùng với rượu bia',th:'ห้ามรับประทานร่วมกับแอลกอฮอล์',th_ro:'Ham rap prathan ruam kap alcohol',tl:'Huwag inumin kasabay ng alkohol',km:'មិនត្រូវញ៉ាំជាមួយស្រា',km_ro:'min trov nyam cheamoy sra',bn:'অ্যালকোহলের সাথে খাবেন না',bn_ro:'alcohol-er shathe khaben na',pt:'Não tome com álcool',es:'No tome con alcohol',id:'Jangan diminum bersama alkohol'},
+    {en:'This may cause drowsiness',ja:'眠気が生じることがあります',ja_ro:'Nemuke ga shoji suru koto ga arimasu',zh:'这可能会导致嗜睡',zh_ro:'Zhè kěnéng huì dǎozhì shìshuì',zht:'這可能會導致嗜睡',zht_ro:'Zhè kěnéng huì dǎozhì shìshuì',vi:'Thuốc này có thể gây buồn ngủ',th:'ยานี้อาจทำให้ง่วงนอน',th_ro:'Ya ni at tham hai nguang non',tl:'Maaaring makatulog ito',km:'ថ្នាំនេះអាចធ្វើឱ្យងងុយដេក',km_ro:'thnam nih ach thveu aoy ngnuy dek',bn:'এটি ঘুমের ভাব আনতে পারে',bn_ro:'eti ghumer bhab ante pare',pt:'Este medicamento pode causar sonolência',es:'Este medicamento puede causar somnolencia',id:'Obat ini mungkin menyebabkan kantuk'},
+    {en:'Finish the full course even if you feel better',ja:'症状が改善しても最後まで服用してください',ja_ro:'Shoojo ga kaizen shite mo saigo made fukuyo shite kudasai',zh:'即使感觉好转也要完成整个疗程',zh_ro:'Jíshǐ gǎnjué hǎozhuǎn yě yào wánchéng zhěnggè liáochéng',zht:'即使感覺好轉也要完成整個療程',zht_ro:'Jíshǐ gǎnjué hǎozhuǎn yě yào wánchéng zhěnggè liáochéng',vi:'Uống hết liệu trình dù bạn cảm thấy tốt hơn',th:'กินยาให้ครบแม้จะรู้สึกดีขึ้น',th_ro:'Kin ya hai khrop mae cha rusuek di khuen',tl:'Tapusin ang buong kurso kahit mas okay na ang pakiramdam',km:'ផឹកថ្នាំឱ្យអស់ ទោះបីជាអ្នកមានអារម្មណ៍ល្អប្រសើរ',km_ro:'pheuk thnam aoy os toab pi anak mean aram la brasaer',bn:'সুস্থ অনুভব করলেও পুরো কোর্স শেষ করুন',bn_ro:'sustho onubhob korleo puro course shesh korun',pt:'Complete o tratamento completo mesmo se se sentir melhor',es:'Complete el tratamiento completo aunque se sienta mejor',id:'Selesaikan seluruh kursus meskipun sudah merasa lebih baik'},
+  ]},
+  {cat:'Patient queries', items:[
+    {en:'The doctor has prescribed this for you',ja:'医師がこれを処方しました',ja_ro:'Ishi ga kore o shohosho shimashita',zh:'医生为您开了这个处方',zh_ro:'Yīshēng wèi nín kāi le zhège chǔfāng',zht:'醫生為您開了這個處方',zht_ro:'Yīshēng wèi nín kāi le zhège chǔfāng',vi:'Bác sĩ đã kê đơn thuốc này cho bạn',th:'แพทย์สั่งยานี้ให้คุณ',th_ro:'Phaet sang ya ni hai khun',tl:'Inireseta ito ng doktor para sa inyo',km:'វេជ្ជបណ្ឌិតបានចេញវេជ្ជបញ្ជានេះសម្រាប់អ្នក',km_ro:'vetbondit ban chenh vetbonha nih samrab anak',bn:'ডাক্তার এটি আপনার জন্য প্রেসক্রাইব করেছেন',bn_ro:'daktar eti apnar jonno prescribe korechen',pt:'O médico prescreveu isto para si',es:'El médico le ha recetado esto',id:'Dokter telah meresepkan ini untuk Anda'},
+    {en:'Please wait, we are preparing your medication',ja:'少々お待ちください、お薬を準備しています',ja_ro:'Shosho omachi kudasai, okusuri o junbi shite imasu',zh:'请稍等，我们正在为您准备药物',zh_ro:'Qǐng shāoděng, wǒmen zhèngzài wèi nín zhǔnbèi yàowù',zht:'請稍等，我們正在為您準備藥物',zht_ro:'Qǐng shāoděng, wǒmen zhèngzài wèi nín zhǔnbèi yàowù',vi:'Vui lòng chờ, chúng tôi đang chuẩn bị thuốc cho bạn',th:'กรุณารอสักครู่ เรากำลังเตรียมยาให้คุณ',th_ro:'Karuna ro sak khru rao kamlang triam ya hai khun',tl:'Mangyaring maghintay, inihahanda namin ang inyong gamot',km:'សូមរង់ចាំ យើងកំពុងរៀបចំថ្នាំរបស់អ្នក',km_ro:'som rong cham yeung kampung rieap cham thnam robos anak',bn:'অনুগ্রহ করে অপেক্ষা করুন, আমরা আপনার ওষুধ প্রস্তুত করছি',bn_ro:'onugroho kore opekha korun, amra apnar oshudh prostut korchi',pt:'Por favor, aguarde, estamos a preparar a sua medicação',es:'Por favor, espere, estamos preparando su medicamento',id:'Mohon tunggu, kami sedang menyiapkan obat Anda'},
+    {en:'Do you have any allergies to medication?',ja:'薬のアレルギーはありますか？',ja_ro:'Kusuri no arerugī wa arimasu ka?',zh:'您对任何药物有过敏反应吗？',zh_ro:'Nín duì rènhé yàowù yǒu guòmǐn fǎnyìng ma?',zht:'您對任何藥物有過敏反應嗎？',zht_ro:'Nín duì rènhé yàowù yǒu guòmǐn fǎnyìng ma?',vi:'Bạn có dị ứng với thuốc nào không?',th:'คุณแพ้ยาใดบ้างไหม?',th_ro:'Khun phae ya dai bang mai?',tl:'Mayroon ba kayong allergy sa gamot?',km:'តើអ្នកមានប្រតិកម្មអ្វីទៅនឹងថ្នាំ?',km_ro:'tae anak mean protikam avei tov neung thnam?',bn:'আপনার কোনো ওষুধে অ্যালার্জি আছে?',bn_ro:'apnar kono oshudhe allergy ache?',pt:'Tem alguma alergia a medicamentos?',es:'¿Tiene alguna alergia a medicamentos?',id:'Apakah Anda memiliki alergi terhadap obat?'},
+    {en:'This replaces your previous medication',ja:'これは以前のお薬の代わりです',ja_ro:'Kore wa izen no okusuri no kawari desu',zh:'这是替换您之前药物的',zh_ro:'Zhè shì tìhuàn nín zhīqián yàowù de',zht:'這是替換您之前藥物的',zht_ro:'Zhè shì tìhuàn nín zhīqián yàowù de',vi:'Thuốc này thay thế thuốc trước đây của bạn',th:'ยานี้ทดแทนยาชนิดก่อนหน้าของคุณ',th_ro:'Ya ni thothaen ya chanit kon na khong khun',tl:'Pinapalitan nito ang inyong dating gamot',km:'ថ្នាំនេះជំនួសថ្នាំមុនរបស់អ្នក',km_ro:'thnam nih jomnuas thnam mun robos anak',bn:'এটি আপনার আগের ওষুধের বিকল্প',bn_ro:'eti apnar ager oshudher bikolpo',pt:'Este medicamento substitui o seu medicamento anterior',es:'Este medicamento reemplaza su medicamento anterior',id:'Ini menggantikan obat Anda sebelumnya'},
+  ]},
+  {cat:'Safety warnings', items:[
+    {en:'Do not exceed the stated dose',ja:'記載された用量を超えないでください',ja_ro:'Kisai sareta yoryō o koenaide kudasai',zh:'请勿超过规定剂量',zh_ro:'Qǐng wù chāoguò guīdìng jìliàng',zht:'請勿超過規定劑量',zht_ro:'Qǐng wù chāoguò guīdìng jìliàng',vi:'Không vượt quá liều lượng quy định',th:'ห้ามรับประทานเกินปริมาณที่กำหนด',th_ro:'Ham rap prathan koen piman thi kamnot',tl:'Huwag lalampas sa nakatakdang dosis',km:'កុំលើសពីដូសដែលបានកំណត់',km_ro:'kom laes pi dose del ban komnot',bn:'নির্ধারিত ডোজের বেশি খাবেন না',bn_ro:'nirdhaarito dose-er beshi khaben na',pt:'Não exceda a dose indicada',es:'No exceda la dosis indicada',id:'Jangan melebihi dosis yang ditentukan'},
+    {en:'Keep out of reach of children',ja:'子供の手の届かない場所に保管してください',ja_ro:'Kodomo no te no todokanai basho ni hokan shite kudasai',zh:'请放在儿童无法触及的地方',zh_ro:'Qǐng fàng zài értóng wúfǎ chùjí de dìfāng',zht:'請放在兒童無法觸及的地方',zht_ro:'Qǐng fàng zài értóng wúfǎ chùjí de dìfāng',vi:'Để xa tầm tay trẻ em',th:'เก็บให้พ้นมือเด็ก',th_ro:'Kep hai phon mue dek',tl:'Itago nang malayo sa mga bata',km:'រក្សាទុកឱ្យផុតពីដៃក្មេង',km_ro:'raksa tuk aoy phot pi dai kmeng',bn:'শিশুদের নাগালের বাইরে রাখুন',bn_ro:'shishudher nagaler baire rakhun',pt:'Manter fora do alcance das crianças',es:'Mantener fuera del alcance de los niños',id:'Jauhkan dari jangkauan anak-anak'},
+    {en:'Store in a cool dry place',ja:'冷暗所に保管してください',ja_ro:'Reidansho ni hokan shite kudasai',zh:'存放在阴凉干燥处',zh_ro:'Cúnfàng zài yīnliáng gāncāo chù',zht:'存放在陰涼乾燥處',zht_ro:'Cúnfàng zài yīnliáng gāncāo chù',vi:'Bảo quản nơi thoáng mát và khô ráo',th:'เก็บในที่เย็นและแห้ง',th_ro:'Kep nai thi yen lae haeng',tl:'Itago sa malamig at tuyong lugar',km:'រក្សាទុកក្នុងកន្លែងត្រជាក់និងស្ងួត',km_ro:'raksa tuk knung konlaeng trocheakneung snguot',bn:'ঠান্ডা ও শুষ্ক স্থানে সংরক্ষণ করুন',bn_ro:'thanda o shushko sthane sangrakhan korun',pt:'Armazenar em local fresco e seco',es:'Almacenar en un lugar fresco y seco',id:'Simpan di tempat yang sejuk dan kering'},
+    {en:'Return unused medication to the pharmacy',ja:'使用しなかった薬は薬局に返却してください',ja_ro:'Shiyō shinakatta kusuri wa yakkyoku ni henkyaku shite kudasai',zh:'请将未使用的药物退回药房',zh_ro:'Qǐng jiāng wèi shǐyòng de yàowù tuìhuí yàofáng',zht:'請將未使用的藥物退回藥房',zht_ro:'Qǐng jiāng wèi shǐyòng de yàowù tuìhuí yàofáng',vi:'Trả lại thuốc chưa dùng cho nhà thuốc',th:'คืนยาที่ไม่ได้ใช้กลับไปที่ร้านขายยา',th_ro:'Khuen ya thi mai dai chai klap pai thi ran khai ya',tl:'Ibalik ang hindi nagamit na gamot sa parmasya',km:'ត្រឡប់ថ្នាំដែលមិនបានប្រើទៅឱ្យឱសថស្ថាន',km_ro:'trolob thnam del min ban brae tov aoy osaththan',bn:'অব্যবহৃত ওষুধ ফার্মেসিতে ফিরিয়ে দিন',bn_ro:'obbobohurito oshudh pharmacy-te phiriye din',pt:'Devolva os medicamentos não utilizados à farmácia',es:'Devuelva los medicamentos no utilizados a la farmacia',id:'Kembalikan obat yang tidak terpakai ke apotek'},
+  ]},
+  {cat:'Admin & payment', items:[
+    {en:'Can I see your ID please?',ja:'身分証明書を見せていただけますか？',ja_ro:'Mibun shomeisho o misete itadakemasu ka?',zh:'请问可以看一下您的身份证吗？',zh_ro:'Qǐngwèn kěyǐ kàn yīxià nín de shēnfènzhèng ma?',zht:'請問可以看一下您的身分證嗎？',zht_ro:'Qǐngwèn kěyǐ kàn yīxià nín de shēnfènzhèng ma?',vi:'Cho tôi xem thẻ ID của bạn được không?',th:'ขอดูบัตรประจำตัวของคุณได้ไหมครับ/ค่ะ?',th_ro:'Kho du bat pracham tua khong khun dai mai?',tl:'Maaari bang makita ang inyong ID?',km:'សូមមើលលេខសម្គាល់អត្តសញ្ញាណរបស់អ្នក',km_ro:'som meul lekh samkal attsanhenh robos anak',bn:'আপনার আইডি দেখাতে পারবেন?',bn_ro:'apnar ID dekhate parben?',pt:'Posso ver o seu documento de identificação?',es:'¿Puedo ver su identificación?',id:'Boleh saya lihat ID Anda?'},
+    {en:'Do you have your insurance card?',ja:'保険証をお持ちですか？',ja_ro:'Hokensho o omochi desu ka?',zh:'您有保险卡吗？',zh_ro:'Nín yǒu bǎoxiǎn kǎ ma?',zht:'您有保險卡嗎？',zht_ro:'Nín yǒu bǎoxiǎn kǎ ma?',vi:'Bạn có thẻ bảo hiểm không?',th:'คุณมีบัตรประกันไหมครับ/ค่ะ?',th_ro:'Khun mi bat prakan mai?',tl:'Mayroon ba kayong insurance card?',km:'តើអ្នកមានប័ណ្ណធានារ៉ាប់រងទេ?',km_ro:'tae anak mean ban theanea rob rong te?',bn:'আপনার বীমা কার্ড আছে?',bn_ro:'apnar bima card ache?',pt:'Tem o seu cartão de seguro?',es:'¿Tiene su tarjeta de seguro?',id:'Apakah Anda memiliki kartu asuransi?'},
+    {en:'Your co-payment today is $5',ja:'本日の自己負担額は5ドルです',ja_ro:'Honjitsu no jiko futankin wa 5 doru desu',zh:'您今天的自付额是5美元',zh_ro:'Nín jīntiān de zì fù é shì 5 měiyuán',zht:'您今天的自付額是5美元',zht_ro:'Nín jīntiān de zì fù é shì 5 měiyuán',vi:'Khoản đồng thanh toán của bạn hôm nay là $5',th:'ค่าร่วมจ่ายของคุณวันนี้คือ 5 ดอลลาร์',th_ro:'Kha ruam chai khong khun wan ni khue 5 dollar',tl:'Ang inyong co-payment ngayon ay $5',km:'ការទូទាត់រួមរបស់អ្នកថ្ងៃនេះគឺ $5',km_ro:'kar tuteat ruom robos anak tngai nih kue 5 dollar',bn:'আজকের আপনার কো-পেমেন্ট হল $5',bn_ro:'ajker apnar co-payment holo $5',pt:'O seu co-pagamento hoje é de $5',es:'Su copago de hoy es de $5',id:'Pembayaran bersama Anda hari ini adalah $5'},
+    {en:'Please sign here',ja:'こちらにサインをお願いします',ja_ro:'Kochira ni sain o onegaishimasu',zh:'请在这里签名',zh_ro:'Qǐng zài zhèlǐ qiānmíng',zht:'請在這裡簽名',zht_ro:'Qǐng zài zhèlǐ qiānmíng',vi:'Vui lòng ký tên ở đây',th:'กรุณาเซ็นชื่อที่นี่',th_ro:'Karuna sen chue thi ni',tl:'Pakiusap pirmahan dito',km:'សូមចុះហត្ថលេខានៅទីនេះ',km_ro:'som chos hatthahlekha nov tini',bn:'এখানে সই করুন',bn_ro:'ekhane shoi korun',pt:'Por favor, assine aqui',es:'Por favor, firme aquí',id:'Tolong tanda tangan di sini'},
+  ]},
+];
+
+// Active scenario
+var CURRENT_SCENARIO = 'restaurant';
+function getActivePhrases() {
+  if (CURRENT_SCENARIO === 'shopping')   return PHRASES_SHOPPING;
+  if (CURRENT_SCENARIO === 'medical')    return PHRASES_MEDICAL;
+  if (CURRENT_SCENARIO === 'transport')  return PHRASES_TRANSPORT;
+  if (CURRENT_SCENARIO === 'workplace')  return PHRASES_WORKPLACE;
+  if (CURRENT_SCENARIO === 'pharmacy')   return PHRASES_PHARMACY;
+  if (CURRENT_SCENARIO === 'custom' && window.PHRASES_CUSTOM) return window.PHRASES_CUSTOM;
+  return PHRASES;
+}
+// Target languages (what to translate into)  
+var TGT_LANGS = ['ja','zh','zht','vi','pt','es','id','en'];
+
+var PHRASES = [
+  {cat:'Greetings & seating', items:[
+    {
+      en:'Table for two, please',
+      ja:'二人席をお願いします', ja_ro:'Futari seki o onegaishimasu',
+      zh:'请给我两人桌', zh_ro:'Qǐng gěi wǒ liǎng rén zhuō',
+      zht:'請給我兩人桌', zht_ro:'Qǐng gěi wǒ liǎng rén zhuō',
+      vi:'Cho tôi bàn hai người, xin cảm ơn',
+      pt:'Uma mesa para dois, por favor',
+      es:'Una mesa para dos, por favor',
+      id:'Meja untuk dua orang, tolong',
+      th:'ไปพักแล้วครับ/ค่ะ', th_ro:'Pai phak laeo',
+      tl:'Magpapahinga na ako ngayon',
+      th:'วันนี้เลิกงานกี่โมงครับ/ค่ะ', th_ro:'Wan ni loek ngan ki mong',
+      tl:'Anong oras tayo matatapos ngayon?',
+      th:'พักกี่โมงครับ/ค่ะ', th_ro:'Phak ki mong',
+      tl:'Anong oras ang pahinga?',
+      th:'ต้องการความช่วยเหลือครับ/ค่ะ', th_ro:'Tongkan khwam chuai lue',
+      tl:'Kailangan ko ng tulong dito',
+      th:'อุปกรณ์ความปลอดภัยอยู่ที่ไหนครับ/ค่ะ', th_ro:'Upakorn khwam plot phai yu thi nai',
+      tl:'Nasaan ang kagamitan sa kaligtasan?',
+      th:'มีปัญหาครับ/ค่ะ กรุณาตรวจสอบ', th_ro:'Mi panha karuna truat sop',
+      tl:'May problema, pakisuri',
+      th:'ทำงานเสร็จแล้วครับ/ค่ะ', th_ro:'Tham ngan set laeo',
+      tl:'Natapos na ang gawain',
+      th:'ขอหยุดได้ไหมครับ/ค่ะ', th_ro:'Kho yut dai mai',
+      tl:'Maaari ba akong mag-leave?',
+      th:'ไม่เข้าใจครับ/ค่ะ ช่วยอธิบายอีกครั้ง', th_ro:'Mai khao chai chuai athibai ik khrang',
+      tl:'Hindi ko naiintindihan, pakipaliwanag ulit',
+      th:'ต่อไปต้องทำอะไรครับ/ค่ะ', th_ro:'To pai tong tham arai',
+      tl:'Ano ang susunod na dapat kong gawin?',
+      th:'งานเสร็จแล้วครับ/ค่ะ', th_ro:'Ngan set laeo',
+      tl:'Natapos na ang aking trabaho',
+      th:'วันนี้จะมาสายนิดหน่อยครับ/ค่ะ', th_ro:'Wan ni cha ma sai nit noi',
+      tl:'Medyo mahahuli ako ngayon',
+      th:'สวัสดีตอนเช้า มาถึงแล้วครับ/ค่ะ', th_ro:'Sawatdi ton chao ma thueng laeo',
+      tl:'Magandang umaga, nakarating na ako',
+      th:'ไปสนามบินเท่าไรครับ/ค่ะ', th_ro:'Pai sanam bin thaorai',
+      tl:'Magkano papunta sa paliparan?',
+      th:'ช่วยพาไปที่อยู่นี้ด้วยครับ/ค่ะ', th_ro:'Chuai pha pai thi yu ni duai',
+      tl:'Pakidala ako sa address na ito',
+      th:'เลี้ยวซ้ายที่หัวมุมถัดไปครับ/ค่ะ', th_ro:'Liaow sai thi hua mum that pai',
+      tl:'Lumiko sa kaliwa sa susunod na kanto',
+      th:'ฉันหลงทางครับ/ค่ะ', th_ro:'Chan long thang',
+      tl:'Naliligaw ako',
+      th:'ช่วยชี้ให้ดูในแผนที่หน่อยครับ/ค่ะ', th_ro:'Chuai chi hai du nai phaen thi noi',
+      tl:'Pakipakita sa mapa',
+      th:'ไกลจากที่นี่ไหมครับ/ค่ะ', th_ro:'Klai chak thi ni mai',
+      tl:'Malayo ba mula dito?',
+      th:'ไปโรงพยาบาลอย่างไรครับ/ค่ะ', th_ro:'Pai rong phayaban yang rai',
+      tl:'Paano ako makakarating sa ospital?',
+      th:'หยุดตรงนี้ด้วยครับ/ค่ะ', th_ro:'Yut trong ni duai',
+      tl:'Pakihinto dito',
+      th:'อีกกี่ป้ายถึงสถานีต่อไปครับ/ค่ะ', th_ro:'Ik ki pai thueng sathani to pai',
+      tl:'Ilang hinto pa bago sa susunod na istasyon?',
+      th:'ตั๋วไปชินจูกุหนึ่งใบครับ/ค่ะ', th_ro:'Tua pai Shinjuku nueng bai',
+      tl:'Isang tiket papunta sa Shinjuku',
+      th:'ขึ้นชานชาลาไหนไปสนามบินครับ/ค่ะ', th_ro:'Khuen chan chala nai pai sanam bin',
+      tl:'Saang platform para sa paliparan?',
+      th:'รถบัสนี้ไปสถานีไหมครับ/ค่ะ', th_ro:'Rot bat ni pai sathani mai',
+      tl:'Pumupunta ba ang bus na ito sa istasyon?',
+      th:'ขอใบเสร็จสำหรับประกันได้ไหมครับ/ค่ะ', th_ro:'Kho bai set samrap prakan dai mai',
+      tl:'Maaari ba akong makakuha ng resibo para sa insurance?',
+      th:'ฉันมีประกันสุขภาพครับ/ค่ะ', th_ro:'Chan mi prakan sukhaphap',
+      tl:'Mayroon akong health insurance',
+      th:'กรุณาเรียกรถพยาบาลครับ/ค่ะ', th_ro:'Karuna riak rot phayaban',
+      tl:'Pakitawag ng ambulansya',
+      th:'ทานวันละกี่ครั้งครับ/ค่ะ', th_ro:'Than wan la ki khrang',
+      tl:'Ilang beses sa isang araw ko ito iinom?',
+      th:'ฉันแพ้ยานี้ครับ/ค่ะ', th_ro:'Chan phae ya ni',
+      tl:'Allergic ako sa gamot na ito',
+      th:'ฉันมีนัดครับ/ค่ะ', th_ro:'Chan mi nat',
+      tl:'Mayroon akong appointment',
+      th:'ฉันต้องพบแพทย์ครับ/ค่ะ', th_ro:'Chan tong phop phaet',
+      tl:'Kailangan kong makita ang doktor',
+      th:'ฉันนอนไม่หลับครับ/ค่ะ', th_ro:'Chan non mai lap',
+      tl:'Hindi ako makatulog nang maayos',
+      th:'เจ็บตรงนี้ครับ/ค่ะ', th_ro:'Chep trong ni',
+      tl:'Masakit dito',
+      th:'ปวดหัวครับ/ค่ะ', th_ro:'Puat hua',
+      tl:'Masakit ang aking ulo',
+      th:'เจ็บคอครับ/ค่ะ', th_ro:'Chep kho',
+      tl:'Masakit ang aking lalamunan',
+      th:'ฉันมีไข้ครับ/ค่ะ', th_ro:'Chan mi khai',
+      tl:'May lagnat ako',
+      th:'ฉันรู้สึกไม่สบายครับ/ค่ะ', th_ro:'Chan rusuek mai sabai',
+      tl:'Hindi ako maayos',
+      th:'สองที่นั่งครับ/ค่ะ', th_ro:'Song thi nang khrap/kha',
+      tl:'Isang mesa para sa dalawa, pakiusap',
+      km:'តុសម្រាប់ពីរនាក់ សូមអរគុណ', km_ro:'tok samrab pir neak, som arkun',
+      bn:'দুইজনের জন্য একটি টেবিল দিন, ধন্যবাদ', bn_ro:'duijoner jonno ekti table din, dhonnobad',
+    },
+    {
+      en:'The menu, please',
+      ja:'メニューをください', ja_ro:'Menyuu o kudasai',
+      zh:'请给我菜单', zh_ro:'Qǐng gěi wǒ càidān',
+      zht:'請給我菜單', zht_ro:'Qǐng gěi wǒ càidān',
+      vi:'Cho tôi xem thực đơn',
+      pt:'O cardápio, por favor',
+      es:'La carta, por favor',
+      id:'Menunya, tolong',
+      th:'ขอเมนูหน่อยครับ/ค่ะ', th_ro:'Kho menu noi khrap/kha',
+      tl:'Ang menu, pakiusap',
+      km:'សូមបញ្ជីម្ហូប', km_ro:'som banhchi mhob',
+      bn:'মেনু দিন, অনুগ্রহ করে', bn_ro:'menu din, onugroho kore',
+    },
+    {
+      en:'Can we sit by the window?',
+      ja:'窓際に座れますか？', ja_ro:'Madogiwa ni suware masu ka?',
+      zh:'我们可以坐窗边吗？', zh_ro:'Wǒmen kěyǐ zuò chuāng biān ma?',
+      zht:'我們可以坐窗邊嗎？', zht_ro:'Wǒmen kěyǐ zuò chuāng biān ma?',
+      vi:'Chúng tôi có thể ngồi cạnh cửa sổ không?',
+      pt:'Podemos sentar perto da janela?',
+      es:'¿Podemos sentarnos junto a la ventana?',
+      id:'Boleh kami duduk di dekat jendela?',
+      th:'นั่งริมหน้าต่างได้ไหมครับ/ค่ะ', th_ro:'Nang rim na tang dai mai khrap/kha',
+      tl:'Maaari ba kaming umupo sa tabi ng bintana?',
+      km:'យើងអាចអង្គុយជិតបង្អួចបានទេ?', km_ro:'yeung ach angguy jit bong-uach ban te?',
+      bn:'আমরা কি জানালার পাশে বসতে পারি?', bn_ro:'amra ki janaalar pashe boshte pari?',
+    },
+    {
+      en:'How long is the wait?',
+      ja:'どのくらい待ちますか？', ja_ro:'Dono kurai machimasu ka?',
+      zh:'需要等多久？', zh_ro:'Xūyào děng duō jiǔ?',
+      zht:'需要等多久？', zht_ro:'Xūyào děng duō jiǔ?',
+      vi:'Phải chờ bao lâu?',
+      pt:'Quanto tempo de espera?',
+      es:'¿Cuánto tiempo hay que esperar?',
+      id:'Berapa lama menunggu?',
+      th:'ต้องรอนานแค่ไหนครับ/ค่ะ', th_ro:'Tong ro nan khae nai khrap/kha',
+      tl:'Gaano katagal ang paghihintay?',
+      km:'ត្រូវរង់ចាំប៉ុន្មាន?', km_ro:'trov rong cham ponman?',
+      bn:'কতক্ষণ অপেক্ষা করতে হবে?', bn_ro:'kotokhon opekkha korte hobe?',
+    },
+  ]},
+  {cat:'Ordering food', items:[
+    {
+      en:"I'll have this, please",
+      ja:'これをください', ja_ro:'Kore o kudasai',
+      zh:'我要这个', zh_ro:'Wǒ yào zhège',
+      zht:'我要這個', zht_ro:'Wǒ yào zhège',
+      vi:'Cho tôi cái này',
+      pt:'Vou querer isso, por favor',
+      es:'Quiero esto, por favor',
+      id:'Saya mau ini, tolong',
+      th:'ขอสิ่งนี้ครับ/ค่ะ', th_ro:'Kho sing ni khrap/kha',
+      tl:'Ito ang gusto ko, pakiusap',
+      km:'សូមមានអ្វីនេះ', km_ro:'som mean avei nih',
+      bn:'এটা দিন, অনুগ্রহ করে', bn_ro:'eta din, onugroho kore',
+    },
+    {
+      en:'What do you recommend?',
+      ja:'おすすめは何ですか？', ja_ro:'Osusume wa nan desu ka?',
+      zh:'你们推荐什么？', zh_ro:'Nǐmen tuījiàn shénme?',
+      zht:'你們推薦什麼？', zht_ro:'Nǐmen tuījiàn shénme?',
+      vi:'Bạn giới thiệu món gì?',
+      pt:'O que você recomenda?',
+      es:'¿Qué recomienda?',
+      id:'Apa yang Anda rekomendasikan?',
+      th:'แนะนำอะไรดีครับ/ค่ะ', th_ro:'Naenam arai di khrap/kha',
+      tl:'Ano ang inyong inirerekumenda?',
+      km:'អ្វីដែលអ្នកណែនាំ?', km_ro:'avei del nak naennam?',
+      bn:'আপনি কী সুপারিশ করেন?', bn_ro:'apni ki supaarish koren?',
+    },
+    {
+      en:'One more of this, please',
+      ja:'これをもう一つください', ja_ro:'Kore o mō hitotsu kudasai',
+      zh:'再来一份这个', zh_ro:'Zài lái yī fèn zhège',
+      zht:'再來一份這個', zht_ro:'Zài lái yī fèn zhège',
+      vi:'Cho thêm một cái này',
+      pt:'Mais um desse, por favor',
+      es:'Uno más de esto, por favor',
+      id:'Satu lagi yang ini, tolong',
+      th:'ขออีกอันหนึ่งครับ/ค่ะ', th_ro:'Kho ik an nueng khrap/kha',
+      tl:'Isa pa nito, pakiusap',
+      km:'សូមមានអ្វីនេះមួយទៀត', km_ro:'som mean avei nih muoy tiet',
+      bn:'এটা আরও একটি দিন', bn_ro:'eta aaro ekti din',
+    },
+    {
+      en:'Is this dish spicy?',
+      ja:'この料理は辛いですか？', ja_ro:'Kono ryōri wa karai desu ka?',
+      zh:'这道菜辣吗？', zh_ro:'Zhè dào cài là ma?',
+      zht:'這道菜辣嗎？', zht_ro:'Zhè dào cài là ma?',
+      vi:'Món này có cay không?',
+      pt:'Esse prato é apimentado?',
+      es:'¿Este plato pica?',
+      id:'Apakah hidangan ini pedas?',
+      th:'จานนี้เผ็ดไหมครับ/ค่ะ', th_ro:'Chan ni phet mai khrap/kha',
+      tl:'Maanghang ba ang putahing ito?',
+      km:'ម្ហូបនេះហឹរទេ?', km_ro:'mhob nih heir te?',
+      bn:'এই খাবারটি কি ঝাল?', bn_ro:'ei khabarta ki jhal?',
+    },
+    {
+      en:'No wasabi / chilli, please',
+      ja:'わさびなしでお願いします', ja_ro:'Wasabi nashi de onegaishimasu',
+      zh:'请不要放辣椒', zh_ro:'Qǐng bú yào fàng làjiāo',
+      zht:'請不要放辣椒', zht_ro:'Qǐng bú yào fàng làjiāo',
+      vi:'Không cho ớt, xin cảm ơn',
+      pt:'Sem pimenta, por favor',
+      es:'Sin picante, por favor',
+      id:'Tanpa cabai, tolong',
+      th:'ไม่ใส่วาซาบิ/พริกครับ/ค่ะ', th_ro:'Mai sai wasabi/phrik khrap/kha',
+      tl:'Walang wasabi / sili, pakiusap',
+      km:'សូមកុំដាក់វ៉ាសាប៊ី/ម្រេច', km_ro:'som kom dak wasabi/mrech',
+      bn:'ওয়াসাবি/মরিচ ছাড়া দিন', bn_ro:'wasabi/morich chhara din',
+    },
+    {
+      en:'Medium rare, please',
+      ja:'ミディアムレアでお願いします', ja_ro:'Midiamu rea de onegaishimasu',
+      zh:'半熟，谢谢', zh_ro:'Bàn shú, xièxie',
+      zht:'半熟，謝謝', zht_ro:'Bàn shú, xièxie',
+      vi:'Tái chín vừa, xin cảm ơn',
+      pt:'Ao ponto, por favor',
+      es:'Al punto, por favor',
+      id:'Setengah matang, tolong',
+      th:'สุกปานกลางครับ/ค่ะ', th_ro:'Suk pan klang khrap/kha',
+      tl:'Medium rare, pakiusap',
+      km:'ចំអិនមធ្យម', km_ro:'chom-ein methyom',
+      bn:'মিডিয়াম রেয়ার দিন', bn_ro:'medium rare din',
+    },
+  ]},
+  {cat:'Dietary & allergies', items:[
+    {
+      en:'I am allergic to shellfish',
+      ja:'貝類アレルギーがあります', ja_ro:'Kairui arerugī ga arimasu',
+      zh:'我对贝类过敏', zh_ro:'Wǒ duì bèilèi guòmǐn',
+      zht:'我對貝類過敏', zht_ro:'Wǒ duì bèilèi guòmǐn',
+      vi:'Tôi bị dị ứng với hải sản có vỏ',
+      pt:'Sou alérgico a frutos do mar',
+      es:'Soy alérgico a los mariscos',
+      id:'Saya alergi kerang',
+      th:'ฉันแพ้อาหารทะเลครับ/ค่ะ', th_ro:'Chan phae ahan thale khrap/kha',
+      tl:'Allergic ako sa mga pagkaing-dagat',
+      km:'ខ្ញុំហ្គីចំពោះអាហារសមុទ្រ', km_ro:'khnhom allergic chhompoh ahar samot',
+      bn:'আমি শেলফিশে অ্যালার্জিক', bn_ro:'ami shelfish-e allergic',
+    },
+    {
+      en:'I am allergic to peanuts',
+      ja:'ピーナッツアレルギーがあります', ja_ro:'Pīnattsu arerugī ga arimasu',
+      zh:'我对花生过敏', zh_ro:'Wǒ duì huāshēng guòmǐn',
+      zht:'我對花生過敏', zht_ro:'Wǒ duì huāshēng guòmǐn',
+      vi:'Tôi bị dị ứng với đậu phộng',
+      pt:'Sou alérgico a amendoim',
+      es:'Soy alérgico a los cacahuetes',
+      id:'Saya alergi kacang tanah',
+      th:'ฉันแพ้ถั่วลิสงครับ/ค่ะ', th_ro:'Chan phae thua lisong khrap/kha',
+      tl:'Allergic ako sa mani',
+      km:'ខ្ញុំហ្គីចំពោះសណ្តែកដី', km_ro:'khnhom allergic chhompoh sandaek dei',
+      bn:'আমি চিনাবাদামে অ্যালার্জিক', bn_ro:'ami chinabadame allergic',
+    },
+    {
+      en:'I cannot eat gluten',
+      ja:'グルテンが食べられません', ja_ro:'Guruten ga taberare masen',
+      zh:'我不能吃麸质', zh_ro:'Wǒ bù néng chī fūzhí',
+      zht:'我不能吃麩質', zht_ro:'Wǒ bù néng chī fūzhí',
+      vi:'Tôi không ăn được gluten',
+      pt:'Não posso comer glúten',
+      es:'No puedo comer gluten',
+      id:'Saya tidak bisa makan gluten',
+      th:'ฉันกินกลูเตนไม่ได้ครับ/ค่ะ', th_ro:'Chan kin gluten mai dai khrap/kha',
+      tl:'Hindi ako makakain ng gluten',
+      km:'ខ្ញុំមិនអាចញាំ gluten', km_ro:'khnhom min ach nyam gluten',
+      bn:'আমি গ্লুটেন খেতে পারি না', bn_ro:'ami gluten khete pari na',
+    },
+    {
+      en:'I am vegetarian',
+      ja:'ベジタリアンです', ja_ro:'Bejitarian desu',
+      zh:'我是素食者', zh_ro:'Wǒ shì sùshí zhě',
+      zht:'我是素食者', zht_ro:'Wǒ shì sùshí zhě',
+      vi:'Tôi ăn chay',
+      pt:'Sou vegetariano',
+      es:'Soy vegetariano',
+      id:'Saya vegetarian',
+      th:'ฉันกินมังสวิรัติครับ/ค่ะ', th_ro:'Chan kin mangsawirat khrap/kha',
+      tl:'Vegetarian ako',
+      km:'ខ្ញុំញាំបួស', km_ro:'khnhom nyam buos',
+      bn:'আমি নিরামিষাশী', bn_ro:'ami niraamishashi',
+    },
+    {
+      en:'No meat, please',
+      ja:'お肉は抜きでお願いします', ja_ro:'O-niku wa nuki de onegaishimasu',
+      zh:'请不要放肉', zh_ro:'Qǐng bú yào fàng ròu',
+      zht:'請不要放肉', zht_ro:'Qǐng bú yào fàng ròu',
+      vi:'Không cho thịt, xin cảm ơn',
+      pt:'Sem carne, por favor',
+      es:'Sin carne, por favor',
+      id:'Tanpa daging, tolong',
+      th:'ไม่ใส่เนื้อสัตว์ครับ/ค่ะ', th_ro:'Mai sai nuea sat khrap/kha',
+      tl:'Walang karne, pakiusap',
+      km:'សូមកុំដាក់សាច់', km_ro:'som kom dak sach',
+      bn:'মাংস ছাড়া দিন', bn_ro:'mangso chhara din',
+    },
+    {
+      en:'Does this contain dairy?',
+      ja:'これに乳製品は入っていますか？', ja_ro:'Kore ni nyūseihin wa haitte imasu ka?',
+      zh:'这里面有乳制品吗？', zh_ro:'Zhè lǐmiàn yǒu rǔzhìpǐn ma?',
+      zht:'這裡面有乳製品嗎？', zht_ro:'Zhè lǐmiàn yǒu rǔzhìpǐn ma?',
+      vi:'Món này có sữa không?',
+      pt:'Isso contém laticínios?',
+      es:'¿Esto contiene lácteos?',
+      id:'Apakah ini mengandung susu?',
+      th:'มีผลิตภัณฑ์นมไหมครับ/ค่ะ', th_ro:'Mi phlit phan nom mai khrap/kha',
+      tl:'May gatas ba ito?',
+      km:'នេះមានផលិតផលទឹកដោះគោទេ?', km_ro:'nih mean phalit phol teuk daoh ko te?',
+      bn:'এতে কি দুগ্ধজাত পণ্য আছে?', bn_ro:'ete ki dugdhojaat ponyo ache?',
+    },
+  ]},
+  {cat:'During the meal', items:[
+    {
+      en:'This is delicious!',
+      ja:'おいしい！', ja_ro:'Oishii!',
+      zh:'这个很好吃！', zh_ro:'Zhège hěn hǎo chī!',
+      zht:'這個很好吃！', zht_ro:'Zhège hěn hǎo chī!',
+      vi:'Món này ngon quá!',
+      pt:'Está delicioso!',
+      es:'¡Está delicioso!',
+      id:'Ini enak sekali!',
+      th:'อร่อยมากครับ/ค่ะ', th_ro:'Aroi mak khrap/kha',
+      tl:'Masarap ito!',
+      km:'ឆ្ងាញ់ណាស់!', km_ro:'chhnganh nah!',
+      bn:'এটা খুব সুস্বাদু!', bn_ro:'eta khub sushadu!',
+    },
+    {
+      en:'Could I have some water?',
+      ja:'お水をいただけますか？', ja_ro:'O-mizu o itadake masu ka?',
+      zh:'可以给我一杯水吗？', zh_ro:'Kěyǐ gěi wǒ yī bēi shuǐ ma?',
+      zht:'可以給我一杯水嗎？', zht_ro:'Kěyǐ gěi wǒ yī bēi shuǐ ma?',
+      vi:'Cho tôi xin một ly nước',
+      pt:'Poderia me trazer água?',
+      es:'¿Me podría traer agua?',
+      id:'Boleh minta air putih?',
+      th:'ขอน้ำหน่อยได้ไหมครับ/ค่ะ', th_ro:'Kho nam noi dai mai khrap/kha',
+      tl:'Maaari ba akong makakuha ng tubig?',
+      km:'សូមមានទឹកបន្តិច', km_ro:'som mean teuk bantich',
+      bn:'একটু পানি দিন', bn_ro:'ektu pani din',
+    },
+    {
+      en:'Excuse me!',
+      ja:'すみません！', ja_ro:'Sumimasen!',
+      zh:'不好意思！', zh_ro:'Bù hǎoyìsi!',
+      zht:'不好意思！', zht_ro:'Bù hǎoyìsi!',
+      vi:'Xin lỗi!',
+      pt:'Com licença!',
+      es:'¡Disculpe!',
+      id:'Permisi!',
+      th:'ขอโทษครับ/ค่ะ', th_ro:'Kho thot khrap/kha',
+      tl:'Pakiusap!',
+      km:'សូមទោស!', km_ro:'som tos!',
+      bn:'মাফ করবেন!', bn_ro:'maaf korben!',
+    },
+    {
+      en:'Can I get extra napkins?',
+      ja:'ナプキンをもっとください', ja_ro:'Napukin o motto kudasai',
+      zh:'可以再给我一些餐巾纸吗？', zh_ro:'Kěyǐ zài gěi wǒ yīxiē cānjīn zhǐ ma?',
+      zht:'可以再給我一些餐巾紙嗎？', zht_ro:'Kěyǐ zài gěi wǒ yīxiē cānjīn zhǐ ma?',
+      vi:'Cho tôi thêm khăn giấy',
+      pt:'Poderia me trazer mais guardanapos?',
+      es:'¿Me puede traer más servilletas?',
+      id:'Boleh minta serbet tambahan?',
+      th:'ขอผ้าเช็ดปากเพิ่มหน่อยครับ/ค่ะ', th_ro:'Kho pha chet pak phoem noi khrap/kha',
+      tl:'Maaari ba akong makakuha ng dagdag na napkin?',
+      km:'សូមមានក្រដាសជូតមាត់បន្ថែម', km_ro:'som mean krodas jut moat banthaem',
+      bn:'আরও ন্যাপকিন দিন', bn_ro:'aaro napkin din',
+    },
+  ]},
+  {cat:'Bill & payment', items:[
+    {
+      en:'The bill, please',
+      ja:'お会計をお願いします', ja_ro:'O-kaikei o onegaishimasu',
+      zh:'买单，谢谢', zh_ro:'Mǎidān, xièxie',
+      zht:'買單，謝謝', zht_ro:'Mǎidān, xièxie',
+      vi:'Cho tôi tính tiền',
+      pt:'A conta, por favor',
+      es:'La cuenta, por favor',
+      id:'Minta bon-nya',
+      th:'เก็บเงินด้วยครับ/ค่ะ', th_ro:'Kep ngoen duai khrap/kha',
+      tl:'Ang bill, pakiusap',
+      km:'សូមមានវិក្កយបត្រ', km_ro:'som mean vikkaypatra',
+      bn:'বিল দিন, অনুগ্রহ করে', bn_ro:'bill din, onugroho kore',
+    },
+    {
+      en:'We will pay separately',
+      ja:'別々にお願いします', ja_ro:'Betsubetsu ni onegaishimasu',
+      zh:'我们分开付', zh_ro:'Wǒmen fēnkāi fù',
+      zht:'我們分開付', zht_ro:'Wǒmen fēnkāi fù',
+      vi:'Chúng tôi trả riêng',
+      pt:'Vamos pagar separado',
+      es:'Vamos a pagar por separado',
+      id:'Kami bayar terpisah',
+      th:'จ่ายแยกกันครับ/ค่ะ', th_ro:'Chai yaek kan khrap/kha',
+      tl:'Magbabayad kami nang hiwalay',
+      km:'យើងបង់ប្រាក់ដាច់ដោយឡែក', km_ro:'yeung bong prak dach doy laek',
+      bn:'আমরা আলাদা আলাদা দেব', bn_ro:'amra alada alada debe',
+    },
+    {
+      en:'Can I pay by card?',
+      ja:'カードで払えますか？', ja_ro:'Kādo de harae masu ka?',
+      zh:'可以刷卡吗？', zh_ro:'Kěyǐ shuākǎ ma?',
+      zht:'可以刷卡嗎？', zht_ro:'Kěyǐ shuākǎ ma?',
+      vi:'Tôi có thể trả bằng thẻ không?',
+      pt:'Posso pagar com cartão?',
+      es:'¿Puedo pagar con tarjeta?',
+      id:'Bisa bayar pakai kartu?',
+    },
+    {
+      en:'Is service included?',
+      ja:'サービス料は含まれていますか？', ja_ro:'Sābisu ryō wa fukumarete imasu ka?',
+      zh:'包含服务费吗？', zh_ro:'Bāohán fúwù fèi ma?',
+      zht:'包含服務費嗎？', zht_ro:'Bāohán fúwù fèi ma?',
+      vi:'Giá đã bao gồm phí phục vụ chưa?',
+      pt:'O serviço está incluído?',
+      es:'¿Está incluido el servicio?',
+      id:'Sudah termasuk biaya layanan?',
+      th:'รวมค่าบริการแล้วหรือเปล่าครับ/ค่ะ', th_ro:'Ruam kha borikan laeo rue plao khrap/kha',
+      tl:'Kasama na ba ang service charge?',
+      km:'រួមមានថ្លៃសេវាទេ?', km_ro:'ruom mean thlai seva te?',
+      bn:'সার্ভিস চার্জ কি অন্তর্ভুক্ত?', bn_ro:'service charge ki ontorbhukt?',
+    },
+    {
+      en:'Keep the change',
+      ja:'おつりはいいです', ja_ro:'Otsuri wa ii desu',
+      zh:'不用找钱了', zh_ro:'Bú yòng zhǎoqián le',
+      zht:'不用找錢了', zht_ro:'Bú yòng zhǎoqián le',
+      vi:'Không cần thối tiền',
+      pt:'Pode ficar com o troco',
+      es:'Quédese con el cambio',
+      id:'Kembaliannya tidak usah',
+      th:'เก็บเงินทอนไว้ครับ/ค่ะ', th_ro:'Kep ngoen thon wai khrap/kha',
+      tl:'Iingatan ang sukli',
+      km:'រក្សាប្រាក់អាប់', km_ro:'raksa prak ab',
+      bn:'বাকি রাখুন', bn_ro:'baki rakhun',
+    },
+  ]},
+];
+
+
+var session = [];
+var isListening = false;
+var recognition = null;
+var mediaRecorder = null;
+var audioChunks = [];
+var currentStream = null;
+
+// Stream registry — every active getUserMedia stream registers here
+// so nukeAllStreams() can kill them even if the local var wasn't assigned yet
+var _activeStreams = [];
+function _registerStream(s) { if(s) _activeStreams.push(s); return s; }
+function nukeAllStreams() {
+  _activeStreams.forEach(function(s) {
+    try { s.getTracks().forEach(function(t){ t.enabled=false; try{t.stop();}catch(e){} }); } catch(e) {}
+  });
+  _activeStreams = [];
+}
+
+// ── SESSION & HISTORY SCHEMA v2 ──────────────────────────────────────────────
+// Session: events within one app open. History: all sessions across time.
+// Both stored in localStorage. Character reads history to personalise prompts.
+
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2,5);
+}
+
+// Current session metadata
+var SESSION_META = {
+  id:        generateId(),
+  startedAt: new Date().toISOString(),
+  appVersion:'poc-0.3',
+};
+
+// Load cross-session history (rolling, capped at 500 events to avoid storage bloat)
+var vurbaHistory = [];
+try { vurbaHistory = JSON.parse(localStorage.getItem('vh') || '[]'); } catch(e){}
+
+// Load current session events
+try { session = JSON.parse(localStorage.getItem('vs') || '[]'); } catch(e){}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  // Tab switching
+  document.getElementById('tabs').addEventListener('click', function(e) {
+    var tab = e.target.closest('.tab');
+    if (!tab) return;
+    var sec = tab.getAttribute('data-sec');
+    document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
+    document.querySelectorAll('.sec').forEach(function(s){ s.classList.remove('on'); });
+    tab.classList.add('on');
+    document.getElementById(sec).classList.add('on');
+  });
+
+  // Translate button
+  document.getElementById('trbtn').addEventListener('click', doTranslate);
+  document.getElementById('mictranbtn').addEventListener('click', translateFromSpeech);
+
+  // Listen mic button
+  document.getElementById('micbtn').addEventListener('click', toggleListen);
+
+  // Show overlay close
+  document.getElementById('showClose').addEventListener('click', function() {
+    document.getElementById('showOverlay').style.display = 'none';
+    window.speechSynthesis.cancel();
+  });
+
+  // Export / clear
+  document.getElementById('expbtn').addEventListener('click', exportData);
+  document.getElementById('clrbtn').addEventListener('click', clearSession);
+
+  buildPhrases();
+  updateReview();
+  // Start onboarding on first launch
+  if (isFirstLaunch) {
+    setTimeout(initOnboarding, 400); // slight delay so app renders first
+  }
+});
+
+// ── LANGUAGE HELPERS ─────────────────────────────────────────────────────────
+function getSrc() { var el=document.getElementById('srcLang'); return el?el.value:'en'; }
+function getTgt() { var el=document.getElementById('tgtLang'); return el?el.value:'ja'; }
+function getLangName(code) { return (LANG_CONFIG[code]&&LANG_CONFIG[code].name)||code; }
+function getSpeechCode(code) { return (LANG_CONFIG[code]&&LANG_CONFIG[code].speech)||'ja-JP'; }
+function getPhrase(p,lang) { return {text:p[lang]||p.en, ro:p[lang+'_ro']||''}; }
+
+function switchScenario(scenario) {
+  CURRENT_SCENARIO = scenario;
+  // Update active button states
+  ['scRestaurant','scShopping','scMedical','scTransport','scWorkplace'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+  var activeMap = {restaurant:'scRestaurant', shopping:'scShopping', medical:'scMedical', transport:'scTransport', workplace:'scWorkplace', pharmacy:'scPharmacy', custom:'scCustom'};
+  var activeEl = document.getElementById(activeMap[scenario]);
+  if (activeEl) activeEl.classList.add('active');
+  // Update context pill
+  var src = getSrc(), tgt = getTgt();
+  var scenarioLabel = scenario === 'shopping' ? 'Shopping' : 'Restaurant';
+  var pill = document.getElementById('contextPill');
+  if (pill) pill.textContent = scenarioLabel + ' · ' + getLangName(src) + ' → ' + getLangName(tgt);
+  // Rebuild phrases for new scenario
+  buildPhrases();
+  toast(scenarioLabel + ' mode');
+}
+
+function onLangChange() {
+  var src=getSrc(), tgt=getTgt();
+  if (src===tgt) {
+    var other=tgt==='en'?'ja':'en';
+    document.getElementById('tgtLang').value=other;
+    tgt=getTgt(); src=getSrc();
+  }
+  var srcName=getLangName(src), tgtName=getLangName(tgt);
+  // Context pill
+  var pill=document.getElementById('contextPill');
+  var scenarioLabels = {restaurant:'Restaurant', shopping:'Shopping', medical:'Medical', transport:'Transport', workplace:'Workplace', pharmacy:'Pharmacy 💊', custom:'Custom'};
+  var scenarioLabel = scenarioLabels[CURRENT_SCENARIO] || 'Restaurant';
+  if (pill) pill.textContent=scenarioLabel+' · '+srcName+' → '+tgtName;
+  // Translate tab
+  var trbtnLbl=document.getElementById('trbtnLabel');
+  if (trbtnLbl) trbtnLbl.textContent='Translate to '+tgtName;
+  var srcLbl=document.getElementById('translateSrcLbl');
+  if (srcLbl) srcLbl.textContent='Type in '+srcName;
+  var micLbl=document.getElementById('micTranBtnLbl');
+  if (micLbl) micLbl.textContent='Speak in '+srcName;
+  // Listen tab
+  var listenTgt=document.getElementById('listenTgtLbl');
+  if (listenTgt) listenTgt.textContent='What was said ('+tgtName+')';
+  var listenSrc=document.getElementById('listenSrcLbl');
+  if (listenSrc) listenSrc.textContent='In '+srcName;
+  // Converse tab labels
+  var convSrc=document.getElementById('convSrcLabel');
+  if (convSrc) convSrc.textContent=srcName;
+  var convTgt=document.getElementById('convTgtLabel');
+  if (convTgt) convTgt.textContent=tgtName;
+  var enSt=document.getElementById('enStatus');
+  if (enSt) enSt.textContent='Tap to speak ('+srcName+')';
+  var jaSt=document.getElementById('jaStatus');
+  if (jaSt) jaSt.textContent='Tap to speak ('+tgtName+')';
+  // Rebuild phrases
+  buildPhrases();
+}
+
+// ── PHRASES ───────────────────────────────────────────────────────────────────
+function buildPhrases() {
+  var tgt=getTgt(), src=getSrc();
+  var used={};
+  session.filter(function(s){return s.type==='phrase';}).forEach(function(s){used[s.en]=true;});
+  var c=document.getElementById('plist');
+  c.innerHTML='';
+  var PHRASES_IDX = 0;
+  getActivePhrases().forEach(function(cat) {
+    var catIdx = PHRASES_IDX % 6;
+    PHRASES_IDX++;
+    var l=document.createElement('div');
+    l.className='cat cat-'+catIdx;
+    // Dot + label — the ::after pseudo-element adds the line rule
+    var dot=document.createElement('span');
+    dot.className='cat-dot';
+    l.appendChild(dot);
+    l.appendChild(document.createTextNode(cat.cat));
+    c.appendChild(l);
+    cat.items.forEach(function(p) {
+      var srcP=getPhrase(p,src), tgtP=getPhrase(p,tgt);
+      var srcText=srcP.text, tgtText=tgtP.text, tgtRo=tgtP.ro;
+      var d=document.createElement('div');
+      d.className='pc pc-'+catIdx+(used[p.en]?' used':'');
+      d.innerHTML=(used[p.en]?'<div class="ubadge"></div>':'')+
+        '<div class="en">'+srcText+'</div>'+
+        '<div class="ja">'+tgtText+'</div>'+
+        (tgtRo?'<div class="ro">'+tgtRo+'</div>':'')+
+        '<div class="acts" style="display:none">'+
+          '<button class="ab spk spk-'+catIdx+'">&#127911; Listen</button>'+
+          '<button class="ab shw">&#128269; Show</button>'+
+          '<button class="ab sav" style="color:#EF9F27;border-color:rgba(239,159,39,0.3)">&#10133; Save</button>'+
+        '</div>';
+      // Tap card to expand/collapse actions
+      d.addEventListener('click', function(e) {
+        if (e.target.closest('.ab')) return; // don't toggle if clicking a button
+        var acts = d.querySelector('.acts');
+        var isOpen = acts.style.display !== 'none';
+        // Close all other open cards first
+        document.querySelectorAll('.acts').forEach(function(a){ a.style.display='none'; });
+        acts.style.display = isOpen ? 'none' : 'flex';
+      });
+      d.querySelector('.spk').addEventListener('click',function(e){
+        e.stopPropagation();
+        speakLang(tgtText,tgt);
+        // phraseId: stable English key so character can track repeats across sessions
+        var phraseId = p.en.toLowerCase().replace(/[^a-z0-9]+/g,'_').substr(0,40);
+        log({type:'phrase', phraseId:phraseId, src:src, tgt:tgt, srcText:srcText, tgtText:tgtText, ro:tgtRo});
+        buildPhrases();
+        toast('Speaking: '+srcText);
+      });
+      d.querySelector('.shw').addEventListener('click',function(e){
+        e.stopPropagation();
+        showFull(tgtText,tgtRo,srcText,tgt);
+      });
+      d.querySelector('.sav').addEventListener('click',(function(st,tt,ro){
+        return function(e){
+          e.stopPropagation();
+          var added = addToLibrary(st, tt, ro, 'phrase');
+          if (added) toast('Saved to My Library! ⭐');
+        };
+      })(srcText, tgtText, tgtRo));
+      c.appendChild(d);
+    });
+  });
+}
+
+// ── TTS ───────────────────────────────────────────────────────────────────────
+function speakLang(text, langCode) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  var speechCode = getSpeechCode(langCode);
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = speechCode;
+  u.rate = 0.85;
+  var voices = window.speechSynthesis.getVoices();
+  var match = voices.find(function(v){ return v.lang === speechCode; })
+           || voices.find(function(v){ return v.lang.startsWith(speechCode.split('-')[0]); });
+  if (match) u.voice = match;
+  window.speechSynthesis.speak(u);
+}
+
+function speak(text) {
+  // Legacy — speaks in current target language
+  speakLang(text, getTgt());
+}
+
+// ── TRANSLATE ─────────────────────────────────────────────────────────────────
+function doTranslate() {
+  var text = document.getElementById('tin').value.trim();
+  if (!text) { toast('Please type something first'); return; }
+
+  var btn = document.getElementById('trbtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Translating...';
+  var tgt=getTgt(), src=getSrc();
+  var tgtName=getLangName(tgt), srcName=getLangName(src);
+  var needsRo = LANG_CONFIG[tgt]&&LANG_CONFIG[tgt].ro;
+  var scenarioCtx = CURRENT_SCENARIO || 'restaurant';
+  var sysPrompt = 'You are a '+scenarioCtx+' translator. Output ONLY raw JSON, no markdown, no code fences. Structure: {"translation":"<translated text>","ro":"<romanisation if applicable, else empty string>"}';
+  callClaude('Translate from '+srcName+' to '+tgtName+' for '+scenarioCtx+' use: "'+text+'"', sysPrompt)
+    .then(function(r) {
+      try {
+        // Aggressively clean the response
+        var clean = r
+          .replace(/```json/gi,'').replace(/```/g,'')
+          .replace(/^[^{]*/,'').replace(/[^}]*$/,'')
+          .trim();
+        var obj = JSON.parse(clean);
+        var tgtTrans = obj.translation || obj.ja || obj.text || r.trim();
+        var tgtRo    = obj.ro || '';
+        if (!tgtTrans) throw new Error('missing translation');
+        var tgt2=getTgt(), src2=getSrc();
+        var tgtLangName=getLangName(tgt2);
+        // Build confidence badge
+        var confBadge = '';
+        if (micTranConf > 0) {
+          var confColor = micTranConf >= 70 ? 'var(--green)' : micTranConf >= 40 ? 'var(--amber)' : 'var(--red)';
+          var confBg    = micTranConf >= 70 ? 'rgba(61,214,140,0.15)' : micTranConf >= 40 ? 'rgba(239,159,39,0.15)' : 'rgba(226,75,74,0.15)';
+          confBadge = '<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:'+confBg+';color:'+confColor+';margin-left:8px">&#127908; '+micTranConf+'%</span>';
+        }
+        document.getElementById('tres').innerHTML =
+          '<div style="display:flex;align-items:center;margin-bottom:6px">' +
+            '<div class="lbl" style="margin-bottom:0">'+tgtLangName+'</div>' + confBadge +
+          '</div>' +
+          '<div class="rja">'+tgtTrans+'</div>' +
+          (tgtRo?'<div class="rro">'+tgtRo+'</div>':'')+
+          '<div style="margin-top:10px;display:flex;gap:8px">' +
+            '<button class="ab p" id="spkres" style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px">&#127911; Listen</button>' +
+            '<button class="ab" id="showres" style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px">&#128269; Show</button>' +
+            '<button class="ab" id="saveres" style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px;color:#EF9F27;border-color:rgba(239,159,39,0.3)">&#10133; Save</button>' +
+          '</div>';
+        document.getElementById('spkres').addEventListener('click', function(){ speakLang(tgtTrans, tgt2); });
+        document.getElementById('showres').addEventListener('click', function(){ showFull(tgtTrans, tgtRo, text, tgt2); });
+        document.getElementById('saveres').addEventListener('click', function(){
+          var added = addToLibrary(text, tgtTrans, tgtRo, 'translate');
+          if (added) toast('Saved to My Library! ⭐');
+        });
+        speakLang(tgtTrans, tgt2);
+        log({type:'translate', src:src2, tgt:tgt2, srcText:text, tgtText:tgtTrans, ro:tgtRo, speechConf: micTranConf > 0 ? micTranConf : null, inputMethod: micTranConf > 0 ? 'speech' : 'typed'});
+        updateReview();
+        // Hide interim speech transcript now that result is shown
+        var interimEl = document.getElementById('micInterim');
+        if (interimEl) interimEl.style.display = 'none';
+      } catch(e) {
+        console.error('Parse error. Raw response:', r);
+        // Last resort: show raw response so user gets something useful
+        document.getElementById('tres').innerHTML = '<div class="lbl">'+getLangName(getTgt())+'</div><div class="rja" style="font-size:16px">' + r.replace(/```json|```/g,'').trim() + '</div>';
+      }
+    })
+    .catch(function(e) {
+      toast('API error — check your key');
+      console.error(e);
+    })
+    .finally(function() {
+      btn.disabled = false;
+      btn.innerHTML = '&#127760; Translate to ' + getLangName(getTgt());
+    });
+}
+
+var micTranRec = null;
+var micTranStream = null;
+var micTranConf = 0;
+var micTranActive = false;
+
+function translateFromSpeech() {
+  if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+    toast('Speech recognition not supported on this browser');
+    return;
+  }
+  if (micTranRec) {
+    try { micTranRec.abort(); } catch(e) {}
+    micTranRec = null; micTranStream = null;
+    clearSilenceTimer('tran');
+    resetMicTranBtn();
+    return;
+  }
+  micTranConf = 0;
+  var btn = document.getElementById('mictranbtn');
+  btn.style.background = 'rgba(226,75,74,0.15)';
+  btn.style.borderColor = '#E24B4A';
+  btn.style.color = '#E24B4A';
+  btn.innerHTML = '&#9646;&#9646; <span id="micTranBtnLbl">Listening... (tap to stop)</span>';
+  var interim = document.getElementById('micInterim');
+  if (!interim) {
+    interim = document.createElement('div');
+    interim.id = 'micInterim';
+    interim.style.cssText = 'background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:14px;color:var(--muted);min-height:44px;font-style:italic;line-height:1.5';
+    interim.textContent = 'Waiting for speech...';
+    document.getElementById('micTranArea').appendChild(interim);
+  } else {
+    interim.style.display = 'block';
+    interim.textContent = 'Waiting for speech...';
+  }
+  startSilenceTimer('tran', 6, function() {
+    try { if(micTranRec) micTranRec.abort(); } catch(e) {}
+    micTranRec = null; micTranStream = null;
+    resetMicTranBtn();
+    var el = document.getElementById('micInterim');
+    if (el) el.textContent = 'No speech detected — tap to try again';
+  });
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  micTranRec = new SR();
+  micTranRec.lang = getSpeechCode(getSrc());
+  micTranRec.interimResults = true;
+  micTranRec.continuous = false;
+  micTranRec.onresult = function(e) {
+    startSilenceTimer('tran', 6, function() {
+      try { if(micTranRec) micTranRec.abort(); } catch(e) {}
+      micTranRec = null; micTranStream = null;
+      resetMicTranBtn();
+    });
+    var interim_txt='', final_txt='', bestConf=0;
+    for (var i=0;i<e.results.length;i++) {
+      if (e.results[i].isFinal) { final_txt+=e.results[i][0].transcript; var c=Math.round((e.results[i][0].confidence||0)*100); if(c>bestConf)bestConf=c; }
+      else interim_txt+=e.results[i][0].transcript;
+    }
+    if (bestConf>0) micTranConf=bestConf;
+    var display=final_txt||interim_txt;
+    var el=document.getElementById('micInterim');
+    if(el){el.style.color=final_txt?'#fff':'var(--muted)';el.style.fontStyle=final_txt?'normal':'italic';el.textContent=display||'Waiting for speech...';}
+    if(final_txt) document.getElementById('tin').value=final_txt;
+  };
+  micTranRec.onend = function() {
+    clearSilenceTimer('tran');
+    var final_txt=document.getElementById('tin').value.trim();
+    try { if(micTranRec) micTranRec.abort(); } catch(e) {}
+    micTranRec=null; micTranStream=null;
+    resetMicTranBtn();
+    if(final_txt){
+      var el=document.getElementById('micInterim');
+      if(el){el.style.color='var(--green)';el.style.fontStyle='normal';el.textContent='✓ Heard: "'+final_txt+'" — translating...';}
+      doTranslate();
+    } else {
+      var el2=document.getElementById('micInterim');
+      if(el2) el2.textContent='Nothing heard — tap to try again';
+    }
+  };
+  micTranRec.onerror = function(e) {
+    clearSilenceTimer('tran');
+    try { if(micTranRec) micTranRec.abort(); } catch(ex) {}
+    micTranRec=null; micTranStream=null;
+    resetMicTranBtn();
+    var el=document.getElementById('micInterim');
+    if(el) el.textContent='Error: '+e.error+' — try again';
+  };
+  micTranRec.start();
+}
+
+function resetMicTranBtn() {
+  var btn = document.getElementById('mictranbtn');
+  if (!btn) return;
+  btn.style.background = '';
+  btn.style.borderColor = '';
+  btn.style.color = '';
+  btn.innerHTML = '&#127908; Speak in ' + getLangName(getSrc());
+}
+
+// ── LISTEN / RECORD ───────────────────────────────────────────────────────────
+function toggleListen() {
+  if (isListening) stopListen();
+  else startListen();
+}
+
+function startListen() {
+  if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+    document.getElementById('mst').textContent = 'Speech recognition not available in this browser';
+    return;
+  }
+  isListening = true;
+  var btn = document.getElementById('micbtn');
+  btn.className = 'mb rec';
+  btn.innerHTML = '<span style="font-size:28px">&#9646;</span>';
+  document.getElementById('mst').textContent = 'Listening for ' + getLangName(getTgt()) + '...';
+
+  // Audio recording for training data
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream) {
+    currentStream = _registerStream(stream);
+    audioChunks = [];
+    mediaRecorder = new MediaRecorder(currentStream);
+    mediaRecorder.ondataavailable = function(e){ audioChunks.push(e.data); };
+    mediaRecorder.start();
+  }).catch(function(){});
+
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = getSpeechCode(getTgt());
+  recognition.interimResults = true;
+  recognition.continuous = false;
+
+  // Auto-kill after 8s of silence
+  startSilenceTimer('listen', 8, function() {
+    isListening = false;
+    isListening = false;
+    try { if(recognition) recognition.abort(); } catch(e) {}
+    nukeAllStreams();
+    recognition = null; currentStream = null; mediaRecorder = null;
+    var btn = document.getElementById('micbtn');
+    if (btn) { btn.className = 'mb idle'; btn.innerHTML = '<span style="font-size:32px">&#127908;</span>'; }
+    document.getElementById('mst').textContent = 'No speech detected — hold to try again';
+  });
+
+  recognition.onresult = function(e) {
+    // Reset silence timer — speech detected
+    startSilenceTimer('listen', 8, function() {
+      isListening = false;
+      killMic(recognition, currentStream, mediaRecorder, 'listen');
+      recognition = null; currentStream = null; mediaRecorder = null;
+      var btn2 = document.getElementById('micbtn');
+      if (btn2) { btn2.className = 'mb idle'; btn2.innerHTML = '<span style="font-size:32px">&#127908;</span>'; }
+      document.getElementById('mst').textContent = 'Tap to start listening';
+    });
+    var res = e.results[e.results.length-1];
+    var txt = res[0].transcript;
+    var conf = Math.round((res[0].confidence||0)*100);
+    document.getElementById('tja').textContent = txt;
+    // Confidence badge — shown inline next to the Japanese label
+    var clbl = document.getElementById('clbl');
+    if (conf > 0) {
+      clbl.style.display = 'block';
+      clbl.textContent = conf+'%';
+      if (conf >= 70) { clbl.style.background='rgba(61,214,140,0.15)'; clbl.style.color='var(--green)'; }
+      else if (conf >= 40) { clbl.style.background='rgba(239,159,39,0.15)'; clbl.style.color='var(--amber)'; }
+      else { clbl.style.background='rgba(226,75,74,0.15)'; clbl.style.color='var(--red)'; }
+    }
+
+    if (res.isFinal) {
+      document.getElementById('mst').textContent = 'Translating...';
+      btn.className = 'mb proc';
+      btn.innerHTML = '<span class="spin" style="width:32px;height:32px;border-width:3px"></span>';
+      if (API_KEY) {
+        callClaude('Translate this '+getLangName(getTgt())+' text to '+getLangName(getSrc())+'. Reply with ONLY the translation, no other text.\n"'+txt+'"')
+          .then(function(en) {
+            document.getElementById('ten').textContent = en.trim();
+            document.getElementById('tnote').textContent = conf < 50 ? '⚠️ Low confidence — try a quieter spot' : '';
+            log({type:'listen', srcText:txt, tgtText:en.trim(), conf:conf, inputMethod:'speech'});
+            updateReview();
+          })
+          .catch(function(){ document.getElementById('ten').textContent = '(translation failed)'; })
+          .finally(function(){ stopListen(); });
+      } else {
+        document.getElementById('ten').textContent = '(add API key to HTML for translation)';
+        stopListen();
+      }
+    }
+  };
+
+  recognition.onerror = function(e) {
+    document.getElementById('mst').textContent = 'Error: '+e.error+' — try a quieter spot';
+    stopListen();
+  };
+
+  recognition.onend = function() { if(isListening) stopListen(); };
+  recognition.start();
+}
+
+function stopListen() {
+  isListening = false;
+  var btn = document.getElementById('micbtn');
+  btn.className = 'mb idle';
+  btn.innerHTML = '<span style="font-size:32px">&#127908;</span>';
+  document.getElementById('mst').textContent = 'Tap to start listening';
+  clearSilenceTimer('listen');
+  if (recognition) {
+    recognition.onresult = null;
+    recognition.onend    = null;
+    recognition.onerror  = null;
+    try { recognition.abort(); } catch(e) {}
+    recognition = null;
+  }
+  nukeAllStreams();
+
+  // Save audio clip if we have data (do this after killing the stream)
+  if (mediaRecorder) {
+    mediaRecorder.onstop = function() {
+      if (!audioChunks.length) return;
+      var blob = new Blob(audioChunks, {type:'audio/webm'});
+      var reader = new FileReader();
+      reader.onloadend = function() {
+        var clips = [];
+        try{ clips = JSON.parse(localStorage.getItem('va')||'[]'); }catch(e){}
+        clips.push({ts:new Date().toISOString(),size:blob.size,ja:document.getElementById('tja').textContent});
+        try{ localStorage.setItem('va', JSON.stringify(clips)); }catch(e){}
+        document.getElementById('sa').textContent = clips.length;
+      };
+      reader.readAsDataURL(blob);
+    };
+    if (mediaRecorder.state !== 'inactive') {
+      try { mediaRecorder.stop(); } catch(e) {}
+    }
+    mediaRecorder = null;
+  }
+  currentStream = null;
+}
+
+// ── MIC RELEASE UTILITY ──────────────────────────────────────────────────────
+// Aggressively releases all mic resources across all modes
+// Global silence timers — one per mode
+var silenceTimers = {};
+
+function killMic(rec, stream, recorder, timerKey) {
+  // Clear any pending silence timer
+  if (timerKey && silenceTimers[timerKey]) {
+    clearTimeout(silenceTimers[timerKey]);
+    delete silenceTimers[timerKey];
+  }
+  // Destroy speech recognition — on iOS, nulling the object after abort
+  // signals to AVAudioSession that the mic can be released
+  if (rec) {
+    rec.onresult = null;
+    rec.onend    = null;
+    rec.onerror  = null;
+    rec.onspeechend = null;
+    rec.onaudioend  = null;
+    try { rec.abort(); } catch(e) {}
+    try { rec.stop();  } catch(e) {}
+    rec = null;
+  }
+  // Stop MediaRecorder
+  if (recorder && recorder.state !== 'inactive') {
+    try { recorder.stop(); } catch(e) {}
+  }
+  // Kill streams
+  if (stream) {
+    stream.getTracks().forEach(function(t) {
+      t.enabled = false;
+      try { t.stop(); } catch(e) {}
+    });
+  }
+  nukeAllStreams();
+  // Delayed second attempt — iOS sometimes needs a tick to release
+  setTimeout(function() { nukeAllStreams(); }, 300);
+}
+
+function startSilenceTimer(key, seconds, fn) {
+  if (silenceTimers[key]) clearTimeout(silenceTimers[key]);
+  silenceTimers[key] = setTimeout(function() {
+    delete silenceTimers[key];
+    fn();
+  }, seconds * 1000);
+}
+
+function clearSilenceTimer(key) {
+  if (silenceTimers[key]) { clearTimeout(silenceTimers[key]); delete silenceTimers[key]; }
+}
+
+// ── CLAUDE API ────────────────────────────────────────────────────────────────
+function callClaude(prompt, system) {
+  var body = {
+    model:'claude-sonnet-4-6',
+    max_tokens:300,
+    messages:[{role:'user',content:prompt}]
+  };
+  if (system) body.system = system;
+  return fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key': API_KEY,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body:JSON.stringify(body)
+  }).then(function(r){
+    if (!r.ok) return r.text().then(function(t){ throw new Error(t); });
+    return r.json();
+  }).then(function(d){ return d.content[0].text; });
+}
+
+// ── SESSION ───────────────────────────────────────────────────────────────────
+function log(entry) {
+  // Enrich every event with common context fields
+  entry.ts        = new Date().toISOString();
+  entry.sessionId = SESSION_META.id;
+  entry.scenario  = CURRENT_SCENARIO;
+  entry.srcLang   = getSrc();
+  entry.tgtLang   = getTgt();
+  entry.appV      = SESSION_META.appVersion;
+
+  // Push to current session
+  session.push(entry);
+  try { localStorage.setItem('vs', JSON.stringify(session)); } catch(e) {}
+
+  // Also append to cross-session rolling history (cap at 500)
+  vurbaHistory.push(entry);
+  if (vurbaHistory.length > 500) vurbaHistory = vurbaHistory.slice(-500);
+  try { localStorage.setItem('vh', JSON.stringify(vurbaHistory)); } catch(e) {}
+
+  updateReview();
+}
+
+function updateReview() {
+  var phrases = session.filter(function(s){ return s.type==='phrase'; }).length;
+  var trans   = session.filter(function(s){ return s.type==='translate'; }).length;
+  var clips   = [];
+  try{ clips = JSON.parse(localStorage.getItem('va')||'[]'); }catch(e){}
+  document.getElementById('sp').textContent = phrases;
+  document.getElementById('st').textContent = trans;
+  document.getElementById('sa').textContent = clips.length;
+
+  var list = document.getElementById('rlist');
+  if (!session.length) {
+    list.innerHTML = '<div class="re">No activity yet — use Phrases or Translate to get started</div>';
+    return;
+  }
+  list.innerHTML = '';
+  session.slice().reverse().forEach(function(s) {
+    var d = document.createElement('div');
+    d.className = 'rc';
+    var time = new Date(s.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    var badge='', body='';
+    if (s.type==='phrase') {
+      badge='<span class="rb rp">Phrase used</span>';
+      body='<div style="font-size:13px;color:var(--off)">'+s.en+'</div><div style="font-size:16px;font-weight:600;margin-top:3px">'+s.ja+'</div><div style="font-size:11px;color:var(--tealLt)">'+s.ro+'</div>';
+    } else if (s.type==='translate') {
+      var confPill = '';
+      if (s.speechConf) {
+        var cc = s.speechConf >= 70 ? '#3DD68C' : s.speechConf >= 40 ? '#EF9F27' : '#E24B4A';
+        confPill = ' <span style="font-size:9px;padding:1px 6px;border-radius:10px;background:rgba(127,167,184,0.15);color:'+cc+'">&#127908; '+s.speechConf+'%</span>';
+      }
+      var methodLabel = s.inputMethod === 'speech' ? 'Translation · spoken' : 'Translation · typed';
+      badge='<span class="rb rtr">'+methodLabel+'</span>'+confPill;
+      body='<div style="font-size:12px;color:var(--muted)">'+s.en+'</div><div style="font-size:16px;font-weight:600;margin-top:3px">'+s.ja+'</div><div style="font-size:11px;color:var(--tealLt)">'+s.ro+'</div>';
+    } else if (s.type==='listen') {
+      badge='<span class="rb rl">Listen · '+s.conf+'% conf</span>';
+      body='<div style="font-size:16px;font-weight:600">'+s.ja+'</div><div style="font-size:12px;color:var(--tealLt);margin-top:3px">'+s.en+'</div>';
+    }
+    d.innerHTML = '<div class="rt">'+time+'</div>'+badge+body;
+    list.appendChild(d);
+  });
+}
+
+function exportData() {
+  var clips = [];
+  try{ clips = JSON.parse(localStorage.getItem('va')||'[]'); }catch(e){}
+  var stats = getHistoryStats();
+  var out = {
+    exported:       new Date().toISOString(),
+    appVersion:     SESSION_META.appVersion,
+    sessionMeta:    SESSION_META,
+    characterCtx:   getCharacterContext(),
+    historyStats:   stats,
+    session_events: session,
+    full_history:   vurbaHistory,
+    audio_clips:    clips.map(function(c){ return {ts:c.ts,size_bytes:c.size,transcript:c.ja}; }),
+  };
+  var blob = new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href=url; a.download='vurba-training-'+Date.now()+'.json'; a.click();
+  URL.revokeObjectURL(url);
+  toast('Training data exported!');
+}
+
+// ── NOTE-TAKER MODE ──────────────────────────────────────────────────────────
+var ntActive       = false;
+var ntRec          = null;       // SpeechRecognition instance
+var ntEntries      = [];         // [{ts, src, tgt}]
+var ntStartTime    = null;
+var ntTimerInterval= null;
+var NT_MAX_SECS    = 120;        // 2 minutes
+var listenMode     = 'phrase';   // 'phrase' | 'note'
+
+function setListenMode(mode) {
+  listenMode = mode;
+  document.getElementById('modePhraseBtn').classList.toggle('active', mode === 'phrase');
+  document.getElementById('modeNoteBtn').classList.toggle('active', mode === 'note');
+  document.getElementById('phraseModeUI').style.display = mode === 'phrase' ? 'block' : 'none';
+  document.getElementById('noteModeUI').style.display   = mode === 'note'   ? 'block' : 'none';
+  // Stop whichever mode is currently running
+  if (mode === 'note'   && isListening) stopListen();
+  if (mode === 'phrase' && ntActive)    stopNoteTaker();
+}
+
+function toggleNoteTaker() {
+  if (ntActive) stopNoteTaker();
+  else startNoteTaker();
+}
+
+function startNoteTaker() {
+  if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+    toast('Speech recognition not supported'); return;
+  }
+  ntActive    = true;
+  ntStartTime = Date.now();
+  ntEntries   = [];
+
+  // UI: recording state
+  var btn = document.getElementById('ntBtn');
+  btn.className = 'mb rec';
+  document.getElementById('ntIcon').textContent = '⏹';
+  document.getElementById('ntMst').textContent  = 'Recording... tap to stop';
+  document.getElementById('ntTimerWrap').style.display = 'block';
+  document.getElementById('ntExportBtn').style.display = 'none';
+  document.getElementById('ntClearBtn').style.display  = 'none';
+  document.getElementById('ntLog').innerHTML = '';
+
+  // Start countdown timer
+  updateNtTimer();
+  ntTimerInterval = setInterval(function() {
+    var elapsed = (Date.now() - ntStartTime) / 1000;
+    if (elapsed >= NT_MAX_SECS) { stopNoteTaker(); return; }
+    updateNtTimer();
+  }, 500);
+
+  // Start speech recognition chain
+  ntListenChain();
+}
+
+function updateNtTimer() {
+  var elapsed = Math.min((Date.now() - ntStartTime) / 1000, NT_MAX_SECS);
+  var remaining = Math.max(0, NT_MAX_SECS - elapsed);
+  var mins = Math.floor(remaining / 60);
+  var secs = Math.floor(remaining % 60);
+  document.getElementById('ntTimer').textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+  document.getElementById('ntBar').style.width = (elapsed / NT_MAX_SECS * 100) + '%';
+  // Turn amber at 30s left, red at 10s
+  var bar = document.getElementById('ntBar');
+  if (remaining <= 10)      bar.style.background = 'var(--red)';
+  else if (remaining <= 30) bar.style.background = 'var(--amber)';
+  else                      bar.style.background = 'var(--green)';
+}
+
+function ntListenChain() {
+  if (!ntActive) return;
+  var elapsed = (Date.now() - ntStartTime) / 1000;
+  if (elapsed >= NT_MAX_SECS) { stopNoteTaker(); return; }
+
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  ntRec = new SR();
+  ntRec.lang = getSpeechCode(getTgt());
+  ntRec.interimResults = true;
+  ntRec.continuous = false;
+
+  // Show interim
+  var statusEl = document.getElementById('ntStatus');
+
+  ntRec.onresult = function(e) {
+    var final_txt = '', interim_txt = '';
+    for (var i = 0; i < e.results.length; i++) {
+      if (e.results[i].isFinal) final_txt   += e.results[i][0].transcript;
+      else                      interim_txt  += e.results[i][0].transcript;
+    }
+    if (statusEl) statusEl.textContent = final_txt || interim_txt || 'Listening...';
+  };
+
+  ntRec.onend = function() {
+    var said = (document.getElementById('ntStatus') || {}).textContent || '';
+    // Filter out status messages
+    if (said && said !== 'Listening...' && said !== 'Recording... tap to stop') {
+      addNtEntry(said);
+    }
+    if (statusEl) statusEl.textContent = 'Listening...';
+    // Chain: restart immediately for continuous feel
+    if (ntActive) setTimeout(ntListenChain, 100);
+  };
+
+  ntRec.onerror = function() {
+    if (ntActive) setTimeout(ntListenChain, 300);
+  };
+
+  ntRec.start();
+}
+
+function addNtEntry(srcText) {
+  var ts = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  // Show entry immediately with source text, translate async
+  var entry = { ts: ts, src: srcText, tgt: '...' };
+  ntEntries.push(entry);
+  var idx = ntEntries.length - 1;
+  renderNtEntry(entry, idx);
+
+  // Translate via Claude
+  var sysPrompt = 'Translate the following to ' + getLangName(getSrc()) + '. Reply with ONLY the translation, no other text.';
+  callClaude(srcText, sysPrompt).then(function(tgt) {
+    entry.tgt = tgt.trim();
+    var el = document.getElementById('nt-entry-' + idx);
+    if (el) el.querySelector('.nt-entry-tgt').textContent = entry.tgt;
+    log({ type:'note', srcText: srcText, tgtText: entry.tgt, src: getTgt(), tgt: getSrc() });
+  }).catch(function() {
+    entry.tgt = '(translation failed)';
+    var el = document.getElementById('nt-entry-' + idx);
+    if (el) el.querySelector('.nt-entry-tgt').textContent = entry.tgt;
+  });
+}
+
+function renderNtEntry(entry, idx) {
+  var log = document.getElementById('ntLog');
+  var d = document.createElement('div');
+  d.className = 'nt-entry';
+  d.id = 'nt-entry-' + idx;
+  d.innerHTML =
+    '<div class="nt-entry-time">' + entry.ts + '</div>' +
+    '<div class="nt-entry-src">' + entry.src + '</div>' +
+    '<div class="nt-entry-tgt">' + entry.tgt + '</div>';
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+}
+
+function stopNoteTaker() {
+  ntActive = false;
+  clearInterval(ntTimerInterval);
+  if (ntRec) {
+    ntRec.onresult = null; ntRec.onend = null; ntRec.onerror = null;
+    try { ntRec.abort(); } catch(e) {}
+    ntRec = null;
+  }
+  // UI: idle state
+  var btn = document.getElementById('ntBtn');
+  if (btn) btn.className = 'mb idle';
+  var icon = document.getElementById('ntIcon');
+  if (icon) icon.textContent = '&#127908;';
+  var mst = document.getElementById('ntMst');
+  if (mst) mst.textContent = 'Tap to start recording';
+  var status = document.getElementById('ntStatus');
+  if (status) status.textContent = 'Stopped';
+
+  if (ntEntries.length > 0) {
+    document.getElementById('ntExportBtn').style.display = 'flex';
+    document.getElementById('ntClearBtn').style.display  = 'flex';
+  }
+}
+
+function exportNotes() {
+  if (!ntEntries.length) { toast('No notes to export'); return; }
+  // Build readable text
+  var lines = ['VURBA MEETING NOTES', '===================',
+               'Date: ' + new Date().toLocaleString(),
+               'Languages: ' + getLangName(getTgt()) + ' → ' + getLangName(getSrc()),
+               ''];
+  ntEntries.forEach(function(e) {
+    lines.push('[' + e.ts + ']');
+    lines.push(e.src);
+    lines.push('→ ' + e.tgt);
+    lines.push('');
+  });
+  var blob = new Blob([lines.join('\n')], {type:'text/plain'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'vurba-notes-' + Date.now() + '.txt'; a.click();
+  URL.revokeObjectURL(url);
+  toast('Notes exported!');
+}
+
+function clearNotes() {
+  if (!confirm('Clear all notes?')) return;
+  ntEntries = [];
+  document.getElementById('ntLog').innerHTML = '';
+  document.getElementById('ntExportBtn').style.display = 'none';
+  document.getElementById('ntClearBtn').style.display  = 'none';
+  document.getElementById('ntTimerWrap').style.display = 'none';
+  toast('Notes cleared');
+}
+
+// ── VOCABULARY LIBRARY ───────────────────────────────────────────────────────
+// Schema: { id, srcText, tgtText, ro, srcLang, tgtLang, addedAt, source,
+//           views, practiceCount, lastSeen, masteryStage }
+// Mastery stages: 'noticed' → 'familiar' → 'practicing' → 'confident' → 'mastered'
+
+var vocabLibrary = [];
+try { vocabLibrary = JSON.parse(localStorage.getItem('vl') || '[]'); } catch(e) {}
+
+function saveVocabLibrary() {
+  try { localStorage.setItem('vl', JSON.stringify(vocabLibrary)); } catch(e) {}
+}
+
+function getMasteryStage(item) {
+  // Derived from usage evidence
+  var daysSinceSeen = item.lastSeen
+    ? Math.floor((Date.now() - new Date(item.lastSeen).getTime()) / 86400000) : 0;
+  if (item.practiceCount >= 1 && item.views >= 5 && daysSinceSeen >= 14) return 'mastered';
+  if (item.practiceCount >= 1) return 'confident';
+  if (item.views >= 3)         return 'practicing';
+  if (item.views >= 2)         return 'familiar';
+  return 'noticed';
+}
+
+var MASTERY_CONFIG = {
+  noticed:    { label:'Noticed',    color:'#7BA7B8', bg:'rgba(123,167,184,0.12)', emoji:'👀' },
+  familiar:   { label:'Familiar',   color:'#0FB5C7', bg:'rgba(15,181,199,0.12)',  emoji:'📖' },
+  practicing: { label:'Practicing', color:'#EF9F27', bg:'rgba(239,159,39,0.12)',  emoji:'🔄' },
+  confident:  { label:'Confident',  color:'#3DD68C', bg:'rgba(61,214,140,0.12)',  emoji:'💪' },
+  mastered:   { label:'Mastered',   color:'#B388FF', bg:'rgba(179,136,255,0.12)', emoji:'⭐' },
+};
+
+function addToLibrary(srcText, tgtText, ro, source) {
+  var src = getSrc(), tgt = getTgt();
+  // Check if already exists
+  var existing = vocabLibrary.find(function(v) {
+    return v.srcText === srcText && v.srcLang === src && v.tgtLang === tgt;
+  });
+  if (existing) {
+    existing.views++;
+    existing.lastSeen = new Date().toISOString();
+    saveVocabLibrary();
+    toast('Already in your library — updated!');
+    return false;
+  }
+  var item = {
+    id:            'v-' + Date.now(),
+    srcText:       srcText,
+    tgtText:       tgtText,
+    ro:            ro || '',
+    srcLang:       src,
+    tgtLang:       tgt,
+    addedAt:       new Date().toISOString(),
+    lastSeen:      new Date().toISOString(),
+    source:        source || 'manual',
+    views:         1,
+    practiceCount: 0,
+  };
+  vocabLibrary.unshift(item);
+  saveVocabLibrary();
+  return true;
+}
+
+function updateVocabUsage(srcText, isPractice) {
+  var item = vocabLibrary.find(function(v) { return v.srcText === srcText; });
+  if (!item) return;
+  item.views++;
+  item.lastSeen = new Date().toISOString();
+  if (isPractice) item.practiceCount++;
+  saveVocabLibrary();
+}
+
+function getSuggestedFromTranslates() {
+  // Find translate events with 2+ occurrences not yet in library
+  var counts = {};
+  vurbaHistory.filter(function(e){ return e.type === 'translate'; })
+    .forEach(function(e) {
+      var key = e.srcText;
+      if (!key) return;
+      counts[key] = counts[key] || { count:0, tgtText:e.tgtText, ro:e.ro||'' };
+      counts[key].count++;
+    });
+  return Object.keys(counts)
+    .filter(function(k) {
+      return counts[k].count >= 2 &&
+        !vocabLibrary.find(function(v){ return v.srcText === k; });
+    })
+    .map(function(k) { return { srcText:k, tgtText:counts[k].tgtText, ro:counts[k].ro, count:counts[k].count }; })
+    .sort(function(a,b){ return b.count - a.count; })
+    .slice(0, 5);
+}
+
+// ── CHARACTER HISTORY ANALYTICS ──────────────────────────────────────────────
+// These functions are what the character will call to understand the user.
+// All read from `history` (cross-session) not `session` (current only).
+
+function getHistoryStats() {
+  var phraseEvents   = vurbaHistory.filter(function(e){ return e.type==='phrase'; });
+  var translateEvts  = vurbaHistory.filter(function(e){ return e.type==='translate'; });
+  var listenEvts     = vurbaHistory.filter(function(e){ return e.type==='listen'; });
+  var converseEvts   = vurbaHistory.filter(function(e){ return e.type==='converse'; });
+  var sessionEnds    = vurbaHistory.filter(function(e){ return e.type==='session_end'; });
+  var checkins       = vurbaHistory.filter(function(e){ return e.type==='checkin'; });
+
+  // Phrase repeat counts — key signal for character ("you always look this up")
+  var phraseCounts = {};
+  phraseEvents.forEach(function(e) {
+    var id = e.phraseId || e.srcText;
+    phraseCounts[id] = (phraseCounts[id]||0) + 1;
+  });
+  var repeatedPhrases = Object.keys(phraseCounts)
+    .filter(function(k){ return phraseCounts[k] >= 3; })
+    .map(function(k){ return { phrase:k, count:phraseCounts[k] }; })
+    .sort(function(a,b){ return b.count - a.count; });
+
+  // Confidence trend — is the user improving?
+  var confEvents = vurbaHistory.filter(function(e){ return e.conf > 0; });
+  var recentConf = confEvents.slice(-20).map(function(e){ return e.conf; });
+  var avgConf = recentConf.length
+    ? Math.round(recentConf.reduce(function(a,b){ return a+b; },0)/recentConf.length)
+    : null;
+
+  // Language pair usage
+  var langPairCounts = {};
+  vurbaHistory.forEach(function(e) {
+    if (e.srcLang && e.tgtLang) {
+      var pair = e.srcLang+'>'+e.tgtLang;
+      langPairCounts[pair] = (langPairCounts[pair]||0)+1;
+    }
+  });
+
+  // Days since first use
+  var firstEvent = vurbaHistory[0];
+  var daysSinceStart = firstEvent
+    ? Math.floor((Date.now() - new Date(firstEvent.ts).getTime()) / 86400000)
+    : 0;
+
+  // Sessions count
+  var sessionCount = sessionEnds.length + 1; // +1 for current
+
+  return {
+    totalEvents:     vurbaHistory.length,
+    sessionCount:    sessionCount,
+    daysSinceStart:  daysSinceStart,
+    phraseCount:     phraseEvents.length,
+    translateCount:  translateEvts.length,
+    listenCount:     listenEvts.length,
+    converseCount:   converseEvts.length,
+    checkinCount:    checkins.length,
+    repeatedPhrases: repeatedPhrases,
+    avgConfidence:   avgConf,
+    langPairCounts:  langPairCounts,
+    topLangPair:     Object.keys(langPairCounts).sort(function(a,b){ return langPairCounts[b]-langPairCounts[a]; })[0] || null,
+  };
+}
+
+// Quick summary string the character can inject into its Claude prompt
+function getCharacterContext() {
+  var stats = getHistoryStats();
+  var parts = [];
+  if (stats.sessionCount > 1)    parts.push('returning user, '+stats.sessionCount+' sessions');
+  if (stats.daysSinceStart > 0)  parts.push('using app for '+stats.daysSinceStart+' days');
+  if (stats.topLangPair)         parts.push('mainly '+stats.topLangPair.replace('>',' to '));
+  if (stats.avgConfidence)       parts.push('avg speech confidence '+stats.avgConfidence+'%');
+  if (stats.repeatedPhrases.length) {
+    parts.push('struggles with: '+stats.repeatedPhrases.slice(0,3).map(function(p){ return '"'+p.phrase+'"'; }).join(', '));
+  }
+  if (stats.checkinCount > 0)    parts.push('checked in '+stats.checkinCount+' times via GPS');
+  return parts.join('; ') || 'new user, no history yet';
+}
+
+function clearSession() {
+  if (!confirm('Clear current session?\n\nOK = clear this session only (character memory preserved)\nCancel = abort')) return;
+  session = [];
+  SESSION_META = { id:generateId(), startedAt:new Date().toISOString(), appVersion:'poc-0.3' };
+  try{ localStorage.removeItem('vs'); localStorage.removeItem('va'); }catch(e){}
+  buildPhrases();
+  buildSettingsContent();
+  toast('Session cleared — character memory preserved');
+}
+
+function clearAllHistory() {
+  if (!confirm('Erase ALL history?\nThis will reset everything the character has learned about you.')) return;
+  session = []; vurbaHistory = [];
+  SESSION_META = { id:generateId(), startedAt:new Date().toISOString(), appVersion:'poc-0.3' };
+  try{
+    localStorage.removeItem('vs');
+    localStorage.removeItem('va');
+    localStorage.removeItem('vh');
+  }catch(e){}
+  buildPhrases();
+  buildSettingsContent();
+  toast('All history cleared');
+}
+
+function toast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show';
+  setTimeout(function(){ t.className='toast'; }, 2200);
+}
+
+// ── SHOW FULL SCREEN ─────────────────────────────────────────────────────────
+function showFull(mainText, ro, subText, listenLangCode) {
+  var jaEl = document.getElementById('showJa');
+  jaEl.textContent = mainText;
+  // Shrink font for longer text — prevents wrapping on short phrases too
+  var len = (mainText || '').length;
+  // 4 tiers to handle all languages including long Vietnamese/Spanish/Portuguese
+  if (len > 35)      jaEl.style.fontSize = 'clamp(18px,4.5vw,26px)';
+  else if (len > 20) jaEl.style.fontSize = 'clamp(22px,5.5vw,32px)';
+  else if (len > 10) jaEl.style.fontSize = 'clamp(28px,7vw,42px)';
+  else               jaEl.style.fontSize = 'clamp(32px,8vw,52px)';
+  jaEl.style.lineHeight = '1.5';
+  document.getElementById('showRo').textContent = ro || '';
+  document.getElementById('showEn').textContent = subText || '';
+  var ov = document.getElementById('showOverlay');
+  ov.style.display = 'flex';
+  // Use explicitly passed lang code, falling back to target lang
+  var speakCode = listenLangCode || getTgt();
+  document.getElementById('showListen').onclick = function() { speakLang(mainText, speakCode); };
+  if (navigator.wakeLock) {
+    navigator.wakeLock.request('screen').catch(function(){});
+  }
+}
+
+// ── CONVERSATION MODE ────────────────────────────────────────────────────────
+var convRec = null;
+var convStream = null;
+var convActive = false; // which lang: 'en' | 'ja' | null
+var convLog = [];
+
+function initConverse() {
+  // Buttons use inline onclick — nothing to wire here
+}
+
+function toggleConvLang(lang) {
+  // Legacy tap handler — now using PTT, but keep for fallback
+  if (convActive === lang) { stopConvRec(); return; }
+  if (convActive) stopConvRec();
+  startConvRec(lang);
+}
+
+function startConvRec(lang) {
+  if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+    toast('Speech recognition not supported');
+    return;
+  }
+  convActive = lang;
+  var isEn = (lang === 'en');
+  var btn       = document.getElementById(isEn ? 'speakEnBtn' : 'speakJaBtn');
+  var statusEl  = document.getElementById(isEn ? 'enStatus' : 'jaStatus');
+  var interim   = document.getElementById('convInterim');
+
+  // Visual: recording state
+  btn.style.background   = 'rgba(226,75,74,0.2)';
+  btn.style.borderColor  = '#E24B4A';
+  btn.style.color        = '#E24B4A';
+  btn.innerHTML          = '&#9646;&#9646;';
+  statusEl.textContent   = 'Listening... (tap to stop)';
+  interim.style.display  = 'block';
+  interim.textContent    = 'Waiting for speech...';
+  interim.style.color    = 'var(--muted)';
+
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  convRec = new SR();
+  convRec.lang = isEn ? getSpeechCode(getSrc()) : getSpeechCode(getTgt());
+  convRec.interimResults = true;
+  convRec.continuous = false;
+
+  // Auto-kill after 6s of silence
+  startSilenceTimer('conv', 6, function() {
+    try { if(convRec) convRec.abort(); } catch(e) {}
+    convRec = null; convStream = null; convActive = null;
+    resetConvBtn(lang);
+    document.getElementById('convInterim').style.display = 'none';
+    toast('No speech detected — tap to try again');
+  });
+
+  var convConf = 0;
+  convRec.onresult = function(e) {
+    // Reset silence timer — speech detected
+    startSilenceTimer('conv', 6, function() {
+      try { if(convRec) convRec.abort(); } catch(e) {}
+      convRec = null; convStream = null; convActive = null;
+      resetConvBtn(lang);
+      document.getElementById('convInterim').style.display = 'none';
+    });
+    var finalText = '';
+    var interimText = '';
+    for (var i = 0; i < e.results.length; i++) {
+      if (e.results[i].isFinal) {
+        finalText += e.results[i][0].transcript;
+        var c = Math.round((e.results[i][0].confidence || 0) * 100);
+        if (c > convConf) convConf = c;
+      } else {
+        interimText += e.results[i][0].transcript;
+      }
+    }
+    var display = finalText || interimText;
+    interim.textContent     = display || 'Waiting for speech...';
+    interim.style.color     = finalText ? '#fff' : 'var(--muted)';
+    interim.style.fontStyle = finalText ? 'normal' : 'italic';
+  };
+
+  convRec.onend = function() {
+    clearSilenceTimer('conv');
+    // Get whatever ended up in the interim box as the final text
+    var said = document.getElementById('convInterim').textContent;
+    if (said === 'Waiting for speech...' || said === '...') said = '';
+    clearSilenceTimer('conv');
+    try { if(convRec) convRec.abort(); } catch(e) {}
+    convRec = null; convStream = null; convActive = null;
+    resetConvBtn(lang);
+    document.getElementById('convInterim').style.display = 'none';
+    if (said) processConvUtterance(lang, said, convConf);
+  };
+
+  convRec.onerror = function(e) {
+    clearSilenceTimer('conv');
+    clearSilenceTimer('conv');
+    try { if(convRec) convRec.abort(); } catch(e) {}
+    convRec = null; convStream = null; convActive = null;
+    resetConvBtn(lang);
+    document.getElementById('convInterim').style.display = 'none';
+    toast('Could not hear — try again');
+  };
+
+  convRec.start();
+}
+
+function stopConvRec() {
+  clearSilenceTimer('conv');
+  if (convRec) {
+    convRec.onresult = null;
+    convRec.onend    = null;
+    convRec.onerror  = null;
+    try { convRec.abort(); } catch(e) {}
+    convRec = null;
+  }
+  convStream = null; convActive = null;
+}
+
+function resetConvBtn(lang) {
+  var isEn = (lang === 'en');
+  var btn      = document.getElementById(isEn ? 'speakEnBtn' : 'speakJaBtn');
+  var statusEl = document.getElementById(isEn ? 'enStatus' : 'jaStatus');
+  btn.style.background  = isEn ? 'rgba(15,181,199,0.12)' : 'rgba(61,214,140,0.12)';
+  btn.style.borderColor = isEn ? 'var(--tealLt)' : 'var(--green)';
+  btn.style.color       = isEn ? 'var(--tealLt)' : 'var(--green)';
+  btn.innerHTML         = '&#127908;';
+  statusEl.textContent  = 'Tap to speak';
+}
+
+function processConvUtterance(lang, text, conf) {
+  conf = conf || 0;
+  // Show "translating" bubble immediately
+  var tempId = 'conv-temp-' + Date.now();
+  appendConvBubble(tempId, lang, text, null, true);
+
+  // Translate via Claude
+  var isEn = (lang === 'en');
+  var sysPrompt = isEn
+    ? 'You are a restaurant translator. Translate '+getLangName(getSrc())+' to '+getLangName(getTgt())+'. Return ONLY raw JSON: {"translation":"<translated text>","ro":"<romanisation if applicable, else empty string>"}'
+    : 'You are a restaurant translator. Translate '+getLangName(getTgt())+' to '+getLangName(getSrc())+'. Return ONLY the translation as plain text, nothing else.';
+  var userPrompt = isEn
+    ? 'Translate to Japanese: "' + text + '"'
+    : 'Translate to English: "' + text + '"';
+
+  callClaude(userPrompt, sysPrompt).then(function(r) {
+    var translation = '';
+    var ro = '';
+    if (isEn) {
+      try {
+        var clean = r.replace(/```json/gi,'').replace(/```/g,'').replace(/^[^{]*/,'').replace(/[^}]*$/,'').trim();
+        var obj = JSON.parse(clean);
+        translation = obj.translation || obj.ja || r.trim();
+        ro = obj.ro || '';
+      } catch(e) { translation = r.trim(); }
+    } else {
+      translation = r.trim();
+    }
+    // Replace temp bubble with final
+    var tempEl = document.getElementById(tempId);
+    if (tempEl) tempEl.remove();
+    var entry = { ts: new Date().toISOString(), lang: lang, original: text, translation: translation, ro: ro, conf: conf };
+    convLog.push(entry);
+    appendConvBubble(null, lang, text, entry, false);
+    // Speak the translation
+    if (isEn) speak(translation);
+    else speakLang(translation, getSrc());
+    // speakerRole: 'src' = user's language speaker, 'tgt' = target language speaker
+    var speakerRole = (lang === 'en') ? 'src' : 'tgt';
+    log({ type:'converse', speakerRole:speakerRole, srcText: (lang==='en'?text:translation), tgtText:(lang==='en'?translation:text), ro:ro||'', conf:conf||0, inputMethod:'speech' });
+    updateReview();
+  }).catch(function() {
+    var tempEl = document.getElementById(tempId);
+    if (tempEl) tempEl.remove();
+    toast('Translation failed — try again');
+  });
+}
+
+function appendConvBubble(id, lang, original, entry, isTemp) {
+  var isSrc = (lang === 'src'); // src speaker = left source lang
+  var isEn  = (lang === 'en' || lang === 'src'); // legacy compat
+  var logEl = document.getElementById('convLog');
+  var bubble = document.createElement('div');
+  if (id) bubble.id = id;
+
+  var srcLang = getSrc(), tgtLang = getTgt();
+  var speakerIsSrc = (lang === 'en'); // 'en' = src speaker button, 'ja' = tgt speaker button
+  var speakLangCode  = speakerIsSrc ? tgtLang : srcLang; // language of the translation
+  var labelText = speakerIsSrc ? getLangName(srcLang) : getLangName(tgtLang);
+
+  var align       = speakerIsSrc ? 'flex-end'              : 'flex-start';
+  var bgColor     = speakerIsSrc ? 'rgba(15,181,199,0.12)' : 'rgba(61,214,140,0.12)';
+  var borderColor = speakerIsSrc ? 'var(--tealLt)'         : 'var(--green)';
+  var labelColor  = speakerIsSrc ? 'var(--tealLt)'         : 'var(--green)';
+
+  bubble.style.cssText = 'display:flex;flex-direction:column;align-items:'+align;
+
+  if (isTemp) {
+    bubble.innerHTML =
+      '<div style="font-size:10px;color:'+labelColor+';margin-bottom:3px;font-weight:600">'+labelText+'</div>' +
+      '<div style="background:'+bgColor+';border:1px solid '+borderColor+';border-radius:12px;padding:10px 12px;max-width:85%">' +
+        '<div style="font-size:15px;color:#fff;margin-bottom:4px">'+original+'</div>' +
+        '<div style="font-size:11px;color:var(--muted);font-style:italic">Translating...</div>' +
+      '</div>';
+  } else {
+    // Unique ID for action buttons in this bubble
+    var bid = 'cb-' + Date.now() + '-' + Math.random().toString(36).substr(2,5);
+    var transLangCode = speakerIsSrc ? tgtLang : srcLang;
+
+    var roLine = entry.ro ? '<div style="font-size:11px;color:'+labelColor+';margin-top:2px">'+entry.ro+'</div>' : '';
+    var confPill = '';
+    if (entry.conf > 0) {
+      var cc = entry.conf>=70 ? '#3DD68C' : entry.conf>=40 ? '#EF9F27' : '#E24B4A';
+      var cbg = entry.conf>=70 ? 'rgba(61,214,140,0.12)' : entry.conf>=40 ? 'rgba(239,159,39,0.12)' : 'rgba(226,75,74,0.12)';
+      confPill = '<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:'+cbg+';color:'+cc+';margin-left:6px">&#127908; '+entry.conf+'%</span>';
+    }
+    var transLine = '<div style="display:flex;align-items:center;margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.08)"><span style="font-size:13px;color:var(--muted);flex:1">'+entry.translation+'</span>'+confPill+'</div>';
+    var actionRow =
+      '<div style="display:flex;gap:6px;margin-top:8px">' +
+        '<button id="'+bid+'-listen" style="flex:1;padding:6px 0;border-radius:8px;border:1px solid '+borderColor+';background:transparent;color:'+labelColor+';font-size:11px;font-weight:600;cursor:pointer;-webkit-appearance:none">&#127911; Listen</button>' +
+        '<button id="'+bid+'-show"   style="flex:1;padding:6px 0;border-radius:8px;border:1px solid var(--bdr);background:transparent;color:var(--off);font-size:11px;font-weight:600;cursor:pointer;-webkit-appearance:none">&#128269; Show</button>' +
+      '</div>';
+
+    bubble.innerHTML =
+      '<div style="font-size:10px;color:'+labelColor+';margin-bottom:3px;font-weight:600">'+labelText+'</div>' +
+      '<div style="background:'+bgColor+';border:1px solid '+borderColor+';border-radius:12px;padding:10px 12px;max-width:90%">' +
+        '<div style="font-size:15px;color:#fff;font-weight:500">'+original+'</div>' +
+        roLine + transLine + actionRow +
+      '</div>';
+
+    // Wire buttons after appending
+    logEl.appendChild(bubble);
+    bubble.scrollIntoView({ behavior:'smooth', block:'end' });
+
+    var listenBtn = document.getElementById(bid+'-listen');
+    var showBtn   = document.getElementById(bid+'-show');
+    if (listenBtn) listenBtn.onclick = function() { speakLang(entry.translation, transLangCode); };
+    if (showBtn)   showBtn.onclick   = function() { showFull(entry.translation, entry.ro || '', original, transLangCode); };
+    return; // already appended above
+  }
+  logEl.appendChild(bubble);
+  bubble.scrollIntoView({ behavior:'smooth', block:'end' });
+}
+
+// speakEn replaced by speakLang
+
+// ── GPS CHECK-IN ─────────────────────────────────────────────────────────────
+var checkinState = 'idle'; // idle | scanning | locked
+
+// Simulated venue database — in production this would use Google Places API
+var VENUE_DB = [
+  { keyword:'restaurant', types:['restaurant','food','bar','cafe','bakery','meal_takeaway'], scenario:'restaurant', label:'🍜 restaurant', name:'a restaurant' },
+  { keyword:'shopping',   types:['store','shop','clothing_store','supermarket','department_store','shopping_mall','convenience_store'], scenario:'shopping', label:'🛍️ shop', name:'a shopping store' },
+];
+
+function doCheckin() {
+  if (checkinState === 'scanning') return;
+  if (checkinState === 'locked') { resetCheckin(); return; }
+
+  setCheckinScanning();
+
+  // Step 1: try real GPS
+  if (!navigator.geolocation) {
+    updateCheckinStatus('No GPS — running demo');
+    simulateVenueDetection(0, 0);
+    return;
+  }
+
+  // Chrome mobile needs a short timeout — 8s max, low accuracy first
+  var gpsTimer = setTimeout(function() {
+    updateCheckinStatus('GPS slow — running demo');
+    simulateVenueDetection(0, 0);
+  }, 8000);
+
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      clearTimeout(gpsTimer);
+      onGotPosition(pos);
+    },
+    function(err) {
+      clearTimeout(gpsTimer);
+      updateCheckinStatus('GPS unavailable — running demo');
+      simulateVenueDetection(0, 0);
+    },
+    { enableHighAccuracy: false, timeout: 7000, maximumAge: 120000 }
+  );
+}
+
+function updateCheckinStatus(msg) {
+  var el = document.getElementById('checkinLoc');
+  if (el) el.textContent = msg;
+}
+
+function testAgentModal(scenario) {
+  var venue = scenario === 'shopping'
+    ? { name:'Nearby Shop',      scenario:'shopping',   label:'🛍️ Shopping',   type:'a shopping store' }
+    : { name:'Local Restaurant', scenario:'restaurant', label:'🍜 Restaurant', type:'a restaurant' };
+  onVenueDetected(venue, 0, 0);
+}
+
+function setCheckinScanning() {
+  checkinState = 'scanning';
+  document.getElementById('checkinBtn').className = 'checkin-btn scanning';
+  document.getElementById('checkinDot').className = 'checkin-dot spin-dot';
+  document.getElementById('checkinBtnLabel').textContent = 'Locating...';
+  updateCheckinStatus('Getting your position...');
+}
+
+function resetCheckin() {
+  checkinState = 'idle';
+  document.getElementById('checkinBtn').className = 'checkin-btn';
+  document.getElementById('checkinDot').className = 'checkin-dot';
+  document.getElementById('checkinBtnLabel').textContent = 'Check in here';
+  updateCheckinStatus('Tap to detect your location');
+}
+
+function onGotPosition(pos) {
+  updateCheckinStatus('Checking nearby venues...');
+  simulateVenueDetection(pos.coords.latitude, pos.coords.longitude);
+}
+
+function simulateVenueDetection(lat, lng) {
+  // POC: OpenStreetMap Nominatim (free, no API key)
+  // Google Places API disabled for POC — re-enable for Flutter production build
+  detectVenueNominatim(lat, lng, function(result) {
+    if (!result) {
+      updateCheckinStatus('No venue detected nearby');
+      document.getElementById('checkinBtn').className = 'checkin-btn';
+      document.getElementById('checkinBtnLabel').textContent = 'Check in';
+      return;
+    }
+    var scenarioLabels = {
+      restaurant: '🍜 Restaurant', shopping: '🛍️ Shopping',
+      medical: '🏥 Medical', transport: '🚌 Transport',
+      workplace: '💼 Workplace', pharmacy: '💊 Pharmacy'
+    };
+    var scenario = result.scenario || CURRENT_SCENARIO;
+    var venue = {
+      name:     result.name,
+      scenario: scenario,
+      label:    scenarioLabels[scenario] || '📍 ' + result.name,
+      type:     result.type,
+      placeId:  result.placeId,
+      address:  result.address,
+      lat:      lat,
+      lng:      lng,
+    };
+    onVenueDetected(venue, lat, lng);
+  });
+}
+
+function detectVenueGoogle(lat, lng, callback) {
+  var url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
+    + '?location=' + lat + ',' + lng
+    + '&radius=150'
+    + '&rankby=prominence'
+    + '&key=' + GOOGLE_PLACES_KEY;
+
+  // Use CORS proxy for browser-side call
+  fetch('https://corsproxy.io/?' + encodeURIComponent(url))
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (!data.results || !data.results.length) {
+        detectVenueNominatim(lat, lng, callback); return;
+      }
+      var place = data.results[0];
+      var types = place.types || [];
+      callback({
+        name:     place.name,
+        address:  place.vicinity || '',
+        placeId:  place.place_id,
+        type:     types[0] || 'unknown',
+        scenario: mapPlaceTypesToScenario(types),
+        lat:      place.geometry.location.lat,
+        lng:      place.geometry.location.lng,
+      });
+    })
+    .catch(function() {
+      detectVenueNominatim(lat, lng, callback);
+    });
+}
+
+function mapPlaceTypesToScenario(types) {
+  if (types.some(function(t){ return ['restaurant','food','cafe','bar','meal_takeaway','bakery','meal_delivery'].indexOf(t)>=0; }))
+    return 'restaurant';
+  if (types.some(function(t){ return ['pharmacy','drugstore'].indexOf(t)>=0; }))
+    return 'pharmacy';
+  if (types.some(function(t){ return ['hospital','doctor','health','medical_center','dentist'].indexOf(t)>=0; }))
+    return 'medical';
+  if (types.some(function(t){ return ['store','shopping_mall','supermarket','clothing_store','convenience_store','department_store'].indexOf(t)>=0; }))
+    return 'shopping';
+  if (types.some(function(t){ return ['transit_station','bus_station','subway_station','train_station','airport'].indexOf(t)>=0; }))
+    return 'transport';
+  return null;
+}
+
+function detectVenueNominatim(lat, lng, callback) {
+  // Free fallback via OpenStreetMap
+  var url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lng + '&zoom=18&addressdetails=1';
+  fetch(url, { headers:{'Accept-Language':'en'} })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      var name = data.name || (data.address && (data.address.restaurant || data.address.shop || data.address.amenity)) || data.display_name.split(',')[0];
+      var amenity = data.type || (data.address && data.address.amenity) || '';
+      var typeMap = { restaurant:'restaurant', cafe:'restaurant', fast_food:'restaurant',
+                      pharmacy:'pharmacy', hospital:'medical', clinic:'medical',
+                      supermarket:'shopping', shop:'shopping', mall:'shopping',
+                      bus_stop:'transport', train_station:'transport' };
+      callback({
+        name:     name,
+        address:  data.display_name || '',
+        placeId:  'osm-' + (data.osm_id || Date.now()),
+        type:     amenity,
+        scenario: typeMap[amenity] || null,
+        lat:      lat, lng: lng,
+      });
+    })
+    .catch(function() { callback(null); });
+}
+
+function saveVenueVisit(venue, lat, lng) {
+  try {
+    var visits = JSON.parse(localStorage.getItem('venue_visits') || '[]');
+    var existing = visits.find(function(v){ return v.placeId === venue.placeId; });
+    if (existing) {
+      existing.lastVisit = new Date().toISOString();
+      existing.visitCount = (existing.visitCount || 1) + 1;
+    } else {
+      visits.push({
+        placeId:    venue.placeId,
+        name:       venue.name,
+        scenario:   venue.scenario || CURRENT_SCENARIO,
+        address:    venue.address || '',
+        lat:        lat,
+        lng:        lng,
+        firstVisit: new Date().toISOString(),
+        lastVisit:  new Date().toISOString(),
+        visitCount: 1,
+      });
+    }
+    // Keep last 50 venues
+    if (visits.length > 50) visits = visits.slice(-50);
+    localStorage.setItem('venue_visits', JSON.stringify(visits));
+  } catch(e) {}
+}
+
+function checkProximityToSavedVenues(lat, lng) {
+  try {
+    var visits = JSON.parse(localStorage.getItem('venue_visits') || '[]');
+    var RADIUS = 50; // metres
+    for (var i = 0; i < visits.length; i++) {
+      var v = visits[i];
+      var d = haversineDistance(lat, lng, v.lat, v.lng);
+      if (d <= RADIUS) return v;
+    }
+  } catch(e) {}
+  return null;
+}
+
+function haversineDistance(lat1, lng1, lat2, lng2) {
+  var R = 6371000;
+  var dLat = (lat2 - lat1) * Math.PI / 180;
+  var dLng = (lng2 - lng1) * Math.PI / 180;
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
+    Math.sin(dLng/2) * Math.sin(dLng/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function onVenueDetected(venue, lat, lng) {
+  checkinState = 'locked';
+  document.getElementById('checkinBtn').className = 'checkin-btn locked';
+  document.getElementById('checkinDot').className = 'checkin-dot pulse';
+  document.getElementById('checkinBtnLabel').textContent = venue.label + ' detected';
+  var coordStr = (lat && lng) ? (' · ' + lat.toFixed(4) + ', ' + lng.toFixed(4)) : ' · demo mode';
+  updateCheckinStatus(venue.name + coordStr);
+
+  // Log once
+  log({ type:'checkin', venueName:venue.name, venueType:venue.scenario,
+        lat:lat ? parseFloat(lat.toFixed(5)) : 0,
+        lng:lng ? parseFloat(lng.toFixed(5)) : 0, inputMethod:'gps' });
+
+  switchScenario(venue.scenario);
+  saveVenueVisit(venue, lat, lng);
+  showAgentModal(venue);
+}
+
+function onGPSError(err) {
+  simulateVenueDetection(0, 0);
+}
+function showCheckinError(msg) {
+  resetCheckin();
+  document.getElementById('checkinLoc').textContent = '⚠ ' + msg;
+  toast(msg);
+}
+
+function showAgentModal(venue) {
+  var isFirstCheckin = !localStorage.getItem('vurba_first_checkin');
+  if (isFirstCheckin) localStorage.setItem('vurba_first_checkin', '1');
+  var msgs = {
+    restaurant: [
+      "Hey there! I noticed you just checked into <strong>" + venue.name + "</strong>.",
+      "Switched Vurba to <strong>Restaurant mode</strong> so you have all the right phrases ready — ordering, allergies, the bill, everything.",
+      "Tap any phrase to hear it, or use Translate for anything custom. You got this!"
+    ],
+    shopping: [
+      "Hey! Looks like you are at <strong>" + venue.name + "</strong> — shopping time!",
+      "Switched Vurba to <strong>Shopping mode</strong> so you are ready with the right phrases — sizes, prices, fitting rooms, returns.",
+      "Tap any phrase to hear it, or use Translate for something specific. Happy shopping!"
+    ]
+  };
+
+  var msgLines = msgs[venue.scenario] || msgs.restaurant;
+  var firstIntro = isFirstCheckin ? '<strong style="color:var(--green)">Hi! I am Vurba, your language guide!</strong><br><br>' : '';
+  document.getElementById('agentMsg').innerHTML = firstIntro + msgLines.join('<br><br>');
+  document.getElementById('agentPill').textContent = venue.label + ' mode activated';
+
+  // Show modal — use inline style for maximum browser compatibility
+  var modal = document.getElementById('agentModal');
+  modal.style.display = 'flex';
+  // Small delay ensures display:flex is painted before animation starts
+  setTimeout(function() {
+    modal.classList.add('show');
+  }, 20);
+}
+
+// ── ONBOARDING ───────────────────────────────────────────────────────────────
+
+var DESTINATIONS = [
+  {code:'JP', lang:'ja',  flag:'🇯🇵', label:'Japan'},
+  {code:'CN', lang:'zh',  flag:'🇨🇳', label:'China'},
+  {code:'TW', lang:'zht', flag:'🇹🇼', label:'Taiwan'},
+  {code:'VN', lang:'vi',  flag:'🇻🇳', label:'Vietnam'},
+  {code:'TH', lang:'th',  flag:'🇹🇭', label:'Thailand'},
+  {code:'PH', lang:'tl',  flag:'🇵🇭', label:'Philippines'},
+  {code:'KH', lang:'km',  flag:'🇰🇭', label:'Cambodia'},
+  {code:'ID', lang:'id',  flag:'🇮🇩', label:'Indonesia'},
+  {code:'BR', lang:'pt',  flag:'🇧🇷', label:'Brazil'},
+  {code:'ES', lang:'es',  flag:'🇪🇸', label:'Spain'},
+  {code:'MX', lang:'es',  flag:'🇲🇽', label:'Mexico'},
+  {code:'SG', lang:'zh',  flag:'🇸🇬', label:'Singapore'},
+];
+
+var obDetectedLang = null;
+var obDetectedCountry = null;
+
+function initOnboarding() {
+  if (!isFirstLaunch) return;
+  document.getElementById('onboardingOverlay').style.display = 'flex';
+  // Populate destination grid
+  var grid = document.getElementById('obDestGrid');
+  DESTINATIONS.forEach(function(d) {
+    var btn = document.createElement('button');
+    btn.className = 'ob-dest';
+    btn.innerHTML = '<span style="font-size:20px">' + d.flag + '</span><span>' + d.label + '</span>';
+    btn.addEventListener('click', function() { obSelectDest(d); });
+    grid.appendChild(btn);
+  });
+}
+
+function obRequestGps() {
+  if (!navigator.geolocation) { obShowDestPicker(); return; }
+  // Show brief loading state
+  document.querySelector('#obStepGps .ob-body').textContent = 'Finding your location...';
+  document.querySelector('#obStepGps .ob-btn-primary').disabled = true;
+
+  navigator.geolocation.getCurrentPosition(
+    function(pos) { obGotPosition(pos.coords.latitude, pos.coords.longitude); },
+    function()    { obShowDestPicker(); },
+    { timeout: 8000, enableHighAccuracy: false }
+  );
+}
+
+function obGotPosition(lat, lng) {
+  // Reverse geocode using a free endpoint
+  var url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lng;
+  fetch(url, { headers: { 'Accept-Language': 'en' } })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var countryCode = data.address && data.address.country_code
+        ? data.address.country_code.toUpperCase() : null;
+      var countryName = data.address && data.address.country ? data.address.country : 'your location';
+      obDetectedCountry = countryName;
+      var mapping = countryCode ? COUNTRY_LANG_MAP[countryCode] : null;
+      if (mapping && mapping.tgt && mapping.confidence === 'high') {
+        // We're confident — show language confirmation
+        obDetectedLang = mapping;
+        document.getElementById('obCountryName').textContent = countryName;
+        document.getElementById('obLangFlag').textContent = mapping.flag;
+        document.getElementById('obLangName').textContent = mapping.name;
+        obShowStep('obStepConfirm');
+      } else {
+        // Not confident or unsupported country — show picker
+        obShowDestPicker();
+      }
+    })
+    .catch(function() { obShowDestPicker(); });
+}
+
+function obConfirmLanguage() {
+  if (!obDetectedLang) return;
+  // Set target language
+  var tgtSel = document.getElementById('tgtLang');
+  if (tgtSel) {
+    for (var i = 0; i < tgtSel.options.length; i++) {
+      if (tgtSel.options[i].value === obDetectedLang.tgt) {
+        tgtSel.selectedIndex = i; break;
+      }
+    }
+  }
+  onLangChange();
+  obShowStep('obStepDone');
+}
+
+function obSelectDest(dest) {
+  obDetectedLang = { tgt: dest.lang, name: dest.label, flag: dest.flag };
+  var tgtSel = document.getElementById('tgtLang');
+  if (tgtSel) {
+    for (var i = 0; i < tgtSel.options.length; i++) {
+      if (tgtSel.options[i].value === dest.lang) {
+        tgtSel.selectedIndex = i; break;
+      }
+    }
+  }
+  onLangChange();
+  obShowStep('obStepDone');
+}
+
+function obShowDestPicker() {
+  obShowStep('obStepPicker');
+}
+
+function obShowStep(stepId) {
+  ['obStepGps','obStepConfirm','obStepPicker','obStepDone'].forEach(function(id) {
+    document.getElementById(id).style.display = 'none';
+  });
+  document.getElementById(stepId).style.display = 'block';
+}
+
+function obSkip() {
+  obFinish();
+}
+
+function obFinish() {
+  document.getElementById('onboardingOverlay').style.display = 'none';
+  localStorage.setItem(ONBOARDING_KEY, '1');
+  isFirstLaunch = false;
+  // Brief welcome toast
+  toast('Welcome to Vurba! Tap Check in when you arrive somewhere 🐰');
+}
+
+// ── MY LIBRARY ───────────────────────────────────────────────────────────────
+function openLibrary() {
+  buildLibraryUI();
+  document.getElementById('libraryPanel').style.display = 'block';
+}
+
+function closeLibrary() {
+  document.getElementById('libraryPanel').style.display = 'none';
+}
+
+function buildLibraryUI() {
+  var body = document.getElementById('libraryBody');
+  var stages = ['mastered','confident','practicing','familiar','noticed'];
+
+  // ── Rabbit coaching message ──
+  var ctx = getCharacterContext();
+  var stats = getHistoryStats();
+  var coachMsg = buildCoachMessage(stats);
+
+  var html = '';
+
+  // Rabbit + message
+  html += '<div style="display:flex;gap:12px;align-items:flex-start;background:var(--mid);border:1px solid var(--bdr);border-radius:14px;padding:14px;margin-bottom:16px">';
+  html += '<div style="font-size:36px;flex-shrink:0">🐰</div>';
+  html += '<div>';
+  html += '<div style="font-size:11px;font-weight:700;color:var(--green);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Vurba AI</div>';
+  html += '<div style="font-size:13px;color:var(--off);line-height:1.6">' + coachMsg + '</div>';
+  html += '</div></div>';
+
+  // ── Suggested from translates ──
+  var suggested = getSuggestedFromTranslates();
+  if (suggested.length) {
+    html += '<div style="font-size:11px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">&#128161; Suggested from your translations</div>';
+    suggested.forEach(function(s) {
+      window._libSuggested = window._libSuggested || [];
+      window._libSuggested[si] = s;
+      html += '<div style="background:rgba(239,159,39,0.08);border:1px solid rgba(239,159,39,0.3);border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between">';
+      html += '<div><div style="font-size:13px;color:#fff">' + s.srcText + '</div>';
+      html += '<div style="font-size:11px;color:var(--muted)">Translated ' + s.count + ' times</div></div>';
+      html += '<button onclick="saveSuggested(' + si + ')" style="background:rgba(239,159,39,0.15);border:1px solid rgba(239,159,39,0.4);border-radius:8px;color:#EF9F27;font-size:11px;font-weight:600;padding:6px 10px;cursor:pointer;-webkit-appearance:none;white-space:nowrap">&#10133; Save</button>';
+      html += '</div>';
+    });
+    html += '<div style="height:1px;background:var(--bdr);margin:12px 0"></div>';
+  }
+
+  // ── Stats row ──
+  var total = vocabLibrary.length;
+  var masteredCount = vocabLibrary.filter(function(v){ return getMasteryStage(v)==='mastered'; }).length;
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">';
+  html += '<div style="background:var(--mid);border:1px solid var(--bdr);border-radius:10px;padding:10px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--green)">' + total + '</div><div style="font-size:10px;color:var(--muted)">Saved</div></div>';
+  html += '<div style="background:var(--mid);border:1px solid var(--bdr);border-radius:10px;padding:10px;text-align:center"><div style="font-size:22px;font-weight:700;color:#B388FF">' + masteredCount + '</div><div style="font-size:10px;color:var(--muted)">Mastered</div></div>';
+  html += '<div style="background:var(--mid);border:1px solid var(--bdr);border-radius:10px;padding:10px;text-align:center"><div style="font-size:22px;font-weight:700;color:var(--tealLt)">' + stats.sessionCount + '</div><div style="font-size:10px;color:var(--muted)">Sessions</div></div>';
+  html += '</div>';
+
+  if (total === 0) {
+    html += '<div style="text-align:center;padding:40px 0;color:var(--muted);font-size:13px">No saved phrases yet.<br>Tap <strong style="color:#EF9F27">+ Save</strong> on any phrase or translation.</div>';
+    body.innerHTML = html;
+    return;
+  }
+
+  // ── Vocab items grouped by mastery ──
+  stages.forEach(function(stage) {
+    var items = vocabLibrary.filter(function(v){ return getMasteryStage(v) === stage; });
+    if (!items.length) return;
+    var cfg = MASTERY_CONFIG[stage];
+    html += '<div style="font-size:11px;font-weight:600;color:' + cfg.color + ';text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">' + cfg.emoji + ' ' + cfg.label + ' (' + items.length + ')</div>';
+    items.forEach(function(item) {
+      html += '<div style="background:' + cfg.bg + ';border:1px solid ' + cfg.color.replace(')',',0.3)').replace('rgb','rgba') + ';border-radius:10px;padding:10px 12px;margin-bottom:6px">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:flex-start">';
+      html += '<div style="flex:1">';
+      html += '<div style="font-size:13px;color:var(--muted)">' + item.srcText + '</div>';
+      html += '<div style="font-size:16px;font-weight:600;color:#fff;margin:2px 0">' + item.tgtText + '</div>';
+      if (item.ro) html += '<div style="font-size:11px;color:' + cfg.color + '">' + item.ro + '</div>';
+      html += '<div style="font-size:10px;color:var(--muted);margin-top:4px">Viewed ' + item.views + 'x · ' + getLangName(item.srcLang) + ' → ' + getLangName(item.tgtLang) + '</div>';
+      html += '</div>';
+      html += '<button onclick="removeFromLibrary(' + JSON.stringify(item.id) + ')" style="background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;font-size:14px;-webkit-appearance:none;flex-shrink:0">&#10005;</button>';
+      html += '</div></div>';
+    });
+    html += '<div style="height:1px;background:var(--bdr);margin:10px 0 14px"></div>';
+  });
+
+  body.innerHTML = html;
+}
+
+function saveSuggested(idx) {
+  var s = window._libSuggested && window._libSuggested[idx];
+  if (!s) return;
+  var added = addToLibrary(s.srcText, s.tgtText, s.ro, 'translate');
+  if (added) toast('Saved to My Library! ⭐');
+  buildLibraryUI();
+}
+
+function removeFromLibrary(id) {
+  vocabLibrary = vocabLibrary.filter(function(v){ return v.id !== id; });
+  saveVocabLibrary();
+  buildLibraryUI();
+  toast('Removed from library');
+}
+
+function buildCoachMessage(stats) {
+  if (!vocabLibrary.length && !stats.totalEvents) {
+    return "Hi! I'm here to help you grow your language skills. Start by saving phrases you find useful — tap the <strong style='color:#EF9F27'>+ Save</strong> button on any phrase or translation.";
+  }
+  var msgs = [];
+  if (stats.repeatedPhrases && stats.repeatedPhrases.length) {
+    var top = stats.repeatedPhrases[0];
+    msgs.push('I noticed you look up <strong style="color:#fff">' + top.phrase + '</strong> a lot (' + top.count + ' times). Save it and try saying it in Converse mode!');
+  }
+  var suggested = getSuggestedFromTranslates();
+  if (suggested.length) {
+    msgs.push('You translated <strong style="color:#fff">' + suggested[0].srcText + '</strong> ' + suggested[0].count + ' times — that sounds important! Check the suggestions above.');
+  }
+  var mastered = vocabLibrary.filter(function(v){ return getMasteryStage(v)==='mastered'; }).length;
+  if (mastered > 0) {
+    msgs.push('Amazing — you have mastered <strong style="color:#B388FF">' + mastered + ' phrase' + (mastered>1?'s':'') + '</strong>! The safety net is fading. Keep going!');
+  }
+  if (vocabLibrary.length > 0 && !mastered) {
+    var practicing = vocabLibrary.filter(function(v){ return getMasteryStage(v)==='practicing'; }).length;
+    if (practicing) msgs.push('You have <strong style="color:#EF9F27">' + practicing + ' phrase' + (practicing>1?'s':'') + '</strong> in practice. Keep using them in Converse to level up!');
+  }
+  if (!msgs.length) msgs.push('Great work! Keep exploring phrases and saving the ones that matter to you.');
+  return msgs[Math.floor(Math.random() * msgs.length)];
+}
+
+function dismissAgent() {
+  var modal = document.getElementById('agentModal');
+  modal.classList.remove('show');
+  setTimeout(function() {
+    modal.style.display = 'none';
+  }, 300);
+}
+
+// ── SETTINGS PANEL ───────────────────────────────────────────────────────────
+var settingsOpen = false;
+
+function openSettings() {
+  settingsOpen = true;
+  // Populate panel with review content
+  buildSettingsContent();
+  document.getElementById('settingsPanel').classList.add('open');
+  document.getElementById('settingsOverlay').classList.add('open');
+  document.getElementById('cogBtn').style.color = 'var(--green)';
+}
+
+function closeSettings() {
+  settingsOpen = false;
+  document.getElementById('settingsPanel').classList.remove('open');
+  document.getElementById('settingsOverlay').classList.remove('open');
+  document.getElementById('cogBtn').style.color = '';
+}
+
+function toggleSettings() {
+  if (settingsOpen) closeSettings();
+  else openSettings();
+}
+
+function buildSettingsContent() {
+  // Stats
+  var phrases = session.filter(function(s){ return s.type==='phrase'; }).length;
+  var trans   = session.filter(function(s){ return s.type==='translate'; }).length;
+  var listens = session.filter(function(s){ return s.type==='listen'; }).length;
+  var clips   = []; try{ clips = JSON.parse(localStorage.getItem('va')||'[]'); }catch(e){}
+
+  var html = '<div class="sg" style="margin-bottom:14px">'
+    + '<div class="sb"><div class="sn">'+phrases+'</div><div class="sl">Phrases</div></div>'
+    + '<div class="sb"><div class="sn">'+trans+'</div><div class="sl">Translations</div></div>'
+    + '<div class="sb"><div class="sn">'+clips.length+'</div><div class="sl">Audio clips</div></div>'
+    + '</div>';
+
+  // Action buttons
+  html += '<button onclick="exportData()" class="eb">&#8659; Export training data (JSON)</button>';
+  html += '<button onclick="closeSettings();openLibrary();" class="eb" style="margin-bottom:4px">&#127775; My Library</button>';
+  html += '<button onclick="closeSettings();clearSession();" class="eb" style="color:var(--red);border-color:rgba(226,75,74,.3);margin-top:6px">&#128465; Clear session</button>';
+  html += '<button onclick="closeSettings();clearAllHistory();" class="eb" style="color:var(--red);border-color:rgba(226,75,74,.3);margin-top:4px;opacity:0.6">&#9888;&#65039; Erase all character memory</button>';
+
+  // Log entries
+  if (session.length === 0) {
+    html += '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px">No activity yet</div>';
+  } else {
+    html += '<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">';
+    session.slice().reverse().forEach(function(s) {
+      var time = new Date(s.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      var badge='', body='';
+      if (s.type==='phrase') {
+        badge='<span class="rb rp">Phrase</span>';
+        body='<div style="font-size:12px;color:var(--off)">'+s.en+'</div>'
+           + '<div style="font-size:15px;font-weight:600;margin-top:2px">'+s.ja+'</div>'
+           + '<div style="font-size:11px;color:var(--tealLt)">'+s.ro+'</div>';
+      } else if (s.type==='translate') {
+        var confPill='';
+        if (s.speechConf){var cc=s.speechConf>=70?'#3DD68C':s.speechConf>=40?'#EF9F27':'#E24B4A';confPill=' <span style="font-size:9px;padding:1px 6px;border-radius:10px;background:rgba(127,167,184,0.15);color:'+cc+'">&#127908; '+s.speechConf+'%</span>';}
+        badge='<span class="rb rtr">'+(s.inputMethod==='speech'?'Spoken':'Typed')+'</span>'+confPill;
+        body='<div style="font-size:12px;color:var(--muted)">'+s.en+'</div>'
+           + '<div style="font-size:15px;font-weight:600;margin-top:2px">'+s.ja+'</div>'
+           + '<div style="font-size:11px;color:var(--tealLt)">'+s.ro+'</div>';
+      } else if (s.type==='listen') {
+        badge='<span class="rb rl">Listen · '+s.conf+'% conf</span>';
+        body='<div style="font-size:15px;font-weight:600">'+s.ja+'</div>'
+           + '<div style="font-size:12px;color:var(--tealLt);margin-top:2px">'+s.en+'</div>';
+      } else if (s.type==='converse') {
+        badge='<span class="rb" style="background:rgba(128,0,255,0.12);color:#b388ff">Converse · '+(s.lang==='en'?'EN':'JA')+'</span>';
+        body='<div style="font-size:14px;color:var(--off)">'+s.original+'</div>'
+           + '<div style="font-size:12px;color:var(--muted);margin-top:2px">'+s.translation+'</div>';
+      }
+      html += '<div class="rc"><div class="rt">'+time+'</div>'+badge+body+'</div>';
+    });
+    html += '</div>';
+  }
+  document.getElementById('settingsPanelBody').innerHTML = html;
+}
+
+// Keep openReview as alias so any stray calls still work
+function openReview() { openSettings(); }
+
+function clearConv() {
+  if (!confirm('Clear conversation?')) return;
+  convLog = [];
+  document.getElementById('convLog').innerHTML = '';
+  toast('Conversation cleared');
+}
+
+function exportConv() {
+  if (!convLog.length) { toast('No conversation to export'); return; }
+  var blob = new Blob([JSON.stringify({exported:new Date().toISOString(),conversation:convLog},null,2)],{type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href=url; a.download='vurba-conversation-'+Date.now()+'.json'; a.click();
+  URL.revokeObjectURL(url);
+  toast('Conversation exported!');
+}
+
+// Log session-end summary when user leaves — character uses this for reflection
+window.addEventListener('pagehide', function() {
+  if (!session.length) return;
+  var summary = {
+    type:        'session_end',
+    sessionId:   SESSION_META.id,
+    startedAt:   SESSION_META.startedAt,
+    endedAt:     new Date().toISOString(),
+    eventCount:  session.length,
+    phrasesUsed: session.filter(function(e){ return e.type==='phrase'; }).length,
+    translates:  session.filter(function(e){ return e.type==='translate'; }).length,
+    listens:     session.filter(function(e){ return e.type==='listen'; }).length,
+    converses:   session.filter(function(e){ return e.type==='converse'; }).length,
+    scenarios:   [...new Set(session.map(function(e){ return e.scenario; }).filter(Boolean))],
+    langPairs:   [...new Set(session.map(function(e){ return e.srcLang+'>'+e.tgtLang; }).filter(function(v){ return v !== 'undefined>undefined'; }))],
+    checkins:    session.filter(function(e){ return e.type==='checkin'; }).length,
+    avgConf:     (function(){
+      var cs = session.filter(function(e){ return e.conf > 0; }).map(function(e){ return e.conf; });
+      return cs.length ? Math.round(cs.reduce(function(a,b){ return a+b; },0)/cs.length) : null;
+    })(),
+  };
+  // Save summary to history
+  vurbaHistory.push(summary);
+  if (vurbaHistory.length > 500) vurbaHistory = vurbaHistory.slice(-500);
+  try { localStorage.setItem('vh', JSON.stringify(vurbaHistory)); } catch(ex) {}
+});
+
+// Load voices (iOS needs this trigger)
+if (window.speechSynthesis) {
+  window.speechSynthesis.onvoiceschanged = function(){ window.speechSynthesis.getVoices(); };
+  window.speechSynthesis.getVoices();
+}
+</script>
+</body>
+</html>
