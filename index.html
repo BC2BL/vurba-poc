@@ -59,6 +59,7 @@ html,body{background:var(--navy);color:#fff;font-family:-apple-system,BlinkMacSy
 .pc-4{background:rgba(238,107,77,0.32);border-color:rgba(238,107,77,0.45)}
 .pc-5{background:rgba(100,181,246,0.32);border-color:rgba(100,181,246,0.45)}
 .ab.sav.saved{background:rgba(61,214,140,0.12)!important;border-color:rgba(61,214,140,0.4)!important;color:var(--green)!important;cursor:default;font-weight:600}
+.saved-dot{position:absolute;top:8px;right:8px;width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 4px rgba(61,214,140,0.6)}
 .en{font-size:13px;color:var(--off);margin-bottom:4px}
 .ja{font-size:17px;color:#fff;font-weight:600;margin-bottom:3px;word-break:break-word;overflow-wrap:break-word}
 .ro{font-size:11px;color:var(--tealLt)}
@@ -781,9 +782,9 @@ textarea:focus{border-color:var(--teal)}
 <div id="customPhraseSheet">
   <div class="cp-handle"></div>
   <div class="cp-title" id="cpTitle">Add phrase</div>
-  <div class="cp-subtitle">Type in English and I will translate it for you</div>
+  <div class="cp-subtitle" id="cpSubtitle">Type in English and I will translate it for you</div>
   <div class="cp-field">
-    <div class="cp-label">Your phrase (English)</div>
+    <div class="cp-label" id="cpSrcLabel">Your phrase (English)</div>
     <textarea class="cp-input" id="cpEnInput" rows="2" placeholder="e.g. Do you have a kids menu?"></textarea>
   </div>
   <button class="cp-translate-btn" id="cpTranslateBtn" onclick="cpTranslate()">Translate automatically</button>
@@ -1896,7 +1897,9 @@ function buildPhrases() {
       var srcText=srcP.text, tgtText=tgtP.text, tgtRo=tgtP.ro;
       var d=document.createElement('div');
       d.className='pc pc-'+catIdx;
-      d.innerHTML='<div class="en">'+srcText+'</div>'+
+      d.style.position='relative';
+      d.innerHTML=(alreadySaved?'<div class="saved-dot"></div>':'')+
+        '<div class="en">'+srcText+'</div>'+
         '<div class="ja">'+tgtText+'</div>'+
         (tgtRo?'<div class="ro">'+tgtRo+'</div>':'')+
         '<div class="acts" style="display:none">'+
@@ -1937,13 +1940,13 @@ function buildPhrases() {
           var btn = d.querySelector('.sav');
           if (btn.classList.contains('saved')) return; // already saved
           var added = addToLibrary(st, tt, ro, 'phrase');
-          if (added) {
-            btn.classList.add('saved');
-            btn.textContent = '✓ Saved';
-          } else {
-            // Already in library from a previous session
-            btn.classList.add('saved');
-            btn.textContent = '✓ Saved';
+          btn.classList.add('saved');
+          btn.textContent = '✓ Saved';
+          // Show green dot on card immediately
+          if (!d.querySelector('.saved-dot')) {
+            var dot = document.createElement('div');
+            dot.className = 'saved-dot';
+            d.appendChild(dot);
           }
         });
       })(srcText, tgtText, tgtRo);
@@ -2700,7 +2703,13 @@ var cpCurrentScenario = null, cpCurrentCat = null, cpPinData = null;
 
 function openCustomPhrase(scenario, catName) {
   cpCurrentScenario = scenario; cpCurrentCat = catName;
+  var src = getSrc(), tgt = getTgt();
+  var srcName = getLangName(src), tgtName = getLangName(tgt);
   document.getElementById('cpTitle').textContent = 'Add to "' + catName + '"';
+  document.getElementById('cpSubtitle').textContent = 'Type in ' + srcName + ' — I will translate it for you';
+  document.getElementById('cpSrcLabel').textContent = 'Your phrase (' + srcName + ')';
+  document.getElementById('cpEnInput').placeholder = 'Type your phrase in ' + srcName + '...';
+  document.getElementById('cpTgtLabel').textContent = 'Translation (' + tgtName + ')';
   ['cpEnInput','cpTgtInput','cpRoInput'].forEach(function(id){ document.getElementById(id).value=''; });
   ['cpTgtField','cpRoField'].forEach(function(id){ document.getElementById(id).style.display='none'; });
   document.getElementById('cpSaveBtn').disabled = true;
@@ -2721,8 +2730,9 @@ function cpTranslate() {
   if (!text) { toast('Please enter a phrase first'); return; }
   var btn = document.getElementById('cpTranslateBtn');
   btn.textContent = 'Translating...'; btn.disabled = true;
-  var tgt = getTgt(), needsRo = LANG_CONFIG[tgt] && LANG_CONFIG[tgt].ro;
-  var sys = 'Translate the following English phrase to ' + getLangName(tgt) + '.' +
+  var src = getSrc(), tgt = getTgt();
+  var needsRo = LANG_CONFIG[tgt] && LANG_CONFIG[tgt].ro;
+  var sys = 'Translate the following ' + getLangName(src) + ' phrase to ' + getLangName(tgt) + '.' +
     (needsRo ? ' After the translation add a pipe | then the romanisation in Latin characters.' : '') +
     ' Reply with ONLY the translation. No explanations.';
   callClaude(text, sys).then(function(result) {
