@@ -1859,7 +1859,6 @@ function onLangChange() {
   // Translate tab
   var trbtnLbl=document.getElementById('trbtnLabel');
   if (trbtnLbl) trbtnLbl.textContent='Translate to '+tgtName;
-  // translateSrcLbl updated above
   var srcLblEl=document.getElementById('translateSrcLbl');
   if (srcLblEl) srcLblEl.textContent='Type or speak in '+srcName;
   // Listen tab
@@ -2117,98 +2116,93 @@ var micTranActive = false;
 
 function translateFromSpeech() {
   if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-    toast('Speech recognition not supported — use HTTPS');
+    toast('Speech not supported — use Chrome on HTTPS');
     return;
   }
+  // Tap again to stop
   if (micTranRec) {
-    try { micTranRec.abort(); } catch(e) {}
-    micTranRec = null;
-    clearSilenceTimer('tran');
-    resetMicTranBtn();
+    try { micTranRec.stop(); } catch(e) {}
     return;
   }
-  micTranConf = 0;
-  var micTranHeard = '';
+
+  // ── UI: active state ──────────────────────────────────────────────────────
   var btn      = document.getElementById('mictranbtn');
   var interim  = document.getElementById('micInterim');
   var statusEl = document.getElementById('micTranStatus');
+
   btn.style.background  = 'rgba(226,75,74,0.2)';
   btn.style.borderColor = '#E24B4A';
   btn.style.color       = '#E24B4A';
-  btn.classList.add('listening');
+  btn.style.animation   = 'pulseBtn 1.2s ease-in-out infinite';
   document.getElementById('micTranBtnLbl').innerHTML = '&#9646;&#9646;';
   if (statusEl) { statusEl.textContent = '● Recording...'; statusEl.style.display = 'block'; }
   interim.style.display  = 'block';
   interim.textContent    = 'Waiting for speech...';
   interim.style.color    = 'var(--muted)';
   interim.style.fontStyle= 'italic';
+
+  // ── Speech recognition — mirrors Converse ─────────────────────────────────
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   micTranRec = new SR();
   micTranRec.lang = getSpeechCode(getSrc());
   micTranRec.interimResults = true;
   micTranRec.continuous = false;
-  startSilenceTimer('tran', 6, function() {
-    try { if(micTranRec) micTranRec.abort(); } catch(e) {}
-    micTranRec = null;
-    resetMicTranBtn();
-    var el = document.getElementById('micInterim');
-    if (el) el.style.display = 'none';
-    if (!micTranHeard) toast('No speech detected — tap to try again');
-  });
+  var micTranHeard = '';
+  var micTranConf2 = 0;
+  micTranConf = 0; // reset global confidence
+
   micTranRec.onresult = function(e) {
-    startSilenceTimer('tran', 6, function() {
-      try { if(micTranRec) micTranRec.abort(); } catch(e) {}
-      micTranRec = null;
-      resetMicTranBtn();
+    // Reset silence timer each time speech is detected
+    startSilenceTimer('tran', 4, function() {
+      try { if (micTranRec) micTranRec.stop(); } catch(ex) {}
     });
-    var finalText = '', interimText = '', bestConf = 0;
+    var finalText = '', interimText = '';
     for (var i = 0; i < e.results.length; i++) {
       if (e.results[i].isFinal) {
         finalText += e.results[i][0].transcript;
         var c = Math.round((e.results[i][0].confidence || 0) * 100);
-        if (c > bestConf) bestConf = c;
+        if (c > micTranConf2) micTranConf2 = c;
       } else {
         interimText += e.results[i][0].transcript;
       }
     }
-    if (bestConf > 0) micTranConf = bestConf;
     if (finalText) micTranHeard = finalText;
+    micTranConf = micTranConf2; // sync to global for doTranslate badge
     var display = finalText || interimText;
-    var el = document.getElementById('micInterim');
-    if (el) {
-      el.textContent     = display || 'Waiting for speech...';
-      el.style.color     = finalText ? 'var(--tealLt)' : 'var(--muted)';
-      el.style.fontStyle = finalText ? 'normal' : 'italic';
-    }
+    interim.textContent     = display || 'Waiting for speech...';
+    interim.style.color     = finalText ? 'var(--tealLt)' : 'var(--muted)';
+    interim.style.fontStyle = finalText ? 'normal' : 'italic';
   };
+
   micTranRec.onend = function() {
     clearSilenceTimer('tran');
-    try { if(micTranRec) micTranRec.abort(); } catch(e) {}
     micTranRec = null;
     resetMicTranBtn();
+    interim.style.display = 'none';
     if (micTranHeard) {
       document.getElementById('tin').value = micTranHeard;
-      var el = document.getElementById('micInterim');
-      if (el) el.style.display = 'none';
       toast('Tap Translate when ready');
     }
   };
+
   micTranRec.onerror = function(err) {
     clearSilenceTimer('tran');
-    try { if(micTranRec) micTranRec.abort(); } catch(e) {}
     micTranRec = null;
     resetMicTranBtn();
-    var el = document.getElementById('micInterim');
-    if (el) {
-      el.style.display = 'block';
-      el.style.color = 'var(--muted)';
-      el.style.fontStyle = 'italic';
-      el.textContent = err.error === 'not-allowed' ? 'Microphone access denied — check browser permissions'
-                     : err.error === 'no-speech'   ? 'No speech detected — tap to try again'
-                     : 'Could not hear — tap to try again (' + err.error + ')';
-    }
+    var msg = err.error === 'not-allowed' ? 'Mic access denied — check permissions'
+            : err.error === 'no-speech'   ? 'No speech detected — tap to try again'
+            : 'Mic error: ' + err.error;
+    interim.style.display   = 'block';
+    interim.style.color     = 'var(--muted)';
+    interim.style.fontStyle = 'italic';
+    interim.textContent     = msg;
   };
+
+  // ── Start THEN set silence timer — same order as Converse ────────────────
   micTranRec.start();
+  startSilenceTimer('tran', 6, function() {
+    try { if (micTranRec) micTranRec.stop(); } catch(e) {}
+  });
 }
 
 function resetMicTranBtn() {
@@ -2217,6 +2211,7 @@ function resetMicTranBtn() {
   btn.style.background  = 'rgba(15,181,199,0.12)';
   btn.style.borderColor = 'var(--tealLt)';
   btn.style.color       = 'var(--tealLt)';
+  btn.style.animation   = '';
   btn.classList.remove('listening');
   document.getElementById('micTranBtnLbl').innerHTML = '&#127908;';
   var statusEl = document.getElementById('micTranStatus');
