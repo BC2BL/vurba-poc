@@ -2242,7 +2242,7 @@ function resetMicTranBtn() {
   btn.style.color       = 'var(--tealLt)';
   btn.style.animation   = '';
   btn.classList.remove('listening');
-  document.getElementById('micTranBtnLbl').innerHTML = '&#127908;';
+  document.getElementById('micTranBtnLbl').textContent = '🎤';
   var statusEl = document.getElementById('micTranStatus');
   if (statusEl) statusEl.style.display = 'none';
 }
@@ -2315,7 +2315,7 @@ function startListen() {
   var btn = document.getElementById('micbtn');
   btn.className = 'mb rec';
   var mici2 = document.getElementById('mici');
-  if (mici2) { mici2.innerHTML = '&#9646;'; mici2.style.fontSize = '28px'; }
+  if (mici2) { mici2.textContent = '❚'; mici2.style.fontSize = '28px'; }
   else { btn.innerHTML = '<span id="mici" style="font-size:28px">&#9646;</span>'; }
   var hearLangName = listenLang === 'tgt' ? getLangName(getTgt()) : getLangName(getSrc());
   document.getElementById('mst').textContent = 'Listening in ' + hearLangName + '...';
@@ -2419,7 +2419,7 @@ function stopListen() {
   if (btn) {
     btn.className = 'mb idle';
     var mici = document.getElementById('mici');
-    if (mici) { mici.innerHTML = '&#127908;'; mici.style.fontSize = '32px'; }
+    if (mici) { mici.textContent = '🎤'; mici.style.fontSize = '32px'; }
     else { btn.innerHTML = '<span id="mici" style="font-size:32px">&#127908;</span>'; }
   }
   document.getElementById('mst').textContent = 'Tap to start listening';
@@ -2772,7 +2772,7 @@ function stopNoteTaker() {
   var btn = document.getElementById('ntBtn');
   if (btn) btn.className = 'mb idle';
   var icon = document.getElementById('ntIcon');
-  if (icon) icon.innerHTML = '&#127908;';
+  if (icon) icon.textContent = '🎤';
   var mst = document.getElementById('ntMst');
   if (mst) mst.textContent = 'Tap to start recording';
   var status = document.getElementById('ntStatus');
